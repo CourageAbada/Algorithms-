@@ -1,0 +1,1967 @@
+feature_set_name: xauusd_core
+feature_set_version: xauusd_core-fs1-ac928c2b1771
+feature_set_schema: 1
+groups:
+- name: micro
+  definition_version: 1
+  code_fingerprint: 86bbfaa1837a87a3
+- name: spread
+  definition_version: 1
+  code_fingerprint: e8cbbfaac8b0d6de
+- name: structure
+  definition_version: 1
+  code_fingerprint: 39a874fb4485f699
+- name: volatility
+  definition_version: 1
+  code_fingerprint: 16ce227a3e93f9b8
+- name: momentum
+  definition_version: 1
+  code_fingerprint: 43762dea069da571
+- name: mean_reversion
+  definition_version: 1
+  code_fingerprint: e2e08509d92bc828
+- name: mtf
+  definition_version: 1
+  code_fingerprint: c8508792020333fe
+- name: session
+  definition_version: 1
+  code_fingerprint: c6017d9c2a34e7e3
+- name: regimes
+  definition_version: 1
+  code_fingerprint: e789b7b0f8cc527e
+feature_config:
+  micro_windows_s:
+  - 5
+  - 15
+  - 60
+  vol_windows_s:
+  - 15
+  - 60
+  - 300
+  ret_windows_s:
+  - 5
+  - 15
+  - 60
+  - 300
+  abs_ret_windows_s:
+  - 15
+  - 60
+  - 300
+  range_windows_s:
+  - 30
+  - 60
+  - 300
+  breakout_windows_s:
+  - 60
+  - 300
+  breakout_guard_s: 5
+  failed_breakout_window_s: 300
+  failed_breakout_lookback_s: 30
+  spread_mean_windows_s:
+  - 15
+  - 60
+  - 300
+  spread_median_windows_s:
+  - 60
+  - 300
+  spread_change_windows_s:
+  - 5
+  - 60
+  spread_hist_s: 1800
+  vol_hist_s: 3600
+  mean_windows_s:
+  - 60
+  - 300
+  ema_spans_s:
+  - 30
+  - 120
+  ema_slope_step_s: 5
+  mtf_timeframes_s:
+  - 5
+  - 15
+  - 30
+  - 60
+  - 300
+  atr_timeframes_s:
+  - 15
+  - 60
+  - 300
+  atr_period: 14
+  min_median_frac: 0.2
+  disabled_features: []
+regime_config:
+  spread:
+    percentile_key: spread_percentile_1800s
+    median_key: spread_median_points_300s
+    value_key: spread_points
+    session_key: session_code
+    p_elevated: 0.9
+    p_extreme: 0.99
+    ratio_elevated: 1.5
+    ratio_extreme: 3.0
+    calibration: null
+    calibration_status: UNCALIBRATED_PLACEHOLDER_DEFAULTS
+  volatility:
+    value_key: realized_vol_bps_60s
+    percentile_key: vol_percentile_60s_1h
+    zscore_key: vol_zscore_60s_1h
+    session_key: session_code
+    p_low: 0.2
+    p_high: 0.8
+    p_extreme: 0.98
+    z_extreme: 2.0
+    calibration: null
+    calibration_status: UNCALIBRATED_PLACEHOLDER_DEFAULTS
+features:
+- name: tick_count_5s
+  group: micro
+  family: microstructure
+  description: Ticks received in the last 5s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ticks
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Activity level / information arrival
+  enabled: true
+  version: 1
+- name: tick_rate_5s
+  group: micro
+  family: microstructure
+  description: tick_count_5s divided by 5
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ticks/s
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Tick arrival rate
+  enabled: true
+  version: 1
+- name: tick_acceleration_5s
+  group: micro
+  family: microstructure
+  description: Change of tick rate vs the previous 5s window, per 5s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 10
+  units: ticks/s^2
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Burst onset / fade-out
+  enabled: true
+  version: 1
+- name: tick_interval_mean_ms_5s
+  group: micro
+  family: microstructure
+  description: Mean inter-tick interval (ms) over the last 5s; the interval is attributed to the later tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ms
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Arrival interval (inverse of rate, robust to empty bars)
+  enabled: true
+  version: 1
+- name: up_tick_ratio_5s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 5s whose mid rose vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: down_tick_ratio_5s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 5s whose mid fell vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: tick_direction_imbalance_5s
+  group: micro
+  family: microstructure
+  description: (up - down) / (up + down) mid moves in the last 5s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ratio
+  expected_range:
+  - -1
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Signed directional imbalance
+  enabled: true
+  version: 1
+- name: directional_persistence_5s
+  group: micro
+  family: microstructure
+  description: Share of consecutive non-flat moves that continue the same direction (5s)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Trending vs bouncing quotes
+  enabled: true
+  version: 1
+- name: tick_count_15s
+  group: micro
+  family: microstructure
+  description: Ticks received in the last 15s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ticks
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Activity level / information arrival
+  enabled: true
+  version: 1
+- name: tick_rate_15s
+  group: micro
+  family: microstructure
+  description: tick_count_15s divided by 15
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ticks/s
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Tick arrival rate
+  enabled: true
+  version: 1
+- name: tick_acceleration_15s
+  group: micro
+  family: microstructure
+  description: Change of tick rate vs the previous 15s window, per 15s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: ticks/s^2
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Burst onset / fade-out
+  enabled: true
+  version: 1
+- name: tick_interval_mean_ms_15s
+  group: micro
+  family: microstructure
+  description: Mean inter-tick interval (ms) over the last 15s; the interval is attributed to the later tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ms
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Arrival interval (inverse of rate, robust to empty bars)
+  enabled: true
+  version: 1
+- name: up_tick_ratio_15s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 15s whose mid rose vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: down_tick_ratio_15s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 15s whose mid fell vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: tick_direction_imbalance_15s
+  group: micro
+  family: microstructure
+  description: (up - down) / (up + down) mid moves in the last 15s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ratio
+  expected_range:
+  - -1
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Signed directional imbalance
+  enabled: true
+  version: 1
+- name: directional_persistence_15s
+  group: micro
+  family: microstructure
+  description: Share of consecutive non-flat moves that continue the same direction (15s)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Trending vs bouncing quotes
+  enabled: true
+  version: 1
+- name: tick_count_60s
+  group: micro
+  family: microstructure
+  description: Ticks received in the last 60s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ticks
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Activity level / information arrival
+  enabled: true
+  version: 1
+- name: tick_rate_60s
+  group: micro
+  family: microstructure
+  description: tick_count_60s divided by 60
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ticks/s
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Tick arrival rate
+  enabled: true
+  version: 1
+- name: tick_acceleration_60s
+  group: micro
+  family: microstructure
+  description: Change of tick rate vs the previous 60s window, per 60s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 120
+  units: ticks/s^2
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Burst onset / fade-out
+  enabled: true
+  version: 1
+- name: tick_interval_mean_ms_60s
+  group: micro
+  family: microstructure
+  description: Mean inter-tick interval (ms) over the last 60s; the interval is attributed to the later tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ms
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Arrival interval (inverse of rate, robust to empty bars)
+  enabled: true
+  version: 1
+- name: up_tick_ratio_60s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 60s whose mid rose vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: down_tick_ratio_60s
+  group: micro
+  family: microstructure
+  description: Fraction of ticks in the last 60s whose mid fell vs the previous tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Directional pressure
+  enabled: true
+  version: 1
+- name: tick_direction_imbalance_60s
+  group: micro
+  family: microstructure
+  description: (up - down) / (up + down) mid moves in the last 60s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ratio
+  expected_range:
+  - -1
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Signed directional imbalance
+  enabled: true
+  version: 1
+- name: directional_persistence_60s
+  group: micro
+  family: microstructure
+  description: Share of consecutive non-flat moves that continue the same direction (60s)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Trending vs bouncing quotes
+  enabled: true
+  version: 1
+- name: consecutive_up_ticks
+  group: micro
+  family: microstructure
+  description: Length of the current run of consecutive up moves (flat ticks ignored), as of the last tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: ticks
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN only before the first tick
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Short-term directional persistence
+  enabled: true
+  version: 1
+- name: consecutive_down_ticks
+  group: micro
+  family: microstructure
+  description: Length of the current run of consecutive down moves, as of the last tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: ticks
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN only before the first tick
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Short-term directional persistence
+  enabled: true
+  version: 1
+- name: staleness_s
+  group: micro
+  family: state
+  description: Seconds between the decision time and the last tick (age of every as-of value)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: s
+  expected_range:
+  - 0
+  - null
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Makes stale as-of state explicit; quality gate
+  enabled: true
+  version: 1
+- name: empty_interval
+  group: micro
+  family: state
+  description: 1 if the last grid interval contained no tick
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: never NaN
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Explicit marker for empty intervals
+  enabled: true
+  version: 1
+- name: spread_points
+  group: spread
+  family: spread
+  description: Spread (ask-bid) of the last tick in points (spread/point)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN if symbol point is unknown
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Transaction-cost proxy; unit comes from stored symbol metadata
+  enabled: true
+  version: 1
+- name: relative_spread_bps
+  group: spread
+  family: spread
+  description: Spread of the last tick relative to mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 0
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: never NaN after the first tick
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Unit-free cost measure
+  enabled: true
+  version: 1
+- name: spread_change_points_5s
+  group: spread
+  family: spread
+  description: Spread now minus spread 5s ago (points)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: points
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Liquidity withdrawal / return
+  enabled: true
+  version: 1
+- name: spread_change_points_60s
+  group: spread
+  family: spread
+  description: Spread now minus spread 60s ago (points)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: points
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Liquidity withdrawal / return
+  enabled: true
+  version: 1
+- name: spread_mean_points_15s
+  group: spread
+  family: spread
+  description: Tick-weighted mean spread over the last 15s (points)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Smoothed cost level
+  enabled: true
+  version: 1
+- name: spread_mean_points_60s
+  group: spread
+  family: spread
+  description: Tick-weighted mean spread over the last 60s (points)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Smoothed cost level
+  enabled: true
+  version: 1
+- name: spread_mean_points_300s
+  group: spread
+  family: spread
+  description: Tick-weighted mean spread over the last 300s (points)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Smoothed cost level
+  enabled: true
+  version: 1
+- name: spread_median_points_60s
+  group: spread
+  family: spread
+  description: Median over the last 60s of the per-bar median spread (non-empty bars only; an approximation of the tick median)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Outlier-robust cost level
+  enabled: true
+  version: 1
+- name: spread_median_points_300s
+  group: spread
+  family: spread
+  description: Median over the last 300s of the per-bar median spread (non-empty bars only; an approximation of the tick median)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: points
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Outlier-robust cost level
+  enabled: true
+  version: 1
+- name: spread_percentile_1800s
+  group: spread
+  family: spread
+  description: Percentile rank of the current spread within the trailing 1800s of per-bar as-of spreads
+  source: ticks
+  timeframe: 1s
+  lookback_s: 1800
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Relative spread level (distribution-based, no fixed threshold)
+  enabled: true
+  version: 1
+- name: spread_zscore_1800s
+  group: spread
+  family: spread
+  description: (spread - trailing mean) / trailing std over 1800s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 1800
+  units: z
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Abnormal widening detection
+  enabled: true
+  version: 1
+- name: range_width_bps_30s
+  group: structure
+  family: range
+  description: (rolling high - rolling low) / mid over 30s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Local range / volatility proxy
+  enabled: true
+  version: 1
+- name: range_position_30s
+  group: structure
+  family: range
+  description: Position of the last mid inside the 30s range (0=low, 1=high)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Mean-reversion vs breakout context
+  enabled: true
+  version: 1
+- name: dist_high_bps_30s
+  group: structure
+  family: range
+  description: Distance from the last mid up to the 30s rolling high
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling high
+  enabled: true
+  version: 1
+- name: dist_low_bps_30s
+  group: structure
+  family: range
+  description: Distance from the 30s rolling low up to the last mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling low
+  enabled: true
+  version: 1
+- name: range_width_bps_60s
+  group: structure
+  family: range
+  description: (rolling high - rolling low) / mid over 60s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Local range / volatility proxy
+  enabled: true
+  version: 1
+- name: range_position_60s
+  group: structure
+  family: range
+  description: Position of the last mid inside the 60s range (0=low, 1=high)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Mean-reversion vs breakout context
+  enabled: true
+  version: 1
+- name: dist_high_bps_60s
+  group: structure
+  family: range
+  description: Distance from the last mid up to the 60s rolling high
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling high
+  enabled: true
+  version: 1
+- name: dist_low_bps_60s
+  group: structure
+  family: range
+  description: Distance from the 60s rolling low up to the last mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling low
+  enabled: true
+  version: 1
+- name: range_width_bps_300s
+  group: structure
+  family: range
+  description: (rolling high - rolling low) / mid over 300s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Local range / volatility proxy
+  enabled: true
+  version: 1
+- name: range_position_300s
+  group: structure
+  family: range
+  description: Position of the last mid inside the 300s range (0=low, 1=high)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Mean-reversion vs breakout context
+  enabled: true
+  version: 1
+- name: dist_high_bps_300s
+  group: structure
+  family: range
+  description: Distance from the last mid up to the 300s rolling high
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling high
+  enabled: true
+  version: 1
+- name: dist_low_bps_300s
+  group: structure
+  family: range
+  description: Distance from the 300s rolling low up to the last mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised distance from rolling low
+  enabled: true
+  version: 1
+- name: compression_ratio_30s_300s
+  group: structure
+  family: range
+  description: range_width_30s / range_width_300s (small = compression)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Volatility compression
+  enabled: true
+  version: 1
+- name: range_expansion_ratio_60s_vs_30m
+  group: structure
+  family: range
+  description: range_width_60s relative to its trailing median over 1800s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 1860
+  units: ratio
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Volatility expansion
+  enabled: true
+  version: 1
+- name: range_percentile_60s_1h
+  group: structure
+  family: range
+  description: Percentile rank of range_width_60s within the trailing 3600s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 3660
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Relative range level
+  enabled: true
+  version: 1
+- name: breakout_dist_up_bps_60s
+  group: structure
+  family: range
+  description: Last mid minus the prior 60s high (window ends 5s ago); >0 = above it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 65
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Breakout magnitude (signed)
+  enabled: true
+  version: 1
+- name: breakout_dist_down_bps_60s
+  group: structure
+  family: range
+  description: Prior 60s low minus the last mid; >0 = below it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 65
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Breakout magnitude (signed)
+  enabled: true
+  version: 1
+- name: breakout_dist_up_bps_300s
+  group: structure
+  family: range
+  description: Last mid minus the prior 300s high (window ends 5s ago); >0 = above it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 305
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Breakout magnitude (signed)
+  enabled: true
+  version: 1
+- name: breakout_dist_down_bps_300s
+  group: structure
+  family: range
+  description: Prior 300s low minus the last mid; >0 = below it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 305
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Breakout magnitude (signed)
+  enabled: true
+  version: 1
+- name: failed_breakout_up_300s_30s
+  group: structure
+  family: range
+  description: 1 if price exceeded the 300s high (measured 30s ago) within the last 30s but is now back below it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 330
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Failed-breakout state (uses only past ticks)
+  enabled: true
+  version: 1
+- name: failed_breakout_down_300s_30s
+  group: structure
+  family: range
+  description: 1 if price broke below the 300s low (measured 30s ago) within the last 30s but is now back above it
+  source: ticks
+  timeframe: 1s
+  lookback_s: 330
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Failed-breakout state (uses only past ticks)
+  enabled: true
+  version: 1
+- name: realized_vol_bps_15s
+  group: volatility
+  family: volatility
+  description: sqrt(sum of squared tick mid log-returns) over 15s (includes microstructure noise)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Short-term realised volatility
+  enabled: true
+  version: 1
+- name: realized_vol_bps_60s
+  group: volatility
+  family: volatility
+  description: sqrt(sum of squared tick mid log-returns) over 60s (includes microstructure noise)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Short-term realised volatility
+  enabled: true
+  version: 1
+- name: realized_vol_bps_300s
+  group: volatility
+  family: volatility
+  description: sqrt(sum of squared tick mid log-returns) over 300s (includes microstructure noise)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Short-term realised volatility
+  enabled: true
+  version: 1
+- name: atr14_bps_15s
+  group: volatility
+  family: volatility
+  description: Average true range (14 bars, mid) on COMPLETE 15s bars, relative to close
+  source: bars_15s
+  timeframe: 15s
+  lookback_s: 225
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Tick-equivalent ATR for volatility scaling
+  enabled: true
+  version: 1
+- name: atr14_bps_60s
+  group: volatility
+  family: volatility
+  description: Average true range (14 bars, mid) on COMPLETE 60s bars, relative to close
+  source: bars_60s
+  timeframe: 60s
+  lookback_s: 900
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Tick-equivalent ATR for volatility scaling
+  enabled: true
+  version: 1
+- name: atr14_bps_300s
+  group: volatility
+  family: volatility
+  description: Average true range (14 bars, mid) on COMPLETE 300s bars, relative to close
+  source: bars_300s
+  timeframe: 300s
+  lookback_s: 4500
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Tick-equivalent ATR for volatility scaling
+  enabled: true
+  version: 1
+- name: vol_percentile_60s_1h
+  group: volatility
+  family: volatility
+  description: Percentile rank of realized_vol_60s within the trailing 3600s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 3660
+  units: ratio
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Relative volatility level
+  enabled: true
+  version: 1
+- name: vol_zscore_60s_1h
+  group: volatility
+  family: volatility
+  description: z-score of ln(realized_vol_60s) vs its trailing 3600s mean/std
+  source: ticks
+  timeframe: 1s
+  lookback_s: 3660
+  units: z
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Volatility regime scaling
+  enabled: true
+  version: 1
+- name: ret_bps_5s
+  group: momentum
+  family: momentum
+  description: ln(mid_t / mid_(t-5s)) using as-of mids
+  source: ticks
+  timeframe: 1s
+  lookback_s: 5
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Multi-horizon momentum / rolling return
+  enabled: true
+  version: 1
+- name: ret_bps_15s
+  group: momentum
+  family: momentum
+  description: ln(mid_t / mid_(t-15s)) using as-of mids
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Multi-horizon momentum / rolling return
+  enabled: true
+  version: 1
+- name: ret_bps_60s
+  group: momentum
+  family: momentum
+  description: ln(mid_t / mid_(t-60s)) using as-of mids
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Multi-horizon momentum / rolling return
+  enabled: true
+  version: 1
+- name: ret_bps_300s
+  group: momentum
+  family: momentum
+  description: ln(mid_t / mid_(t-300s)) using as-of mids
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Multi-horizon momentum / rolling return
+  enabled: true
+  version: 1
+- name: abs_ret_bps_15s
+  group: momentum
+  family: momentum
+  description: '|ret_bps_15s|'
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Magnitude of recent movement
+  enabled: true
+  version: 1
+- name: abs_ret_bps_60s
+  group: momentum
+  family: momentum
+  description: '|ret_bps_60s|'
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Magnitude of recent movement
+  enabled: true
+  version: 1
+- name: abs_ret_bps_300s
+  group: momentum
+  family: momentum
+  description: '|ret_bps_300s|'
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Magnitude of recent movement
+  enabled: true
+  version: 1
+- name: momentum_alignment
+  group: momentum
+  family: momentum
+  description: Mean sign of ret_bps over all horizons (+1 = all up, -1 = all down)
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: ratio
+  expected_range:
+  - -1
+  - 1
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Agreement across horizons
+  enabled: true
+  version: 1
+- name: ema_slope_bps_per_s_30s
+  group: momentum
+  family: momentum
+  description: Slope of the 30s EMA of mid over the last 5s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 35
+  units: bps/s
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Trend direction
+  enabled: true
+  version: 1
+- name: ema_dist_bps_30s
+  group: momentum
+  family: momentum
+  description: (mid - EMA30s) / mid; also serves as the mean-reversion distance from EMA
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised EMA distance (trend / reversion)
+  enabled: true
+  version: 1
+- name: ema_slope_bps_per_s_120s
+  group: momentum
+  family: momentum
+  description: Slope of the 120s EMA of mid over the last 5s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 125
+  units: bps/s
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Trend direction
+  enabled: true
+  version: 1
+- name: ema_dist_bps_120s
+  group: momentum
+  family: momentum
+  description: (mid - EMA120s) / mid; also serves as the mean-reversion distance from EMA
+  source: ticks
+  timeframe: 1s
+  lookback_s: 120
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Normalised EMA distance (trend / reversion)
+  enabled: true
+  version: 1
+- name: price_velocity_bps_per_s_15s
+  group: momentum
+  family: momentum
+  description: ret_bps_15s / 15
+  source: ticks
+  timeframe: 1s
+  lookback_s: 15
+  units: bps/s
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Price velocity
+  enabled: true
+  version: 1
+- name: price_acceleration_bps_per_s2_15s
+  group: momentum
+  family: momentum
+  description: Change of price velocity vs 15s earlier, per 15s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 30
+  units: bps/s^2
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Return acceleration
+  enabled: true
+  version: 1
+- name: dist_mean_bps_60s
+  group: mean_reversion
+  family: mean_reversion
+  description: (mid - mean of as-of mids over 60s) / mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Distance from rolling mean
+  enabled: true
+  version: 1
+- name: zscore_mean_60s
+  group: mean_reversion
+  family: mean_reversion
+  description: (mid - rolling mean) / rolling std over 60s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: z
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Standardised stretch
+  enabled: true
+  version: 1
+- name: dist_tickweighted_mean_bps_60s
+  group: mean_reversion
+  family: mean_reversion
+  description: '(mid - tick-count-weighted mean mid over 60s) / mid. NOT a VWAP: broker tick volume is an update count, not traded volume'
+  source: ticks
+  timeframe: 1s
+  lookback_s: 60
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Activity-weighted reference level (VWAP substitute, limitations documented)
+  enabled: true
+  version: 1
+- name: dist_mean_bps_300s
+  group: mean_reversion
+  family: mean_reversion
+  description: (mid - mean of as-of mids over 300s) / mid
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Distance from rolling mean
+  enabled: true
+  version: 1
+- name: zscore_mean_300s
+  group: mean_reversion
+  family: mean_reversion
+  description: (mid - rolling mean) / rolling std over 300s
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: z
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Standardised stretch
+  enabled: true
+  version: 1
+- name: dist_tickweighted_mean_bps_300s
+  group: mean_reversion
+  family: mean_reversion
+  description: '(mid - tick-count-weighted mean mid over 300s) / mid. NOT a VWAP: broker tick volume is an update count, not traded volume'
+  source: ticks
+  timeframe: 1s
+  lookback_s: 300
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Activity-weighted reference level (VWAP substitute, limitations documented)
+  enabled: true
+  version: 1
+- name: htf_ret_bps_5s
+  group: mtf
+  family: mtf
+  description: Open-to-close return of the last COMPLETE 5s bar
+  source: bars_5s
+  timeframe: 5s
+  lookback_s: 10
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe context
+  enabled: true
+  version: 1
+- name: htf_range_bps_5s
+  group: mtf
+  family: mtf
+  description: High-low range of the last COMPLETE 5s bar / close
+  source: bars_5s
+  timeframe: 5s
+  lookback_s: 10
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe volatility context
+  enabled: true
+  version: 1
+- name: htf_close_dist_bps_5s
+  group: mtf
+  family: mtf
+  description: Last mid minus the close of the last COMPLETE 5s bar
+  source: bars_5s
+  timeframe: 5s
+  lookback_s: 10
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Progress inside the current (incomplete) higher-timeframe bar, measured from known data
+  enabled: true
+  version: 1
+- name: htf_ret_bps_15s
+  group: mtf
+  family: mtf
+  description: Open-to-close return of the last COMPLETE 15s bar
+  source: bars_15s
+  timeframe: 15s
+  lookback_s: 30
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe context
+  enabled: true
+  version: 1
+- name: htf_range_bps_15s
+  group: mtf
+  family: mtf
+  description: High-low range of the last COMPLETE 15s bar / close
+  source: bars_15s
+  timeframe: 15s
+  lookback_s: 30
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe volatility context
+  enabled: true
+  version: 1
+- name: htf_close_dist_bps_15s
+  group: mtf
+  family: mtf
+  description: Last mid minus the close of the last COMPLETE 15s bar
+  source: bars_15s
+  timeframe: 15s
+  lookback_s: 30
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Progress inside the current (incomplete) higher-timeframe bar, measured from known data
+  enabled: true
+  version: 1
+- name: htf_ret_bps_30s
+  group: mtf
+  family: mtf
+  description: Open-to-close return of the last COMPLETE 30s bar
+  source: bars_30s
+  timeframe: 30s
+  lookback_s: 60
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe context
+  enabled: true
+  version: 1
+- name: htf_range_bps_30s
+  group: mtf
+  family: mtf
+  description: High-low range of the last COMPLETE 30s bar / close
+  source: bars_30s
+  timeframe: 30s
+  lookback_s: 60
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe volatility context
+  enabled: true
+  version: 1
+- name: htf_close_dist_bps_30s
+  group: mtf
+  family: mtf
+  description: Last mid minus the close of the last COMPLETE 30s bar
+  source: bars_30s
+  timeframe: 30s
+  lookback_s: 60
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Progress inside the current (incomplete) higher-timeframe bar, measured from known data
+  enabled: true
+  version: 1
+- name: htf_ret_bps_60s
+  group: mtf
+  family: mtf
+  description: Open-to-close return of the last COMPLETE 60s bar
+  source: bars_60s
+  timeframe: 60s
+  lookback_s: 120
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe context
+  enabled: true
+  version: 1
+- name: htf_range_bps_60s
+  group: mtf
+  family: mtf
+  description: High-low range of the last COMPLETE 60s bar / close
+  source: bars_60s
+  timeframe: 60s
+  lookback_s: 120
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe volatility context
+  enabled: true
+  version: 1
+- name: htf_close_dist_bps_60s
+  group: mtf
+  family: mtf
+  description: Last mid minus the close of the last COMPLETE 60s bar
+  source: bars_60s
+  timeframe: 60s
+  lookback_s: 120
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Progress inside the current (incomplete) higher-timeframe bar, measured from known data
+  enabled: true
+  version: 1
+- name: htf_ret_bps_300s
+  group: mtf
+  family: mtf
+  description: Open-to-close return of the last COMPLETE 300s bar
+  source: bars_300s
+  timeframe: 300s
+  lookback_s: 600
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe context
+  enabled: true
+  version: 1
+- name: htf_range_bps_300s
+  group: mtf
+  family: mtf
+  description: High-low range of the last COMPLETE 300s bar / close
+  source: bars_300s
+  timeframe: 300s
+  lookback_s: 600
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Higher-timeframe volatility context
+  enabled: true
+  version: 1
+- name: htf_close_dist_bps_300s
+  group: mtf
+  family: mtf
+  description: Last mid minus the close of the last COMPLETE 300s bar
+  source: bars_300s
+  timeframe: 300s
+  lookback_s: 600
+  units: bps
+  expected_range: null
+  nan_policy: NaN during warm-up (first lookback_s of each segment) and where the denominator is zero / no ticks
+  leakage_risk: 'MEDIUM: uses a higher-timeframe bar only after it is complete (align_completed side=''right''); covered by the MTF regression
+    test and prefix-invariance'
+  reason: Progress inside the current (incomplete) higher-timeframe bar, measured from known data
+  enabled: true
+  version: 1
+- name: session_code
+  group: session
+  family: session
+  description: 'Primary session code: 0 ASIA, 1 LONDON, 2 NEW_YORK, 3 OVERLAP, 4 OFF_HOURS, 5 MARKET_CLOSED (DST-aware local-time windows, evaluated
+    at bar start)'
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: code
+  expected_range:
+  - 0
+  - 5
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Session context
+  enabled: true
+  version: 1
+- name: is_asia
+  group: session
+  family: session
+  description: 1 inside the Asia session window (0 when the nominal weekly market is closed)
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Session context
+  enabled: true
+  version: 1
+- name: is_london
+  group: session
+  family: session
+  description: 1 inside the London session window (0 when the nominal weekly market is closed)
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Session context
+  enabled: true
+  version: 1
+- name: is_new_york
+  group: session
+  family: session
+  description: 1 inside the New York session window (0 when the nominal weekly market is closed)
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Session context
+  enabled: true
+  version: 1
+- name: is_london_new_york_overlap
+  group: session
+  family: session
+  description: 1 inside the London and New York windows both open (0 when the nominal weekly market is closed)
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: never NaN
+  leakage_risk: 'LOW: as-of state of the last tick before the decision time'
+  reason: Session context
+  enabled: true
+  version: 1
+- name: minutes_since_session_open
+  group: session
+  family: session
+  description: Minutes since the reference session opened (local wall-clock, DST-aware)
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: min
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Time-of-session effects
+  enabled: true
+  version: 1
+- name: minutes_until_session_close
+  group: session
+  family: session
+  description: Minutes until the reference session closes
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: min
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Time-of-session effects
+  enabled: true
+  version: 1
+- name: session_high_so_far
+  group: session
+  family: session
+  description: Highest mid since the reference session opened, up to the last complete bar only
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: price
+  expected_range: null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Session extreme (causal)
+  enabled: true
+  version: 1
+- name: session_low_so_far
+  group: session
+  family: session
+  description: Lowest mid since the reference session opened, up to the last complete bar only
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: price
+  expected_range: null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Session extreme (causal)
+  enabled: true
+  version: 1
+- name: session_range_so_far_bps
+  group: session
+  family: session
+  description: (session high so far - low so far) / mid
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Session range development
+  enabled: true
+  version: 1
+- name: dist_session_high_bps
+  group: session
+  family: session
+  description: Distance from the last mid to the session high so far
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Position within the session range
+  enabled: true
+  version: 1
+- name: dist_session_low_bps
+  group: session
+  family: session
+  description: Distance from the session low so far to the last mid
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: bps
+  expected_range:
+  - 0
+  - null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Position within the session range
+  enabled: true
+  version: 1
+- name: dist_session_mean_bps
+  group: session
+  family: session
+  description: (mid - mean of as-of mids since the session opened) / mid
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: bps
+  expected_range: null
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Distance from session mean (mean reversion)
+  enabled: true
+  version: 1
+- name: session_so_far_complete
+  group: session
+  family: session
+  description: 1 if this session instance was observed from (about) its open; 0 if the data started mid-session so the 'so far' values are partial
+  source: session
+  timeframe: 1s
+  lookback_s: 0
+  units: flag
+  expected_range:
+  - 0
+  - 1
+  nan_policy: NaN outside Asia/London/New York windows (no reference session)
+  leakage_risk: 'MEDIUM: running aggregate inside the current session instance (never the final session value); covered by the session-so-far
+    tests and prefix-invariance'
+  reason: Marks partial session history explicitly
+  enabled: true
+  version: 1
+- name: spread_regime_code
+  group: regimes
+  family: regime
+  description: 'Spread regime: 0 UNKNOWN, 1 NORMAL, 2 ELEVATED, 3 EXTREME (relative/distribution-based; thresholds uncalibrated until real data)'
+  source: regime_engine
+  timeframe: 1s
+  lookback_s: 1800
+  units: code
+  expected_range:
+  - 0
+  - 3
+  nan_policy: 0 (UNKNOWN) when inputs are NaN
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Cost-regime gate input
+  enabled: true
+  version: 1
+- name: volatility_regime_code
+  group: regimes
+  family: regime
+  description: 'Volatility regime: 0 UNKNOWN, 1 LOW, 2 NORMAL, 3 HIGH, 4 EXTREME (relative; uncalibrated until real data)'
+  source: regime_engine
+  timeframe: 1s
+  lookback_s: 3600
+  units: code
+  expected_range:
+  - 0
+  - 4
+  nan_policy: 0 (UNKNOWN) when inputs are NaN
+  leakage_risk: 'LOW: trailing window over past rows only (ops primitives; prefix-invariance tested)'
+  reason: Volatility-regime context
+  enabled: true
+  version: 1

@@ -23,5 +23,6 @@ dev = ["pytest", "pytest-asyncio", "hypothesis", "ruff", "mypy", "psutil"]
 where = ["src"]
 
 [tool.pytest.ini_options]
+markers = ["slow: slower tests (weekend-length synthetic runs)"]
 testpaths = ["tests"]
 pythonpath = ["src", "."]

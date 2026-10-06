@@ -41,6 +41,12 @@ Principle: **verify before trusting.** Phase 1 turns every UNVERIFIED MT5 assump
 11. **Tests:** adapter contract tests against Fake (CI) and against MT5 demo (opt-in Windows marker); manifest tests; time-conversion tests; guard tests (real account refused in DEMO).
 12. **Report `docs/PHASE1_REPORT.md`:** measured depth, tick rates, spreads by session (descriptive only), latencies, verification results, problems. Then STOP for review.
 
+## Phase 2A — STATUS: implemented and tested on synthetic data only (see `PHASE2A_REPORT.md`)
+
+Raw -> normalization -> bars (1s..5m) -> 119-feature `xauusd_core` engine -> validation -> ML-ready dataset with provenance; leakage suite incl. prefix-invariance; spread/volatility regime engines (UNCALIBRATED until real data). Gate not bypassed: the Phase 1 Windows MT5 DEMO verification is still outstanding. No model training, strategy, labels or orders.
+
+Phase 2B (proposed, needs approval; requires real verified XAU/USD data): run `build_features` on the real Phase 1 dataset, calibrate regime reference quantiles on a separate reference period, profile feature distributions, then design labels (with purge/embargo) — still no profitability claims.
+
 ## Later-phase notes carried from Phase 0.5
 
 - Phase 3: leakage truncation tests; features per `FEATURE_CATALOG.md`.

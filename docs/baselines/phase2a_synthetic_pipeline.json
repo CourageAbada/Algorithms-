@@ -1,0 +1,93 @@
+{
+  "synthetic": true,
+  "note": "synthetic ticks; baseline for later optimisation only; says nothing about real data or MT5",
+  "python": "3.13.16",
+  "machine": "x86_64",
+  "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+  "cpu_count": 4,
+  "total_ram_mb": 16876.511232,
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.5"
+  },
+  "runs": [
+    {
+      "ticks": 100000,
+      "grid_rows": 19277,
+      "features": 119,
+      "gen_s": 0.28452565900010995,
+      "normalize_s": 0.09959237399993981,
+      "normalize_ticks_per_s": 1004092.943904123,
+      "bars_s": 0.6172518469998067,
+      "bars_ticks_per_s": 162008.42571157395,
+      "features_s": 0.4593355760000577,
+      "features_rows_per_s": 41967.13907480482,
+      "features_ticks_per_s": 217705.75854544181,
+      "parquet_write_s": 0.4977925589998904,
+      "parquet_write_rows_per_s": 38724.9661560414,
+      "parquet_mb": 10.52282,
+      "parquet_read_s": 0.41680556999995133,
+      "parquet_read_rows_per_s": 46249.38193604814,
+      "end_to_end_ticks_per_s": 59738.14301149561,
+      "rss_mb": {
+        "before": 131.514368,
+        "after_normalize": 148.021248,
+        "after_bars": 172.515328,
+        "after_features": 191.852544
+      },
+      "peak_rss_mb_process": 285.01953125
+    },
+    {
+      "ticks": 500000,
+      "grid_rows": 98649,
+      "features": 119,
+      "gen_s": 1.1985722970000552,
+      "normalize_s": 0.22821269800010668,
+      "normalize_ticks_per_s": 2190938.560306431,
+      "bars_s": 2.4665781119999792,
+      "bars_ticks_per_s": 202709.98010056297,
+      "features_s": 1.2368757530000494,
+      "features_rows_per_s": 79756.59621487952,
+      "features_ticks_per_s": 404244.32186276355,
+      "parquet_write_s": 1.2795276399999693,
+      "parquet_write_rows_per_s": 77097.98281497254,
+      "parquet_mb": 52.299126,
+      "parquet_read_s": 0.790654074000031,
+      "parquet_read_rows_per_s": 124768.85055549102,
+      "end_to_end_ticks_per_s": 95947.29739915433,
+      "rss_mb": {
+        "before": 312.684544,
+        "after_normalize": 388.612096,
+        "after_bars": 473.485312,
+        "after_features": 578.584576
+      },
+      "peak_rss_mb_process": 778.12890625
+    },
+    {
+      "ticks": 1000000,
+      "grid_rows": 198156,
+      "features": 119,
+      "gen_s": 0.8843723279999267,
+      "normalize_s": 0.38881293100007497,
+      "normalize_ticks_per_s": 2571930.9217105415,
+      "bars_s": 4.431209935999959,
+      "bars_ticks_per_s": 225671.99804184795,
+      "features_s": 3.2387108800000988,
+      "features_rows_per_s": 61183.60277963248,
+      "features_ticks_per_s": 308764.82559010317,
+      "parquet_write_s": 2.805416730000161,
+      "parquet_write_rows_per_s": 70633.35649245545,
+      "parquet_mb": 99.738476,
+      "parquet_read_s": 1.527523518999942,
+      "parquet_read_rows_per_s": 129723.69821823183,
+      "end_to_end_ticks_per_s": 92045.85320472388,
+      "rss_mb": {
+        "before": 624.775168,
+        "after_normalize": 792.645632,
+        "after_bars": 894.164992,
+        "after_features": 1163.313152
+      },
+      "peak_rss_mb_process": 1416.33203125
+    }
+  ]
+}
