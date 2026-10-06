@@ -1,0 +1,31 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+# data & artifacts (large / licensed / reproducible)
+data/*
+!data/.gitkeep
+models/*
+!models/.gitkeep
+data/KILL_SWITCH
+*.parquet
+*.feather
+mlruns/
+# java build output (legacy files in repo root)
+*.class
+# frontend
+node_modules/
+dist/
+.DS_Store

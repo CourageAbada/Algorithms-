@@ -1,0 +1,27 @@
+# GBPUSD instrument config. Broker-specific values are DISCOVERED from the broker at connect time
+# (SymbolInfo) and must not be hardcoded here. null = to be determined by research/discovery.
+canonical: GBPUSD
+asset_class: fx_major
+broker_symbol_candidates: [GBPUSD, GBPUSDm, GBPUSD.a]   # resolved at runtime; first available/visible match wins
+role: secondary
+discovery:
+  # filled from broker: tick_size, tick_value, contract_size, volume_min/max/step, stops/freeze level
+  source: broker_symbol_info
+spread:
+  # dynamic, per-session; thresholds come from measured distributions (Phase 2), not constants
+  method: session_percentile
+  max_percentile: null
+  max_atr_fraction: null
+risk:
+  risk_per_trade_pct: null     # falls back to configs/risk.yaml; instrument override allowed
+  max_lots: null
+sessions:
+  allowed: [LONDON, LONDON_NEW_YORK_OVERLAP, NEW_YORK]   # hypothesis, to be tested
+  blocked: [ROLLOVER]
+news:
+  high_impact_policy: NO_NEW_TRADES   # NORMAL | REDUCED_RISK | NO_NEW_TRADES
+  window_minutes_before: null
+  window_minutes_after: null
+models:
+  champion: null
+  feature_set_version: null

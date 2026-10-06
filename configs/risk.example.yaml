@@ -1,0 +1,15 @@
+# PLACEHOLDER risk limits for demo/shadow development. Human-owned; the system never edits this file.
+# Values are conservative starting points, NOT validated recommendations.
+account:
+  risk_per_trade_pct: 0.25
+  max_daily_loss_pct: 1.0
+  max_drawdown_pct: 5.0
+  max_consecutive_losses: 4
+  max_open_positions: 1
+  max_leverage_used: 5.0
+  cooldown_after_loss_minutes: 15
+  cooldown_after_abnormal_vol_minutes: 30
+system:
+  max_data_staleness_ms: 2000
+  max_decision_to_ack_latency_ms: 1500
+  kill_switch_file: data/KILL_SWITCH   # presence of this file blocks all new trades

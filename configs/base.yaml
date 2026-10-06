@@ -1,0 +1,13 @@
+# Global defaults. Secrets are NEVER stored here (see .env.example).
+mode_default: SHADOW          # BACKTEST | REPLAY | SHADOW | DEMO | LIVE (LIVE needs env interlock)
+timezone_internal: UTC
+logging:
+  level: INFO
+  format: json
+storage:
+  tick_store: data/ticks      # Parquet, partitioned by symbol/date (see docs/DATA_REQUIREMENTS.md)
+  metadata_db_url_env: DATABASE_URL
+instruments:
+  - configs/instruments/xauusd.yaml
+  - configs/instruments/eurusd.yaml
+  - configs/instruments/gbpusd.yaml

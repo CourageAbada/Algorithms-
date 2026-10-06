@@ -1,76 +1,42 @@
-# Algorithms-
-Bubble Sort
-This program demonstrates how to sort an array of strings in alphabetical order using the Bubble Sort algorithm.
+# fxscalp — AI Forex & Gold Scalping Research/Execution Platform
 
-Getting Started
-To get started with the program, clone the repository to your local machine and run the BubbleSort.java file in your preferred IDE. The program can also be compiled and run using the command line.
+> **Status: Phase 0 (architecture & skeleton). No trading logic, no backtest results, no performance claims.**
+> This project does not guarantee or claim profitability or any win rate. Trading leveraged CFD/FX products carries a high risk of loss. Development is demo/shadow only; LIVE trading is disabled by default and not part of the early phases.
 
-Prerequisites
-To compile and run the program, you need to have Java Development Kit (JDK) installed on your computer.
+## Goal
+A modular platform that identifies short-horizon opportunities in **XAU/USD** (primary), **EUR/USD** and **GBP/USD** (secondary), with `LONG / SHORT / NO_TRADE` as first-class outcomes, an independent risk engine, MetaTrader 5 as the first (replaceable) broker, and a strict research path:
 
-Installing
-Clone the repository to your local machine:
+`RESEARCH -> BACKTEST -> WALK-FORWARD -> REPLAY -> SHADOW -> MT5 DEMO -> FORWARD VALIDATION -> LIVE-READINESS ASSESSMENT`
 
-bash
-Copy code
-git clone https://github.com/<username>/<repository-name>.git
-Open the BubbleSort.java file in your preferred IDE.
+## Principles
+Correctness before complexity · risk before profit · out-of-sample evidence before claims · execution costs before headline returns · NO_TRADE over a low-quality trade · the ML model and the LLM can never bypass the risk engine.
 
-Running the Program
-Compile the program using the command:
+## Modes
+`BACKTEST | REPLAY | SHADOW (default) | DEMO | LIVE`. Only DEMO/LIVE may send orders. LIVE requires `TRADING_MODE=LIVE`, `LIVE_TRADING_ENABLED=true` and a matching human-set `LIVE_ACKNOWLEDGEMENT`, plus runtime safety checks (see `docs/SECURITY_MODEL.md`).
 
-Copy code
-javac BubbleSort.java
-Run the program using the command:
+## Repository layout
+```
+src/fxscalp/   core, market_data, ticks, bars, features, sessions, news, regimes, models,
+               signals, risk, execution, brokers, backtest, replay, shadow, journal,
+               agents, monitoring, database, api
+configs/       base.yaml, risk.example.yaml, instruments/{xauusd,eurusd,gbpusd}.yaml
+docs/          architecture, audits, models, protocols (start with PHASE0_REPORT.md)
+tests/         unit, integration, leakage
+frontend/ scripts/ models/ data/   (placeholders; data/ and models/ are git-ignored)
+```
+The two Java files in the root predate this project and are unrelated (see decision D-8); their old README is preserved as `README_JAVA_LEGACY.md`.
 
-Copy code
-java BubbleSort
-The program will output the sorted list of strings in the console.
+## Documentation index
+`docs/PHASE0_REPORT.md` (start here) · `UPSTREAM_AUDIT` · `UPSTREAM_COMPONENT_MATRIX` · `ARCHITECTURE_AUDIT` · `SYSTEM_ARCHITECTURE` · `IMPLEMENTATION_PLAN` · `FOREX_MARKET_MODEL` · `XAUUSD_RESEARCH_PLAN` · `DATA_REQUIREMENTS` · `FEATURE_CATALOG` · `ML_ARCHITECTURE` · `RISK_MODEL` · `VALIDATION_PROTOCOL` · `EXECUTION_MODEL` · `SECURITY_MODEL`
 
-How it Works
-The program uses the Bubble Sort algorithm to sort an array of strings in alphabetical order. The algorithm works by repeatedly swapping adjacent elements if they are in the wrong order until the entire list is sorted.
+## Quick start (Phase 0)
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"      # dev extras: pytest, ruff, mypy, ...
+cp .env.example .env         # fake placeholders; use DEMO credentials only, never commit .env
+pytest
+```
+The `MetaTrader5` package is Windows-only and is not needed until Phase 1.
 
-The program creates an array of strings and then uses two nested for loops to compare adjacent strings and swap them if necessary. The outer loop controls the number of passes over the array, while the inner loop compares adjacent elements and swaps them if they are in the wrong order.
-
-The program prints the sorted list of strings to the console.
-
-Contributing
-Contributions are welcome! If you find any issues or have suggestions for improvement, please submit a pull request.
-
-Quick Sort
-This program demonstrates how to sort an array of integers using the Quick Sort algorithm.
-
-Getting Started
-To get started with the program, clone the repository to your local machine and run the QuickSort.java file in your preferred IDE. The program can also be compiled and run using the command line.
-
-Prerequisites
-To compile and run the program, you need to have Java Development Kit (JDK) installed on your computer.
-
-Installing
-Clone the repository to your local machine:
-
-bash
-Copy code
-git clone https://github.com/<username>/<repository-name>.git
-Open the QuickSort.java file in your preferred IDE.
-
-Running the Program
-Compile the program using the command:
-
-Copy code
-javac QuickSort.java
-Run the program using the command:
-
-Copy code
-java QuickSort
-The program will output the sorted list of integers in the console.
-
-How it Works
-The program uses the Quick Sort algorithm to sort an array of integers. The algorithm works by selecting a pivot element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot.
-
-The program creates an array of integers and then recursively partitions the array into two sub-arrays using the partition() function until the entire array is sorted. The partition() function takes the last element of the array as the pivot, and then moves all elements smaller than the pivot to the left of it and all elements greater than the pivot to the right of it.
-
-The program prints the sorted array of integers to the console using the printArray() function.
-
-Contributing
-Contributions are welcome! If you find any issues or have suggestions for improvement, please submit a pull request.
+## Security
+Never commit credentials. `.env` is git-ignored; logs redact secrets. See `docs/SECURITY_MODEL.md`.
