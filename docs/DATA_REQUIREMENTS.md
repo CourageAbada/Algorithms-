@@ -15,7 +15,7 @@
 
 ## 2. Volume and history
 
-- Ticks: depth is broker-limited; Phase 1 measures what is obtainable. Target: >= 12 months for XAUUSD with >= 3 distinct volatility regimes; >= 24 months preferred so that train + validation + walk-forward + untouched holdout (>= 3 months, never inspected) are all disjoint and chronological.
+- Ticks: depth is broker-limited; Phase 1 measures what is obtainable (D-3: start with broker MT5 tick history behind the `HistoricalDataProvider` abstraction; higher-quality external tick data can be added later). The required history is determined from the data profile: enough distinct volatility/session regimes and enough events to support disjoint train / validation / walk-forward / untouched-holdout segments with the sample sizes required by the pre-registered power analysis (D-6). No fixed number of months is assumed.
 - Storage estimate (to be measured): compressed Parquet ~ 20-60 bytes/tick; at 10^5-10^6 ticks/day this is well under 1 GB/month.
 
 ## 3. Quality pipeline (Phase 2)
@@ -31,7 +31,7 @@ data/bars/symbol=.../res=1s|5s|.../date=...                              (derive
 data/features/<feature_set_version>/symbol=.../date=...                  (derived, versioned)
 data/manifests/*.json   (source, range, row counts, SHA-256, schema version, code commit)
 ```
-All timestamps UTC int64 ms (and a `time_msc_server_raw` column preserved for audit).
+All timestamps UTC int64 ms (and a `time_msc_raw` column preserved exactly as returned by MT5 for audit). The conversion to UTC uses the **empirically calibrated server-time offset** (documentation and community reports conflict on whether MT5 returns UTC or server time; see `PHASE0_5_UPSTREAM_DEEP_DIVE.md` §4 #15); the dataset manifest records `time_basis` and how the offset was derived. Data with `time_basis = unverified` is not used for training.
 
 ## 5. Database choice and rationale
 

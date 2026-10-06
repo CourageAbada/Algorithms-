@@ -42,9 +42,18 @@ A model must beat B1 with statistical significance and beat B2/B3 out of sample 
 
 Tick size/digits and typical spread differ by broker (2 vs 3 digits). Momentum bursts and false breakouts at session opens and US data; spreads can widen sharply with little warning; weekend/news gap risk; USD and rate sensitivity (macro series such as DXY/real yields only if a reliable, timestamp-correct source exists; otherwise excluded to avoid leakage via revised data). Mean-reversion vs trend regimes alternate and must be identified causally.
 
-## 5. Acceptance to progress to shadow (all required, evaluated on the untouched holdout and walk-forward folds)
+## 5. Acceptance criteria (decision D-6: no invented thresholds)
 
-Thresholds are *proposed* and need human approval (D-6): net expectancy > 0 with the lower bound of a bootstrap 95% CI above 0 on pooled walk-forward folds; profit factor above a pre-registered minimum (suggest >= 1.2 net); positive in at least a pre-registered fraction of folds (suggest >= 70%); max drawdown within risk budget; survives spread x1.5 and slippage stress with expectancy still positive; calibration error below a pre-registered bound; minimum trade count (suggest >= 300 OOS trades) for the claim to be considered.
+No profitability, win-rate, profit-factor, fold-consistency or trade-count threshold is fixed in advance of data. They are **derived from baseline empirical research** (E1-E3 and baselines B0-B3 in Phase 4/5) and then **pre-registered before** the walk-forward, replay and holdout evaluations, with the derivation recorded:
+
+- **Null distribution:** the random-entry baseline B1 under the identical cost/exit model gives the distribution of net expectancy, profit factor and drawdown that luck alone produces. Acceptance requires the candidate to be statistically distinguishable from B1 at a pre-registered significance level, corrected for the number of trials (trial registry; deflated Sharpe / PBO).
+- **Sample size:** the minimum number of out-of-sample trades comes from a power analysis using the baseline's measured per-trade variance and the cost floor (E2), not a round number.
+- **Stability:** fold-consistency and regime coverage requirements are set from the observed fold-to-fold dispersion of the baselines.
+- **Costs:** the candidate must remain net-positive under cost stress levels whose size is chosen from the measured spread/slippage distributions (e.g. high percentiles per session), not arbitrary multiples.
+- **Risk:** drawdown must fit within the human-owned risk budget.
+- **Calibration:** reliability/ECE bounds are set relative to the baseline calibrators' measured error.
+
+Shadow validation (D-6) is judged by **trade count and regime coverage**, not elapsed days: it needs enough shadow trades (from the power analysis) spread over multiple observed regimes (each regime with a pre-registered minimum count), with live behaviour compared against historical expectations using the same statistics.
 
 ## 6. Deliverables per experiment
 

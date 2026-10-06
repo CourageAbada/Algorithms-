@@ -19,7 +19,7 @@ data/*
 !data/.gitkeep
 models/*
 !models/.gitkeep
-data/KILL_SWITCH
+data/HALT_NEW_TRADES
 *.parquet
 *.feather
 mlruns/

@@ -2,6 +2,10 @@
 
 Fast numerical models make real-time decisions. An LLM never does (see §9).
 
+### 0. Instrument-specific from the start
+
+The first model is trained on **XAUUSD only**, with XAUUSD-specific features, labels, thresholds, spread limits and session handling. EURUSD and GBPUSD get their own models later (Phases 12/13). Pooling instruments into one model is only considered after each has an independent, validated baseline, and is accepted only if it beats the per-instrument models out of sample.
+
 ### 1. Decision structure
 
 ```
@@ -55,7 +59,7 @@ Allowed: research, experiment design, backtest interpretation, failure analysis,
 ```
 DATA ─► FEATURES ─► TRAIN CANDIDATE ─► VALIDATE ─► WALK-FORWARD ─► COMPARE vs CHAMPION ─► PROMOTE | REJECT
 ```
-Registry record: model id, model version, feature version, dataset manifest hash, train/val/test periods, hyperparameters, seeds, metrics (incl. calibration, cost-stress), code commit, created_at, status (candidate/champion/retired). Promotion needs: beats champion on pre-registered metrics over matched walk-forward periods with CI, passes stress tests, passes drift/novelty checks, **plus explicit human approval** (D-6). Never auto-promote because training metrics improved. Retraining is scheduled in separate worker processes (FreqAI-like cadence as a concept); the live engine only loads registry-approved artefacts.
+Registry record: model id, model version, feature version, dataset manifest hash, train/val/test periods, hyperparameters, seeds, metrics (incl. calibration, cost-stress), code commit, created_at, status (candidate/champion/retired). Promotion needs: beats champion on pre-registered metrics (derived from baseline research, D-6) over matched walk-forward periods with CI, passes stress tests, passes drift/novelty checks, **plus explicit human approval**. Never auto-promote because training metrics improved. Retraining is scheduled in separate worker processes (FreqAI-like cadence as a concept); the live engine only loads registry-approved artefacts.
 
 ### 11. Drift monitoring and response
 

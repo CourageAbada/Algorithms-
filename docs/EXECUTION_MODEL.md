@@ -30,7 +30,11 @@ tick arrival -> feature -> prediction -> risk -> order submit -> ack. Targets ar
 
 ## 8. Exit management
 
-Broker-side SL/TP always; optional engine-managed trailing/break-even/time-stop via `modify_order` / `close_position` (tested features, not defaults). Kill switch does not silently leave unknown state: it logs positions and follows policy D-7.
+Broker-side SL/TP always; optional engine-managed trailing/break-even/time-stop via `modify_order` / `close_position` (tested features, not defaults). `close_position` always targets a **position ticket** (`TRADE_ACTION_DEAL` with `position=<ticket>` or `CLOSE_BY`), never a blind opposite order: on a hedging account an opposite order opens a hedge (secondary evidence, to be confirmed on a demo hedging account in Phase 1). HALT_NEW_TRADES leaves positions to their SL/TP; EMERGENCY_FLATTEN (authorised only, see `RISK_MODEL.md` §5) closes by ticket with bounded retries, per-position logging and a final reconciliation.
+
+## 8a. MT5 session and call discipline (Phase 0.5)
+
+One long-lived terminal session (attach once), all calls on one owner thread behind a lock; no per-call `initialize()/shutdown()`; never use the package's bundled `Buy/Sell/Close` helpers (fixed deviation 10, blind retries). Every order: `order_check` first, then `order_send`; filling mode chosen from a per-symbol probe recorded in the verification report (the `SYMBOL_FILLING_*` bit values are unverified); all `TRADE_RETCODE_*` mapped to a neutral enum; unknown outcome after a disconnect is reconciled from positions/deal history before any retry.
 
 ## 9. Shadow and demo parity
 

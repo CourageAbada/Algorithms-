@@ -1,8 +1,8 @@
 # Upstream Audit
 
-Status: Phase 0. Audited: 2026-10-06. Reviewer sign-off: **pending**.
+Status: Phase 0 audit, **superseded by `PHASE0_5_UPSTREAM_DEEP_DIVE.md`** (source-level inspection). Where the two differ, the deep dive wins. Reviewer sign-off: pending.
 
-## Method and limits of this audit
+## Method and limits of this (Phase 0) audit — corrected in Phase 0.5
 
 - Sources actually read: GitHub landing pages and READMEs for Vibe-Trading, Qlib, Freqtrade; the FreqAI doc source (`docs/freqai.md` on GitHub); the PyPI page for `MetaTrader5`.
 - `freqtrade.io` and `mql5.com` were **blocked by the sandbox egress proxy**. MT5 API details below that are not on PyPI come from the author's prior knowledge of the official `MetaTrader5` package and are marked **[verify]**. Phase 1 must verify each against the official docs and against a live demo terminal.

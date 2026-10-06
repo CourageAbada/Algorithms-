@@ -1,13 +1,15 @@
 # Phase 0 Final Report
 
-Status: **complete, awaiting human review. Phase 1 has not been started.**
+Status: **Phase 0 complete; Phase 0.5 verification complete (see `PHASE0_5_REPORT.md`). Phase 1 has not been started.**
+
+> **Phase 0.5 update.** Source-level inspection changed several conclusions below: the Vibe-Trading Forex engine was inspected and **rejected** as a base (bar/target-weight, static spread/swap tables, no SL/TP); three Vibe-Trading utilities (purged CV, multiple-testing statistics, audit ledger) are now planned **ADAPT** candidates; FreqAI's train/test split was found to have no purge/embargo; MT5 time semantics are **unverified/conflicting** and require empirical calibration; the collector/ZeroMQ design was replaced by a single-machine design (D-4); decisions D-1..D-11 are now resolved (see §19). Sections 2-5, 9, 19, 20 below are superseded where they conflict with `PHASE0_5_UPSTREAM_DEEP_DIVE.md`, `SYSTEM_ARCHITECTURE.md` and `IMPLEMENTATION_PLAN.md`.
 No broker connection was made, no orders were sent, no backtest was run, and no performance or win-rate claim is made anywhere.
 
 ## 1. Architecture chosen
 Own modular Python 3.11+ platform (`src/fxscalp`), one-way layered pipeline (ticks -> bars -> features -> regime -> models -> calibration -> meta-model -> LONG/SHORT/NO_TRADE -> quality filter -> **independent risk engine** -> execution -> broker). `BrokerAdapter` abstraction, MT5 first. Same code path for REPLAY/SHADOW/DEMO/LIVE with swappable execution sinks. Collector process next to MT5 (Windows), engine/research platform-independent. See `SYSTEM_ARCHITECTURE.md`, `ARCHITECTURE_AUDIT.md`.
 
 ## 2. Vibe-Trading
-MIT. Used as **reference** only: evidence-gated agent (every number traceable to tool output), skills/swarm for offline experiment analysis, MCP-style read-only tool access, durable client-order-id recovery, price-caliber labelling. Possible read-only sidecar in Phase 10/11. Not used: its backtest engines, data loaders, broker connectors (no FX/MT5 execution).
+*(Phase 0.5: source inspected; see deep dive §1 and §5.)* MIT. Used as **reference** only, plus planned ADAPT of `crossvalidation.py`, `multipletesting.py`, `governance/ledger.py` and small parts of `metrics.py`: evidence-gated agent (every number traceable to tool output), skills/swarm for offline experiment analysis, MCP-style read-only tool access, durable client-order-id recovery, price-caliber labelling. Possible read-only sidecar in Phase 10/11. Not used: its backtest engines, data loaders, broker connectors (no FX/MT5 execution).
 
 ## 3. Qlib
 MIT. **Reference** only: DataHandler/Dataset segment separation, rolling/online model pipeline, recorder-style artefacts, IC-type signal analysis. Not used: equity factor sets, binary store/calendar, cross-sectional strategies.
@@ -16,7 +18,7 @@ MIT. **Reference** only: DataHandler/Dataset segment separation, rolling/online 
 Freqtrade is copyleft (GPL-3.0, to verify in LICENSE). **Concepts only, no code copied**: sliding-window retrain with predict-until-expiry, feature/label function separation, outlier/novelty gate, model persistence/purge, background training. Reimplemented clean-room per `ML_ARCHITECTURE.md`.
 
 ## 5. MT5 integration
-Official `MetaTrader5` package (v5.0.6231, **Windows-only**, per PyPI), imported only inside `brokers/mt5`, run in a Windows collector process that owns the terminal connection and exposes neutral dataclasses over a local channel. Server-time -> UTC conversion at the boundary. `order_check` before any order; account must verify as demo for DEMO mode. Details marked [verify] in the audit must be confirmed in Phase 1 (official docs were unreachable from this sandbox).
+*(Revised in Phase 0.5.)* Official `MetaTrader5` package (v5.0.6231, **Windows-only**, verified from the package metadata), imported only inside `brokers/mt5`, a single long-lived session on one owner thread in the single-machine engine process (no collector process, no message broker). Server-time -> UTC conversion through an empirically calibrated `TimeBase` (documentation and community reports conflict). `order_check` before any order; account must verify as demo for DEMO mode. Details marked [verify] in the audit must be confirmed in Phase 1 (official docs were unreachable from this sandbox).
 
 ## 6. XAU/USD data source
 Primary: the **same broker's MT5 tick history** (`copy_ticks_range`) for the demo account that will be traded, so spreads/feed match execution. Supplementary (to verify: licence, availability, quality): a third-party tick vendor for longer history and cross-feed robustness. Depth achievable is unknown until Phase 1 measures it.
@@ -62,21 +64,21 @@ Credential leakage (git/logs), accidental live trading, runaway orders, stale-da
 ## 18. Dependencies proposed
 See `IMPLEMENTATION_PLAN.md`. Only `pyyaml` (+ `pytest` for dev) is needed today. `MetaTrader5` is Windows-only.
 
-## 19. Decisions requiring human approval
-- **D-1** Where does MT5 run (Windows VPS/PC)? Required for Phase 1; sandbox is Linux.
-- **D-2** Broker and demo account (affects symbol names, spreads, tick depth, scalping permissions). Must be demo.
-- **D-3** Required history depth and tick vendor (if any beyond the broker).
-- **D-4** Collector<->engine transport (ZeroMQ vs local socket/gRPC) and process layout.
-- **D-5** Economic-calendar provider (point-in-time, cost).
-- **D-6** Acceptance thresholds (expectancy CI, PF, fold-consistency, min trades, shadow duration, holdout length), proposed in `XAUUSD_RESEARCH_PLAN.md` / `VALIDATION_PROTOCOL.md`.
-- **D-7** Kill-switch policy for open positions (block-only vs flatten).
-- **D-8** Existing `BubbleSort.java`, `QuickSort.java` in repo root: keep, move to `legacy/`, or delete.
-- **D-9** Repository licence (copyleft upstreams are not copied, so any licence is possible).
-- **D-10** Secret-management approach and CI secret scanning.
-- **D-11** Frontend stack confirmation (React + FastAPI proposed) and whether Vibe-Trading is evaluated as a sidecar in Phase 10/11.
+## 19. Decisions (resolved by the reviewer after Phase 0)
+- **D-1** MT5 on a Windows development machine; architect for a later Windows VPS.
+- **D-2** MT5 DEMO account first; broker configurable.
+- **D-3** Start with broker MT5 tick history; keep a `HistoricalDataProvider` abstraction for external tick data later.
+- **D-4** No Kafka/Redis/message broker; simplest reliable same-machine architecture with preserved seams.
+- **D-5** Economic-calendar provider stays abstract until providers are evaluated.
+- **D-6** No invented profitability/win-rate thresholds; thresholds derived from baseline empirical research; shadow validation by trade count and regime coverage.
+- **D-7** Two independent safety concepts: HALT_NEW_TRADES and EMERGENCY_FLATTEN (the latter needs a much stronger trigger or an authorised command).
+- **D-8** Java examples moved to `legacy/java/`.
+- **D-9** Private/proprietary; keep attribution and licensing records (`THIRD_PARTY_NOTICES.md`).
+- **D-10** Environment-based secrets, `.gitignore`, automated secret scanning in CI.
+- **D-11** React + TypeScript dashboard; Vibe-Trading only as a possible research sidecar/reference, never in the execution path.
 
 ## 20. Exact Phase 1 plan
-See `IMPLEMENTATION_PLAN.md` -> "Phase 1 - exact plan" (11 steps; read-only MT5 adapter, symbol discovery, server-time offset verification, resumable tick downloader with manifests, latency probe, Fake adapter for Linux tests, import-boundary tests, report). No orders in Phase 1.
+See `IMPLEMENTATION_PLAN.md` -> "Phase 1 — exact plan" (revised in Phase 0.5: 12 steps; read-only persistent-session MT5 adapter, MT5 verification harness for every unverified item, time-base calibration, symbol discovery, resumable tick provider with manifests and `time_basis`, Fake adapter, import-boundary tests). No orders in Phase 1.
 
 ## Limitations of this Phase 0 audit
 `freqtrade.io` and `mql5.com` were unreachable (egress proxy), the Vibe-Trading README was only partially read, and no upstream code was inspected. MT5 API details and the Freqtrade licence are marked [verify]. No claims about data availability or strategy viability are made.

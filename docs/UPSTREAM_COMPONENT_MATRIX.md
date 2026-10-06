@@ -1,37 +1,40 @@
 # Upstream Component Matrix
 
-Legend: **REUSED** (used as a dependency), **WRAPPED** (behind our interface), **ADAPTED** (code copied/modified; license permitting), **REFERENCE** (idea only), **REJECTED**.
-No component is currently ADAPTED. Licenses per `UPSTREAM_AUDIT.md`.
+Revised in Phase 0.5 after inspecting actual source (Vibe-Trading `7f6908b`, Qlib `be72549`, Freqtrade `9691649`, MetaTrader5 wheel `5.0.6231`). The full per-component table (licence, performance, Forex and XAUUSD suitability, rationale) is `PHASE0_5_UPSTREAM_DEEP_DIVE.md` §5; this file is the compact decision index.
 
-| # | Upstream | Component / concept | Decision | Our module | Notes |
+Legend: **REUSE** (dependency, unchanged) · **ADAPT** (vendored with attribution after review and our own tests) · **WRAP** (behind our interface) · **REFERENCE_ONLY** (ideas, no code) · **REJECT**.
+Nothing is vendored yet. Policy: no GPL code (Freqtrade/FreqAI) in this repository.
+
+| # | Upstream (licence) | Component | Decision | Our module | Change vs Phase 0 |
 |---|---|---|---|---|---|
-| 1 | MetaTrader5 pkg | `initialize/login/shutdown` | WRAPPED | `brokers/mt5` | Windows only; connection supervisor + health |
-| 2 | MetaTrader5 pkg | `copy_ticks_range/from`, `copy_rates_*` | WRAPPED | `brokers/mt5`, `market_data` | Convert server time -> UTC at boundary |
-| 3 | MetaTrader5 pkg | `symbol_info`, `symbol_info_tick` | WRAPPED | `brokers/mt5` -> `SymbolInfo` | Drives sizing, stops, lot step |
-| 4 | MetaTrader5 pkg | `order_check`, `order_send` | WRAPPED | `brokers/mt5`, `execution` | `order_check` always before send; blocked outside DEMO/LIVE |
-| 5 | MetaTrader5 pkg | `order_calc_margin/profit` | WRAPPED | `risk` via adapter | Cross-check own margin math |
-| 6 | MetaTrader5 pkg | `market_book_*` | WRAPPED (experimental) | `market_data` | Only if reliable; never assumed to be full-market depth |
-| 7 | Vibe-Trading | Evidence-gated / grounding-gate agent design | REFERENCE | `agents` | Agent numbers must cite tool outputs |
-| 8 | Vibe-Trading | Skills + swarm of workers | REFERENCE | `agents` | Offline experiment analysis only |
-| 9 | Vibe-Trading | MCP tool server | REFERENCE / optional sidecar | `agents` | Read-only access to journal/backtests |
-| 10 | Vibe-Trading | Durable client-order-id recovery | REFERENCE | `execution` | Idempotent order tracking after restart |
-| 11 | Vibe-Trading | Equity/A-share/crypto/option backtest engines | REJECTED | - | Wrong market microstructure |
-| 12 | Vibe-Trading | Data loaders (27+) | REJECTED | - | MT5 + chosen vendor instead |
-| 13 | Vibe-Trading | Broker connectors | REJECTED | - | None cover MT5 execution |
-| 14 | Vibe-Trading | FastAPI + React dashboard | REFERENCE | `api`, `frontend` | Own stack; same family of tech |
-| 15 | Qlib | DataHandler / Dataset / segments | REFERENCE | `features`, `models` | Raw -> processors -> train/valid/test segments |
-| 16 | Qlib | Rolling / online model pipeline | REFERENCE | `models/lifecycle` | Walk-forward retraining |
-| 17 | Qlib | Recorder / experiment artefacts | REFERENCE | `models/registry` | Persist params, data hash, metrics |
-| 18 | Qlib | IC / rank-IC signal analysis | REFERENCE (adapted to one instrument) | `backtest/analysis` | Plus calibration-first metrics |
-| 19 | Qlib | Model zoo (LGBM, XGB, LSTM, TFT...) | REFERENCE | `models` | We wrap sklearn/LightGBM/XGBoost/PyTorch directly |
-| 20 | Qlib | Alpha158/360 factor sets | REJECTED | - | Equity-style daily factors; our features are microstructure/FX specific |
-| 21 | Qlib | Binary data store, calendar | REJECTED | - | Parquet + UTC continuous time instead |
-| 22 | Qlib | Cross-sectional portfolio strategies | REJECTED | - | Single-instrument scalping |
-| 23 | FreqAI | Sliding-window train -> predict-until-expiry | REFERENCE | `models/lifecycle` | Reimplemented, clean-room |
-| 24 | FreqAI | Feature fn / label fn separation | REFERENCE | `features`, `models/labels` | Labels future-only; features past-only; leakage tests |
-| 25 | FreqAI | Outlier/novelty gate (DI, SVM) | REFERENCE | `models/novelty` | Mahalanobis / isolation forest / PSI; failing -> NO_TRADE |
-| 26 | FreqAI | Model persistence + identifier + purge | REFERENCE | `models/registry` | Champion/candidate, immutable artefacts |
-| 27 | FreqAI | Background live retraining thread | REFERENCE | `models/lifecycle` | Training in separate process; promotion gated, never automatic |
-| 28 | Freqtrade | Backtester, hyperopt, strategy API | REJECTED | - | Candle-fill assumptions, crypto fees; hyperopt encourages overfitting |
-| 29 | Freqtrade | Exchange/CCXT layer, pairlists | REJECTED | - | No FX/CFD/MT5 |
-| 30 | Freqtrade | Telegram/WebUI | REFERENCE | `api`, `monitoring` | Possible alert channel later |
+| 1 | MetaTrader5 pkg (MIT) | Whole package, accessed only in `brokers/mt5` | WRAP | `brokers/mt5` | Persistent session; verification harness for unverified items |
+| 2 | MetaTrader5 pkg | `Buy/Sell/Close` helpers | REJECT | - | New: hidden retries, fixed deviation 10 |
+| 3 | Vibe (MIT) | `engines/forex.py`, `engines/base.py` | REJECT as engine; patterns REFERENCE_ONLY | `backtest` | **Changed from "reject" to "inspected and rejected"**: bar/target-weight, static spread table, no SL/TP |
+| 4 | Vibe | `engines/_market_hooks.py` swap/spread tables | REJECT | - | Constants replaced by broker metadata |
+| 5 | Vibe | `loaders/mt5_loader.py` | REFERENCE_ONLY | `brokers/mt5`, `market_data` | Bars only; symbol-ambiguity refusal pattern |
+| 6 | Vibe | `trading/connectors/mt5/*` | REFERENCE_ONLY | `brokers/mt5`, `execution` | Demo/real guard, size guards, lock; reject per-call session |
+| 7 | Vibe | `backtest/metrics.py` | ADAPT (small parts) | `backtest/metrics` | New: trade stats + drawdown only; add expectancy, R, MFE/MAE, costs, segmentation |
+| 8 | Vibe | `backtest/validation.py` MC order shuffle | ADAPT | `backtest/robustness` | Reshuffle drawdown distribution only |
+| 9 | Vibe | `backtest/validation.py` bootstrap / "walk-forward" | REJECT | - | iid bootstrap; equity-curve windows are not walk-forward |
+| 10 | Vibe | `quantlib/crossvalidation.py` | **ADAPT** | `validation/purged_cv` | **New, high value**: purged/embargoed/CPCV/walk-forward + leakage detector |
+| 11 | Vibe | `quantlib/multipletesting.py` | **ADAPT** | `validation/multiple_testing` | **New**: PSR, DSR, PBO, BH |
+| 12 | Vibe | `governance/ledger.py` | **ADAPT** | `journal/ledger` | **New**: tamper-evident order/risk audit log |
+| 13 | Vibe | `live/halt.py` | REFERENCE_ONLY | `core/safety`, `risk` | Sentinel-file HALT design |
+| 14 | Vibe | `live/runtime/flatten.py`, mandate gate | REFERENCE_ONLY | `execution` | Flatten hedges on MT5; we close by ticket |
+| 15 | Vibe | `quantlib/{risk,portfolio,constraints,microstructure,impact}.py` | REJECT | - | Portfolio/ADV/volume-based; invalid for FX tick volume |
+| 16 | Vibe | `backtest/run_card.py`, `hypotheses/registry.py` | REFERENCE_ONLY | `models/registry`, trial registry | Provenance and status ideas |
+| 17 | Vibe | agent loop, grounding, swarm, skills, MCP server | WRAP (optional read-only sidecar, Phase 10/11) | `agents` | Approved D-11; never in execution path |
+| 18 | Vibe | `shadow_account/*` | REJECT | - | New: unrelated to our SHADOW mode |
+| 19 | Vibe | factor zoo, other-market engines/loaders | REJECT | - | Equity/crypto/options |
+| 20 | Qlib (MIT) | Dataset segments, infer/learn processors, explicit fit windows | REFERENCE_ONLY | `features`, `models` | Fit scalers on train fold only |
+| 21 | Qlib | `RollingGen`, `trunc_days` | REFERENCE_ONLY | `models/lifecycle` | Superseded by label-span purging (#10) |
+| 22 | Qlib | Model interface | REFERENCE_ONLY | `models` | Own `Predictor` |
+| 23 | Qlib | Recorder/MLflow, online manager | REJECT | - | Registry stores equivalent facts |
+| 24 | Qlib | `backtest/exchange.py` etc. | REJECT | - | Equity cost model |
+| 25 | Qlib | `examples/highfreq`, Alpha158/360, RL | REFERENCE_ONLY / REJECT / REJECT | - | 1-min equity; no ticks |
+| 26 | FreqAI (GPL-3.0) | Sliding-window retrain, predict-until-expiry | REFERENCE_ONLY | `models/lifecycle` | Concept only |
+| 27 | FreqAI | Feature pipeline + outlier gate (SVM/DI/DBSCAN) | REFERENCE_ONLY | `models/novelty` | Own implementation; failure -> NO_TRADE |
+| 28 | FreqAI | `make_train_test_datasets` | REJECT | - | **New finding**: no purge/embargo |
+| 29 | FreqAI | Data drawer persistence (joblib/cloudpickle) | REFERENCE_ONLY | `models/registry` | Hash-verified artefacts, human promotion |
+| 30 | FreqAI | Model wrappers, RL, torch, `data_kitchen` structure | REJECT | - | Wrap libraries directly |
+| 31 | Freqtrade (GPL-3.0) | Bot, backtester, hyperopt, exchanges | REJECT | - | Crypto-specific |

@@ -12,4 +12,8 @@ account:
 system:
   max_data_staleness_ms: 2000
   max_decision_to_ack_latency_ms: 1500
-  kill_switch_file: data/KILL_SWITCH   # presence of this file blocks all new trades
+  halt_new_trades_file: data/HALT_NEW_TRADES   # presence of this file blocks all new trades (D-7)
+  emergency_flatten:
+    # EMERGENCY_FLATTEN needs an authorised command (token from env EMERGENCY_FLATTEN_TOKEN) or a
+    # human-set hard-loss trigger. Left unset on purpose: no value is proposed by this project.
+    hard_loss_trigger_pct: null

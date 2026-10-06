@@ -5,7 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fxscalp"
 version = "0.0.0"
-description = "AI Forex/CFD scalping research & execution platform (Phase 0 skeleton)"
+description = "AI Forex/CFD scalping research & execution platform (Phase 0.5 skeleton)"
+license = {text = "Proprietary - all rights reserved"}
+classifiers = ["Private :: Do Not Upload"]
 requires-python = ">=3.11"
 dependencies = ["pyyaml>=6"]
 
