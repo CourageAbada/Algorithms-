@@ -1,0 +1,87 @@
+{
+  "synthetic": true,
+  "rows": 2000000,
+  "python": "3.13.16",
+  "machine": "x86_64",
+  "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+  "cpu_count": 4,
+  "runs": [
+    {
+      "adapter_ticks_to_array_s": 0.6110889080000561,
+      "convert_to_arrow_s": 1.8983880349999254,
+      "derive_s": 0.38938451200010604,
+      "quality_assess_s": 1.1636265849999745,
+      "parquet_write_s": 1.3201717749998352,
+      "parquet_read_verified_s": 0.959641233999946,
+      "parquet_read_unverified_s": 0.6834541840000838,
+      "parquet_read_3cols_s": 0.05002942200007965,
+      "file_mb": 16.977782,
+      "rows_per_s": {
+        "adapter_convert": 3272846.1829646174,
+        "convert": 1053525.3926629804,
+        "quality": 1718764.4436638956,
+        "write": 1514954.3702373502,
+        "read_verified": 2084112.1964545683,
+        "read_unverified": 2926311.736500767
+      },
+      "write_mb_per_s": 12.86028251891851,
+      "bytes_per_tick_on_disk": 8.488891,
+      "tracemalloc_peak_mb": 488.170675,
+      "rss_delta_mb": 908.689408
+    },
+    {
+      "adapter_ticks_to_array_s": 0.9734398340001462,
+      "convert_to_arrow_s": 0.42394512299983944,
+      "derive_s": 0.03180710199990244,
+      "quality_assess_s": 0.49069892499983325,
+      "parquet_write_s": 1.2336218890000055,
+      "parquet_read_verified_s": 0.31783776699990085,
+      "parquet_read_unverified_s": 0.48691103299984206,
+      "parquet_read_3cols_s": 0.03953616600006171,
+      "file_mb": 16.977782,
+      "rows_per_s": {
+        "adapter_convert": 2054569.712625608,
+        "convert": 4717591.715286125,
+        "quality": 4075818.9963442036,
+        "write": 1621242.3091983504,
+        "read_verified": 6292518.409244373,
+        "read_unverified": 4107526.55917051
+      },
+      "write_mb_per_s": 13.762549247373094,
+      "bytes_per_tick_on_disk": 8.488891,
+      "tracemalloc_peak_mb": 488.00524,
+      "rss_delta_mb": 144.01536
+    },
+    {
+      "adapter_ticks_to_array_s": 0.9611485790001097,
+      "convert_to_arrow_s": 0.3178913869999178,
+      "derive_s": 0.03254322000020693,
+      "quality_assess_s": 0.5631370690000495,
+      "parquet_write_s": 1.3260030190001544,
+      "parquet_read_verified_s": 0.4234733519999736,
+      "parquet_read_unverified_s": 0.42713414799982274,
+      "parquet_read_3cols_s": 0.03773226299995258,
+      "file_mb": 16.977782,
+      "rows_per_s": {
+        "adapter_convert": 2080843.7360232228,
+        "convert": 6291457.025227667,
+        "quality": 3551533.205852276,
+        "write": 1508292.1919047057,
+        "read_verified": 4722847.354041122,
+        "read_unverified": 4682369.717723506
+      },
+      "write_mb_per_s": 12.80372801323013,
+      "bytes_per_tick_on_disk": 8.488891,
+      "tracemalloc_peak_mb": 488.00516,
+      "rss_delta_mb": 18.685952
+    }
+  ],
+  "best": {
+    "adapter_ticks_to_array_s": 0.6110889080000561,
+    "convert_to_arrow_s": 0.3178913869999178,
+    "quality_assess_s": 0.49069892499983325,
+    "parquet_write_s": 1.2336218890000055,
+    "parquet_read_verified_s": 0.31783776699990085,
+    "parquet_read_unverified_s": 0.42713414799982274
+  }
+}

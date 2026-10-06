@@ -4,7 +4,7 @@ This repository is **private/proprietary** (decision D-9). Obligations from thir
 
 ## Code copied into this repository
 
-None yet (Phase 0.5). Planned vendored components (each will carry a header with origin URL, commit and licence, and an entry below when added):
+**None** (confirmed at the end of Phase 1). The Vibe-Trading vendoring proposed in Phase 0.5 was deferred by the reviewer to the validation subsystem; no FreqAI or Qlib code was copied. Planned vendored components (each will carry a header with origin URL, commit and licence, and an entry below when added):
 
 | Planned component | Origin | Licence | Pinned commit | Status |
 |---|---|---|---|---|

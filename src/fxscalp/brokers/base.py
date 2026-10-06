@@ -1,15 +1,22 @@
-"""Broker-agnostic interface. Business logic must only import from this module.
+"""Broker-agnostic interfaces and neutral domain types.
 
-Phase 0: interface and neutral domain types only. MT5BrokerAdapter arrives in Phase 1.
-Monetary/size fields use float here; Phase 1 reviews Decimal for order-facing values.
+Business logic imports only from here. Phase 1 implements the READ-ONLY interface; the trading
+methods of ``BrokerAdapter`` exist for the later architecture but must raise TradingDisabledError.
+
+Timestamps: broker times are carried as RAW source-domain integers (``*_raw``). Whether those are
+UTC or server time is determined empirically (see market_data/timebase.py); nothing here assumes it.
 """
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from datetime import datetime
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
+
+import numpy as np
+
+from fxscalp.brokers.accounts import AccountIdentity
 
 
 class Side(str, Enum):
@@ -18,46 +25,104 @@ class Side(str, Enum):
 
 
 @dataclass(frozen=True)
-class SymbolInfo:
-    """Broker-resolved instrument metadata. Risk maths must use these, never constants."""
+class TerminalInfo:
+    """Terminal state. ``raw`` holds every field the terminal returned, unmodified."""
 
-    canonical: str
-    broker_symbol: str
-    digits: int
-    tick_size: float
-    tick_value: float
-    contract_size: float
-    volume_min: float
-    volume_max: float
-    volume_step: float
-    stops_level_points: int
-    freeze_level_points: int
-    currency_profit: str
-    currency_margin: str
-    trade_allowed: bool
-
-
-@dataclass(frozen=True)
-class Tick:
-    time_utc: datetime  # tz-aware UTC, converted from broker server time at the boundary
-    time_msc: int
-    bid: float
-    ask: float
-    last: float
-    volume: float
-    flags: int
+    connected: bool
+    trade_allowed: bool | None
+    ping_last_us: int | None
+    build: int | None
+    company: str
+    name: str
+    version: tuple[int, ...] | None
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
 class AccountInfo:
-    broker: str
-    is_demo: bool
-    currency: str
+    identity: AccountIdentity
     balance: float
     equity: float
     margin: float
-    free_margin: float
-    leverage: int
+    margin_free: float
+    raw_fields_present: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SymbolInfo:
+    """Broker symbol metadata.
+
+    ``raw`` contains every field exactly as returned (no unit conversion). The named attributes are
+    a typed projection of the same values. Units are NOT assumed: see convert.check_symbol_consistency.
+    """
+
+    canonical: str | None
+    broker_symbol: str
+    digits: int | None
+    point: float | None
+    tick_size: float | None            # trade_tick_size
+    tick_value: float | None           # trade_tick_value
+    tick_value_profit: float | None
+    tick_value_loss: float | None
+    contract_size: float | None        # trade_contract_size
+    volume_min: float | None
+    volume_max: float | None
+    volume_step: float | None
+    volume_limit: float | None
+    stops_level: int | None            # trade_stops_level (points)
+    freeze_level: int | None           # trade_freeze_level (points)
+    spread: int | None                 # current spread in points (as reported)
+    spread_float: bool | None          # floating (True) vs fixed (False) spread mode
+    trade_mode: int | None
+    trade_exemode: int | None
+    trade_calc_mode: int | None
+    filling_mode: int | None           # bitmask; bit meanings verified on the Windows run
+    order_mode: int | None
+    expiration_mode: int | None
+    swap_mode: int | None
+    swap_long: float | None
+    swap_short: float | None
+    swap_rollover3days: int | None
+    currency_base: str
+    currency_profit: str
+    currency_margin: str
+    description: str
+    path: str
+    visible: bool | None
+    select: bool | None
+    ticks_bookdepth: int | None
+    raw: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class Tick:
+    """One tick exactly as received (single-tick API). Historical ticks use RAW_TICK_DTYPE arrays."""
+
+    time_raw: int          # seconds, source domain
+    time_msc_raw: int      # milliseconds, source domain
+    bid: float
+    ask: float
+    last: float
+    volume: int
+    volume_real: float
+    flags: int
+
+
+#: Raw tick record layout used for historical acquisition (matches MT5 copy_ticks_* fields).
+RAW_TICK_DTYPE = np.dtype([
+    ("time", "<i8"), ("bid", "<f8"), ("ask", "<f8"), ("last", "<f8"),
+    ("volume", "<u8"), ("time_msc", "<i8"), ("flags", "<u4"), ("volume_real", "<f8"),
+])
+
+
+@dataclass(frozen=True)
+class AdapterHealth:
+    ok: bool
+    state: str
+    detail: str
+    terminal_connected: bool | None = None
+    ping_last_us: int | None = None
+    latest_tick_age_s: float | None = None
 
 
 @dataclass(frozen=True)
@@ -79,28 +144,50 @@ class OrderResult:
     filled_volume: float
     retcode: int | None
     comment: str
-    submitted_at_utc: datetime
-    acknowledged_at_utc: datetime | None
 
 
-class BrokerAdapter(ABC):
+class ReadOnlyBrokerAdapter(ABC):
+    """Everything Phase 1 needs. Times in/out of range queries are RAW source-domain epoch values."""
+
     @abstractmethod
-    def connect(self) -> None: ...
+    def connect(self) -> AccountIdentity: ...
 
     @abstractmethod
     def disconnect(self) -> None: ...
 
     @abstractmethod
-    def health_check(self) -> bool: ...
+    def health_check(self) -> AdapterHealth: ...
 
     @abstractmethod
-    def get_symbol_info(self, canonical: str) -> SymbolInfo: ...
+    def get_terminal_info(self) -> TerminalInfo: ...
 
     @abstractmethod
-    def get_ticks(self, canonical: str, start_utc: datetime, end_utc: datetime) -> list[Tick]: ...
+    def get_account_info(self) -> AccountInfo: ...
 
     @abstractmethod
-    def get_account(self) -> AccountInfo: ...
+    def discover_symbols(self, group: str | None = None) -> list[SymbolInfo]: ...
+
+    @abstractmethod
+    def get_symbol_info(self, broker_symbol: str) -> SymbolInfo: ...
+
+    @abstractmethod
+    def get_latest_tick(self, broker_symbol: str) -> Tick: ...
+
+    @abstractmethod
+    def get_ticks_range(self, broker_symbol: str, start_epoch_s: int, end_epoch_s: int) -> np.ndarray:
+        """Ticks in [start, end] as a RAW_TICK_DTYPE array, in the order returned by the broker."""
+
+    @abstractmethod
+    def get_ticks_from(self, broker_symbol: str, start_epoch_s: int, count: int) -> np.ndarray:
+        """Up to ``count`` ticks starting at ``start`` (RAW_TICK_DTYPE). Used for cheap weekly-open probes."""
+
+    @abstractmethod
+    def get_rates_range(self, broker_symbol: str, timeframe: str, start_epoch_s: int,
+                        end_epoch_s: int) -> np.ndarray: ...
+
+
+class BrokerAdapter(ReadOnlyBrokerAdapter):
+    """Full interface (later phases). Phase 1 implementations must raise TradingDisabledError."""
 
     @abstractmethod
     def get_positions(self) -> list[dict]: ...
@@ -119,3 +206,4 @@ class BrokerAdapter(ABC):
 
     @abstractmethod
     def close_position(self, broker_position_id: str) -> OrderResult: ...
+

@@ -1,8 +1,11 @@
 # XAUUSD instrument config. Broker-specific values are DISCOVERED from the broker at connect time
 # (SymbolInfo) and must not be hardcoded here. null = to be determined by research/discovery.
-canonical: XAUUSD
+canonical: XAU_USD
 asset_class: metal
-broker_symbol_candidates: [XAUUSD, XAUUSDm, GOLD, XAUUSD.a]   # resolved at runtime; first available/visible match wins
+aliases: ["XAUUSD", "XAU/USD", "XAU_USD", "GOLD"]          # broker-agnostic search names; prefixes/suffixes are handled by discovery
+expected_base_currency: XAU      # used to validate a discovered symbol when the broker reports it
+expected_profit_currency: USD
+broker_symbol_candidates: []   # DEPRECATED hint list; the authoritative map is configs/broker_symbols/<broker>__<server>.yaml
 role: primary
 discovery:
   # filled from broker: tick_size, tick_value, contract_size, volume_min/max/step, stops/freeze level

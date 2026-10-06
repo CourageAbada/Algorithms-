@@ -29,3 +29,5 @@ mlruns/
 node_modules/
 dist/
 .DS_Store
+# generated verification reports (contain masked login, server and symbol metadata; review before sharing)
+reports/

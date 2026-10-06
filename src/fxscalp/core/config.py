@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-REQUIRED_INSTRUMENT_KEYS = ("canonical", "broker_symbol_candidates", "risk", "spread")
+REQUIRED_INSTRUMENT_KEYS = ("canonical", "aliases", "risk", "spread")
 
 
 class ConfigError(ValueError):

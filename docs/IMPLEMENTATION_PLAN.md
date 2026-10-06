@@ -20,7 +20,9 @@ Phases are gated; a profitable-looking backtest never skips a phase. Phase 0 and
 | 13 | GBPUSD model | Independent validation |
 | 14 | Controlled live-readiness assessment (not enablement) | Human decision |
 
-## Phase 1 — exact plan (revised in Phase 0.5; awaiting approval)
+## Phase 1 — STATUS: implemented and tested on Linux against a fake; real-MT5 verification PENDING (see `PHASE1_REPORT.md`)
+
+Original exact plan (revised in Phase 0.5):
 
 Approved decisions: D-1 MT5 on a Windows development machine (VPS later); D-2 MT5 **demo** account, broker configurable; D-3 start with broker MT5 tick history behind `HistoricalDataProvider`; D-4 same-machine, no message broker; D-5 calendar provider abstract; D-6 no invented thresholds; D-7 HALT_NEW_TRADES / EMERGENCY_FLATTEN; D-8 Java moved to `legacy/java/`; D-9 proprietary; D-10 env secrets + CI secret scanning; D-11 React + TypeScript.
 

@@ -9,7 +9,7 @@ import sys
 from typing import Any
 
 _SENSITIVE_KEYS = re.compile(r"(password|passwd|secret|token|api[_-]?key|login|account)", re.I)
-_SENSITIVE_VALUE = re.compile(r"(?i)\b(password|passwd|secret|token|api[_-]?key)\s*[=:]\s*\S+")
+_SENSITIVE_VALUE = re.compile(r"(?i)\b(password|passwd|secret|token|api[_-]?key|login)\s*[=:]\s*\S+")
 REDACTED = "***REDACTED***"
 
 
