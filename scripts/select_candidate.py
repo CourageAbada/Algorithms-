@@ -28,8 +28,18 @@ from fxscalp.research.model_research.models import ModelPipeline
 OUT = Path("research/phase2b/model_research")
 
 
+def _default(o: Any) -> Any:
+    if isinstance(o, np.ndarray):
+        return o.tolist()
+    if isinstance(o, np.integer):
+        return int(o)
+    if isinstance(o, (np.floating, np.bool_)):
+        return float(o) if isinstance(o, np.floating) else bool(o)
+    return str(o)
+
+
 def j(o: Any) -> Any:
-    return json.loads(json.dumps(o, default=float))
+    return json.loads(json.dumps(o, default=_default))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -192,7 +202,7 @@ def main(argv: list[str] | None = None) -> int:
         abl[g] = {"applicable": True, "n_features_removed": len(drop), "removed_sample": drop[:6], "by_scenario": per}
     res["ablations"] = abl
     print(f"selection+ablations done {time.perf_counter() - t0:.0f}s")
-    (OUT / "selection.json").write_text(json.dumps(res, indent=1, default=float), encoding="utf-8")
+    (OUT / "selection.json").write_text(json.dumps(res, indent=1, default=_default), encoding="utf-8")
 
     # ---- diagnostics for serious candidates: chosen, best logistic, best LightGBM (scenario C1 = middle; stability across folds)
     serious = {"chosen": chosen, "best_logistic": table[table["family"] == "logistic"].iloc[0], "best_lightgbm": lead_lgb}
