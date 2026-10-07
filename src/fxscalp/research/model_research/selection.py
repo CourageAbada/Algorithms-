@@ -103,12 +103,14 @@ def tie_break(df: pd.DataFrame) -> pd.Series | None:
     return min((r for _, r in close.iterrows()), key=simplicity)
 
 
-def bootstrap_vs_baseline(store: ExperimentStore, cand: dict[str, dict], base: dict, *, B: int = P.BOOTSTRAP_B, seed: int = P.SEED) -> dict[str, Any]:
+def bootstrap_vs_baseline(store: ExperimentStore, cand: dict[str, dict], base: dict, *, B: int = P.BOOTSTRAP_B, seed: int = P.SEED,
+                          prior_correct: bool = False) -> dict[str, Any]:
     """Paired block bootstrap per scenario: candidate vs the best baseline (by pooled macro-F1) and vs the training prior (log loss)."""
     out = {}
     for s in P.SCENARIOS:
         pc = store.predictions(cand[s]["experiment_id"])
-        blocks_c = _fold_blocks(pc, use_cal=True)
+        priors = [f["prior"] for f in base["majority"][s]["folds"]] if prior_correct else None
+        blocks_c = _fold_blocks(pc, use_cal=True, priors=priors)
         # best baseline by pooled macro-F1 point estimate
         best_name, best_blocks, best_f1 = None, None, -1.0
         for b in BASELINE_FAMILIES:
@@ -127,11 +129,19 @@ def bootstrap_vs_baseline(store: ExperimentStore, cand: dict[str, dict], base: d
     return out
 
 
-def _fold_blocks(pred: pd.DataFrame, use_cal: bool) -> list[np.ndarray]:
+def prior_corrected(p_unc: np.ndarray, prior: np.ndarray) -> np.ndarray:
+    """Elkan prior-shift correction for a class-weighted model: p_true ∝ p_weighted * prior (the weighted model implies a uniform prior)."""
+    q = np.asarray(p_unc, dtype="float64") * np.asarray(prior, dtype="float64")
+    return q / q.sum(axis=1, keepdims=True)
+
+
+def _fold_blocks(pred: pd.DataFrame, use_cal: bool, priors: list[list[float]] | None = None) -> list[np.ndarray]:
     out = []
-    for f in sorted(pred["fold"].unique()):
+    for i, f in enumerate(sorted(pred["fold"].unique())):
         d = pred[pred["fold"] == f].sort_values("ts", kind="stable")
         p = d[[("c" if use_cal else "u") + str(k) for k in range(3)]].to_numpy("float64")
+        if priors is not None:      # EXPLORATORY: keep the decisions, score the probabilities after prior-shift correction
+            p = prior_corrected(d[[f"u{k}" for k in range(3)]].to_numpy("float64"), np.array(priors[i]))
         yh = d["pred"].to_numpy("int64")
         out.append(M.block_counts(d["ts"].to_numpy(), d["y"].to_numpy("int64"), yh, p, P.BLOCK_S))
     return out

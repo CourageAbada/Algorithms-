@@ -117,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
                 if not proxy[row["key"]]["flag"]:
                     ok.append(row)
             chosen = min(ok, key=S.simplicity)
-    res["selection"] = {"gate_passers": int(len(passers)), "proxy_checks": {str(k): v["flag"] for k, v in proxy.items()},
+    res["selection"] = {"gate_passers_G1_G3": int(len(passers)), "proxy_checks": {str(k): v["flag"] for k, v in proxy.items()},
                         "chosen": None if chosen is None else {"feature_config": chosen["feature_config"], "family": chosen["family"], "hp": chosen["hp"], "S": float(chosen["S"])}}
     res["table_top20"] = j([{k: v for k, v in r.items() if k != "key"} for r in table.head(20).to_dict("records")])
     res["table_all"] = j([{k: v for k, v in r.items() if k != "key"} for r in table.to_dict("records")])
@@ -126,20 +126,47 @@ def main(argv: list[str] | None = None) -> int:
     res["proxy_details"] = j({str(k): v for k, v in proxy.items()})
     res["baseline_refs"] = j({s: {"best_baseline_macro_f1_per_fold": r["best_baseline_macro_f1"], "prior_log_loss_per_fold": r["prior_log_loss"],
                                   "best_baseline_name_per_fold": r["best_baseline_name"]} for s, r in refs.items()})
-    if chosen is None:
-        res["verdict"] = {"verdict": "NO RELIABLE SIGNAL DETECTED", "reason": "no candidate passed the pre-registered gates"}
-        (OUT / "selection.json").write_text(json.dumps(res, indent=1, default=float), encoding="utf-8")
-        print("NO CANDIDATE passed the gates -> NO RELIABLE SIGNAL DETECTED")
-        return 0
+    exploratory = chosen is None
+    if exploratory:
+        # FORMAL outcome of protocol v1: no candidate passed the gates. Everything below this line is labelled EXPLORATORY and does not change it.
+        res["verdict"] = {"verdict": "NO RELIABLE SIGNAL DETECTED", "reason": "no candidate passed the pre-registered gates (protocol v1)",
+                          "note": "formal, pre-registered outcome; see 'exploratory' for the post-hoc analysis of WHY (class-weight probability shift vs gate G2)"}
+        pool = table[table["G1"] & table["G3"]]
+        chosen = pool.iloc[0] if len(pool) else table.iloc[0]
+        if chosen["key"] not in proxy:
+            proxy[chosen["key"]] = proxy_check(chosen)
+        res["exploratory_focus"] = {"definition": "highest-S candidate passing G1 and G3 (G2 ignored) - NOT a pre-registered selection",
+                                    "feature_config": chosen["feature_config"], "family": chosen["family"], "hp": chosen["hp"], "S": float(chosen["S"]),
+                                    "proxy": j(proxy[chosen["key"]])}
     key = chosen["key"]
     by_s = cands[key]
-    print("CHOSEN:", key[:3], f"S={chosen['S']:.4f}")
+    print("FORMAL CHOSEN:" if not exploratory else "EXPLORATORY FOCUS:", key[:3], f"S={chosen['S']:.4f}")
 
     # ---- uncertainty + verdict
     boot = S.bootstrap_vs_baseline(store, by_s, base)
     res["bootstrap"] = j(boot)
-    res["verdict"] = j(S.verdict(boot, proxy[key]["flag"]))
-    acf = None
+    if not exploratory:
+        res["verdict"] = j(S.verdict(boot, proxy[key]["flag"]))
+    else:
+        boot_pc = S.bootstrap_vs_baseline(store, by_s, base, prior_correct=True)
+        ev = S.verdict(boot_pc, proxy[key]["flag"])
+        pc_ll = {}
+        for scn in P.SCENARIOS:
+            pri = [f["prior"] for f in base["majority"][scn]["folds"]]
+            pred = store.predictions(by_s[scn]["experiment_id"])
+            per = []
+            for i, f in enumerate(sorted(pred["fold"].unique())):
+                d = pred[pred["fold"] == f]
+                from fxscalp.research.model_research import metrics as MM
+                per.append(MM.log_loss(d["y"].to_numpy("int64"), S.prior_corrected(d[["u0", "u1", "u2"]].to_numpy("float64"), np.array(pri[i]))))
+            pc_ll[scn] = {"prior_corrected_log_loss_per_fold": per, "prior_log_loss_per_fold": refs[scn]["prior_log_loss"].tolist(),
+                          "folds_with_skill": int((np.array(per) < refs[scn]["prior_log_loss"]).sum())}
+        res["exploratory"] = j({"label": "POST-HOC / EXPLORATORY - not part of the pre-registered selection or verdict",
+                                "finding": "class-weighted models have prior-shifted probabilities; single-parameter temperature scaling cannot correct that, so gate G2 "
+                                           "(log loss below the training prior) fails mechanically. Elkan prior correction is applied to the log-loss ONLY; decisions are the "
+                                           "model's argmax decisions as pre-registered.",
+                                "bootstrap_prior_corrected_logloss": boot_pc, "verdict_if_G2_used_prior_corrected_probabilities": ev,
+                                "prior_corrected_logloss_by_scenario": pc_ll})
     from fxscalp.research.model_research import metrics as M
     yv = runner.y("C1_moderate")[runner.fold_rows("C1_moderate", runner.folds[2])["val"]]
     res["label_autocorrelation_NO_TRADE_indicator"] = j(M.label_autocorrelation(yv, P.GRID_STEP_S)[:24])

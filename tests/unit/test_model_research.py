@@ -386,3 +386,17 @@ def test_psi_detects_shift_and_ignores_identical_distributions():
     rng = np.random.default_rng(5)
     a, b = rng.normal(0, 1, 20000), rng.normal(0, 1, 20000)
     assert D.psi(a, b) < 0.02 and D.psi(a, b + 1.5) > 0.5 and D.psi(a, np.full(50, np.nan)) != D.psi(a, np.full(50, np.nan))   # NaN when too few
+
+
+def test_prior_shift_correction_recovers_true_posteriors_from_a_class_balanced_model():
+    """Exploratory-analysis helper: a class-weighted ('balanced') model reports p_w ∝ p_true / prior; the Elkan correction undoes it."""
+    from fxscalp.research.model_research import selection as S
+    rng = np.random.default_rng(6)
+    prior = np.array([0.25, 0.5, 0.25])
+    p_true = rng.dirichlet([3, 3, 3], 1000) * 0.5 + prior * 0.5
+    p_true /= p_true.sum(axis=1, keepdims=True)
+    w = p_true / prior
+    p_w = w / w.sum(axis=1, keepdims=True)
+    assert np.allclose(S.prior_corrected(p_w, prior), p_true, atol=1e-12) and np.allclose(S.prior_corrected(p_w, prior).sum(axis=1), 1.0)
+    y = np.array([rng.choice(3, p=r) for r in p_true])
+    assert M.log_loss(y, S.prior_corrected(p_w, prior)) < M.log_loss(y, p_w)           # the weighted model's raw probabilities are worse
