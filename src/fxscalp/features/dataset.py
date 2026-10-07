@@ -49,7 +49,7 @@ def load_symbol_meta(store: TickStore, manifest: dict[str, Any]) -> dict[str, An
 
 
 def load_normalized_ticks(store: TickStore, manifest: dict[str, Any], *, exclude_quarantined: bool = True,
-                          verify: bool = True, max_days: int | None = None) -> tuple[pd.DataFrame, NormalizationReport, dict[str, Any]]:
+                          verify: bool = True, max_days: int | None = None, exclusion_mask: int | None = None) -> tuple[pd.DataFrame, NormalizationReport, dict[str, Any]]:
     """Read + verify every chunk of a Phase 1 dataset and normalise. Hash chain: manifest -> chunk manifest -> file."""
     meta = load_symbol_meta(store, manifest)
     point = (meta.get("typed") or {}).get("point")
@@ -66,7 +66,10 @@ def load_normalized_ticks(store: TickStore, manifest: dict[str, Any], *, exclude
             continue
         raw = store.read_raw_chunk(key, verify=verify)
         qual = store.read_derived("tick_quality", key)
-        parts.append(from_arrow(raw, qual))
+        part = from_arrow(raw, qual)
+        if exclusion_mask is not None:       # Phase 2B eligibility: exclude ticks carrying ANY tag in the mask (replaces `quarantined`)
+            part["quarantined"] = (np.asarray(part["quality_flags"], dtype="uint32") & np.uint32(exclusion_mask)) != 0
+        parts.append(part)
     if not parts:
         raise DatasetError("dataset contains no ticks")
     cols = {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
@@ -97,21 +100,25 @@ class BuildResult:
     quality: FeatureQualityReport
 
 
-def ml_dataset_id(raw_dataset_id: str, feature_set_version: str, cfg: PipelineConfig, exclude_quarantined: bool) -> str:
+def ml_dataset_id(raw_dataset_id: str, feature_set_version: str, cfg: PipelineConfig, exclude_quarantined: bool,
+                  exclusion_mask: int | None = None) -> str:
     ident = {"raw": raw_dataset_id, "fsv": feature_set_version, "cfg": cfg.config_hash(), "pipeline": PIPELINE_VERSION,
              "schema": ML_SCHEMA_VERSION, "excl_q": exclude_quarantined}
+    if exclusion_mask is not None:           # absent for legacy builds, so their ids do not change
+        ident["excl_mask"] = int(exclusion_mask)
     return "mlds-" + sha256_bytes(canonical_json(ident).encode())[:20]
 
 
 def build_from_store(store: TickStore, manifest: dict[str, Any], out_root: Path, cfg: PipelineConfig | None = None, *,
                      exclude_quarantined: bool = True, write_bars: bool = True, max_days: int | None = None,
-                     force: bool = False) -> BuildResult:
+                     force: bool = False, exclusion_mask: int | None = None) -> BuildResult:
     cfg = cfg or PipelineConfig(instrument=manifest["instrument"])
-    ticks, nrep, meta = load_normalized_ticks(store, manifest, exclude_quarantined=exclude_quarantined, max_days=max_days)
+    ticks, nrep, meta = load_normalized_ticks(store, manifest, exclude_quarantined=exclude_quarantined, max_days=max_days,
+                                              exclusion_mask=exclusion_mask)
     point = (meta.get("typed") or {}).get("point")
     ff = build_feature_frame(ticks, cfg, point=point, collect_bars=write_bars)
     qrep = validate_feature_frame(ff)
-    mid = ml_dataset_id(manifest["dataset_id"], ff.registry.version, cfg, exclude_quarantined)
+    mid = ml_dataset_id(manifest["dataset_id"], ff.registry.version, cfg, exclude_quarantined, exclusion_mask)
     out = out_root / "features" / cfg.instrument / mid
     feat_hash = content_hash(ff.df)
     if (out / "manifest.json").exists() and not force:
