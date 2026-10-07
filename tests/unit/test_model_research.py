@@ -298,3 +298,91 @@ def test_frozen_state_verification_fails_closed_on_drift(monkeypatch):
     monkeypatch.setattr(P, "EXPECTED_SPEC_HASH", "0" * 64)
     with pytest.raises(frozen.FrozenStateError, match="spec_hash"):
         frozen.verify_frozen_state(check_data=False)
+
+
+# ============================ selection rule, verdict, diagnostics ============================
+def _fake_result(scn, macro, ll, ece, rec=(0.3, 0.5, 0.3), fam="logistic", fc="CORE", hp=(("C", 1.0),)):
+    folds = [{"fold": f"F{i + 1}", "calibrated": {"macro_f1": macro[i], "log_loss": ll[i], "ece_top": ece, "balanced_accuracy": macro[i],
+                                                   "accuracy": 0.5, "recall": list(rec)}} for i in range(5)]
+    return {"config": {"kind": "model", "feature_config": fc, "family": fam, "hp": [list(x) for x in hp], "scenario": scn, "columns": None, "tag": ""},
+            "folds": folds, "experiment_id": f"e-{fam}-{scn}"}
+
+
+def _fake_baselines(f1=0.334, ll=1.0):
+    out = {}
+    for b in ("majority", "stratified_random", "momentum", "mean_reversion"):
+        out[b] = {s: {"folds": [{"calibrated": {"macro_f1": f1 if b == "stratified_random" else 0.2, "log_loss": ll}} for _ in range(5)]}
+                  for s in P.SCENARIOS}
+    return out
+
+
+def test_selection_gates_score_and_tie_break_follow_the_pre_registered_rule():
+    from fxscalp.research.model_research import selection as S
+    base = _fake_baselines()
+    def cand(macro, ll, ece=0.02, rec=(0.3, 0.5, 0.3), fam="logistic", fc="CORE", hp=(("C", 1.0),)):
+        return {s: _fake_result(s, macro, ll, ece, rec, fam, fc, hp) for s in P.SCENARIOS}
+    cands = {
+        ("CORE", "logistic", (("C", 1.0),), None, ""): cand([0.40] * 5, [0.95] * 5),                         # passes everything
+        ("CORE", "logistic", (("C", 0.1),), None, ""): cand([0.30] * 5, [0.95] * 5, hp=(("C", 0.1),)),         # G1: never beats baseline
+        ("CORE", "lightgbm", (("n_estimators", 150),), None, ""): cand([0.40, 0.41, 0.40, 0.30, 0.30], [0.95] * 5, fam="lightgbm"),   # only 3 folds beat
+        ("REGIME", "logistic", (("C", 1.0),), None, ""): cand([0.41] * 5, [1.05] * 5, fc="REGIME"),             # G2: worse than the prior
+        ("CORE", "logistic", (("C", 10.0),), None, ""): cand([0.45] * 5, [0.9] * 5, rec=(0.01, 0.99, 0.0)),    # G3: never predicts LONG
+    }
+    df = S.evaluate(cands, base)
+    ok = df[df["gates_123"]]
+    assert len(ok) == 1 and ok.iloc[0]["hp"] == {"C": 1.0} and ok.iloc[0]["feature_config"] == "CORE"
+    assert df[(df.family == "lightgbm")].iloc[0]["G1_folds_beating_baseline"] == 3 and not df[df.feature_config == "REGIME"].iloc[0]["G2"]
+    assert not df[df.hp.apply(lambda h: h.get("C") == 10.0)].iloc[0]["G3"]
+    row = ok.iloc[0]
+    assert abs(row["S"] - (0.40 - 0.0 - 0.02)) < 1e-9                                                       # S = M - D - E
+    # tie-break: within 0.005 prefer logistic over LightGBM, CORE over REGIME, fewer trees
+    two = S.evaluate({("CORE", "logistic", (("C", 1.0),), None, ""): cand([0.400] * 5, [0.95] * 5),
+                      ("CORE", "lightgbm", (("n_estimators", 150),), None, ""): cand([0.403] * 5, [0.95] * 5, fam="lightgbm")}, base)
+    assert S.tie_break(two[two.gates_123]).family == "logistic"
+    far = S.evaluate({("CORE", "logistic", (("C", 1.0),), None, ""): cand([0.400] * 5, [0.95] * 5),
+                      ("CORE", "lightgbm", (("n_estimators", 150),), None, ""): cand([0.420] * 5, [0.95] * 5, fam="lightgbm")}, base)
+    assert S.tie_break(far[far.gates_123]).family == "lightgbm"                                           # clearly better beats simplicity
+
+
+def _boot(lo, mean_diff, ll_hi, cand_f1, base_f1, cand_ll, prior_ll, folds=5):
+    return {"macro_f1_vs_best_baseline": {"diff": {"mean": mean_diff, "lo95": lo, "hi95": mean_diff + 0.01}},
+            "log_loss_vs_prior": {"diff": {"mean": cand_ll - prior_ll, "lo95": cand_ll - prior_ll - 0.01, "hi95": ll_hi}},
+            "pooled_candidate": {"macro_f1": cand_f1, "log_loss": cand_ll}, "pooled_best_baseline": {"macro_f1": base_f1},
+            "pooled_prior": {"log_loss": prior_ll}, "folds_beating_best_baseline": folds}
+
+
+def test_verdict_rule_matches_the_pre_registered_definitions():
+    from fxscalp.research.model_research import selection as S
+    good = {s: _boot(0.03, 0.06, -0.02, 0.40, 0.334, 0.95, 1.00) for s in P.SCENARIOS}
+    assert S.verdict(good, False)["verdict"] == "PREDICTIVE SIGNAL DETECTED"
+    assert S.verdict(good, True)["verdict"] == "WEAK/UNSTABLE SIGNAL"                                      # proxy flag blocks DETECTED
+    assert S.verdict(good, False)["holdout_evaluation_justified"] and not S.verdict(good, True)["holdout_evaluation_justified"]
+    tiny = {s: _boot(0.001, 0.003, -0.001, 0.337, 0.334, 0.995, 1.00) for s in P.SCENARIOS}                # significant-looking but below the effect floors
+    assert S.verdict(tiny, False)["verdict"] == "WEAK/UNSTABLE SIGNAL"
+    unstable = dict(good)
+    unstable["C2_pessimistic"] = _boot(-0.01, 0.0, 0.02, 0.33, 0.334, 1.01, 1.00)
+    assert S.verdict(unstable, False)["verdict"] == "WEAK/UNSTABLE SIGNAL"
+    few_folds = {s: _boot(0.03, 0.06, -0.02, 0.40, 0.334, 0.95, 1.00, folds=3) for s in P.SCENARIOS}
+    assert S.verdict(few_folds, False)["verdict"] == "WEAK/UNSTABLE SIGNAL"
+    none = {s: _boot(-0.03, -0.01, 0.03, 0.31, 0.334, 1.02, 1.00) for s in P.SCENARIOS}
+    assert S.verdict(none, False)["verdict"] == "NO RELIABLE SIGNAL DETECTED"
+
+
+def test_permutation_importance_finds_the_planted_feature_and_group_structure(df):
+    from fxscalp.research.model_research import diagnostics as D
+    X, names = feature_matrix(df, "CORE", ALLOWED)
+    y = df["y_C0_spread_only"].to_numpy().astype("int64")
+    pipe = ModelPipeline("lightgbm", {"num_leaves": 15, "n_estimators": 60}, names, P.SEED, 1).fit_preprocessing(X).fit(X, y)
+    pipe.temperature = 1.0
+    gi = {"signal": [names.index("ret_bps_60s")], "noise": [names.index("tick_rate_5s"), names.index("spread_points")]}
+    out = D.permutation_importance(pipe, X, y, gi, [names.index("ret_bps_60s")], seed=1, n_rows=6000, repeats=2)
+    assert out["groups"]["signal"]["d_log_loss"] > 10 * abs(out["groups"]["noise"]["d_log_loss"]) and out["groups"]["signal"]["d_macro_f1"] > 0.05
+    assert "ret_bps_60s" in out["features"]
+    assert abs(D.spearman(np.arange(20), np.arange(20)) - 1.0) < 1e-12 and D.spearman(np.arange(20), -np.arange(20)) < -0.99
+
+
+def test_psi_detects_shift_and_ignores_identical_distributions():
+    from fxscalp.research.model_research import diagnostics as D
+    rng = np.random.default_rng(5)
+    a, b = rng.normal(0, 1, 20000), rng.normal(0, 1, 20000)
+    assert D.psi(a, b) < 0.02 and D.psi(a, b + 1.5) > 0.5 and D.psi(a, np.full(50, np.nan)) != D.psi(a, np.full(50, np.nan))   # NaN when too few
