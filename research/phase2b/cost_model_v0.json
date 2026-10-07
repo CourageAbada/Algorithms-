@@ -1,0 +1,61 @@
+{
+  "components": {
+    "commission_round_turn_points": {
+      "note": "broker commission not verified",
+      "status": "UNKNOWN/UNCALIBRATED",
+      "value": null
+    },
+    "latency_s": {
+      "note": "order latency not measured; terminal API latency is not execution latency",
+      "status": "UNKNOWN/UNCALIBRATED",
+      "value": null
+    },
+    "observed_spread": {
+      "source": "historical bid/ask of every tick (entry at ask/bid, exit at bid/ask)",
+      "status": "OBSERVED",
+      "value": null
+    },
+    "slippage_points_per_side": {
+      "note": "no fill data (DEMO feed, no orders)",
+      "status": "UNKNOWN/UNCALIBRATED",
+      "value": null
+    },
+    "swap_financing": {
+      "note": "intraday horizons only",
+      "status": "NOT_MODELLED",
+      "value": null
+    }
+  },
+  "execution_convention": "LONG: buy at ask, sell at bid; SHORT: sell at bid, buy at ask; spread cost is implicit in the bid/ask path",
+  "extra_rt_points_formula": "commission_round_turn_points + 2 * slippage_points_per_side",
+  "point_usd": 0.01,
+  "rule": "unknown components must come from a named scenario; sensitivity analysis over all scenarios is mandatory for any reported result",
+  "scenario_status": "HYPOTHETICAL sensitivity points, NOT broker facts, NOT calibrated",
+  "scenarios": {
+    "C0_spread_only": {
+      "commission_round_turn_points": 0.0,
+      "extra_rt_points": 0.0,
+      "latency_s": 0,
+      "name": "C0_spread_only",
+      "slippage_points_per_side": 0.0,
+      "status": "HYPOTHETICAL_SENSITIVITY_POINT_NOT_CALIBRATED"
+    },
+    "C1_moderate": {
+      "commission_round_turn_points": 7.0,
+      "extra_rt_points": 10.0,
+      "latency_s": 1,
+      "name": "C1_moderate",
+      "slippage_points_per_side": 1.5,
+      "status": "HYPOTHETICAL_SENSITIVITY_POINT_NOT_CALIBRATED"
+    },
+    "C2_pessimistic": {
+      "commission_round_turn_points": 15.0,
+      "extra_rt_points": 30.0,
+      "latency_s": 1,
+      "name": "C2_pessimistic",
+      "slippage_points_per_side": 7.5,
+      "status": "HYPOTHETICAL_SENSITIVITY_POINT_NOT_CALIBRATED"
+    }
+  },
+  "version": "cost_model/0"
+}

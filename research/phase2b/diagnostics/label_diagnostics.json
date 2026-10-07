@@ -1,0 +1,5309 @@
+{
+ "schema": "label_diagnostics/1",
+ "period": {
+  "first_day": "2026-04-06",
+  "last_day": "2026-09-11",
+  "final_holdout_inspected": false
+ },
+ "n_days": 115,
+ "n_segments": 120,
+ "n_grid_rows": 9454586,
+ "segment_length_s": {
+  "min": 14697,
+  "median": 82739.0,
+  "max": 82740
+ },
+ "sensitivity_days": "every 4th development day",
+ "labels": {
+  "tb_H15|C0_spread_only": {
+   "spec": {
+    "name": "tb_H15",
+    "family": "tb",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9380786,
+    "LONG": 1672291,
+    "SHORT": 1708040,
+    "NO_TRADE": 6000455,
+    "pct_LONG": 17.83,
+    "pct_SHORT": 18.21,
+    "pct_NO_TRADE": 63.97,
+    "ambiguous": 0,
+    "lost_warmup": 72000,
+    "lost_boundary": 1800
+   },
+   "coverage_fraction_labelled": 0.99219,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1565106,
+     "LONG": 277377,
+     "SHORT": 281936,
+     "NO_TRADE": 1005793,
+     "pct_LONG": 17.72,
+     "pct_SHORT": 18.01,
+     "pct_NO_TRADE": 64.26,
+     "ambiguous": 0,
+     "lost_warmup": 12600,
+     "lost_boundary": 300
+    },
+    "2026-05": {
+     "n_labelled": 1713855,
+     "LONG": 297105,
+     "SHORT": 307627,
+     "NO_TRADE": 1109123,
+     "pct_LONG": 17.34,
+     "pct_SHORT": 17.95,
+     "pct_NO_TRADE": 64.72,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 330
+    },
+    "2026-06": {
+     "n_labelled": 1781030,
+     "LONG": 327589,
+     "SHORT": 333013,
+     "NO_TRADE": 1120428,
+     "pct_LONG": 18.39,
+     "pct_SHORT": 18.7,
+     "pct_NO_TRADE": 62.91,
+     "ambiguous": 0,
+     "lost_warmup": 15000,
+     "lost_boundary": 375
+    },
+    "2026-07": {
+     "n_labelled": 1867443,
+     "LONG": 328794,
+     "SHORT": 331601,
+     "NO_TRADE": 1207048,
+     "pct_LONG": 17.61,
+     "pct_SHORT": 17.76,
+     "pct_NO_TRADE": 64.64,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 345
+    },
+    "2026-08": {
+     "n_labelled": 1730734,
+     "LONG": 310530,
+     "SHORT": 317255,
+     "NO_TRADE": 1102949,
+     "pct_LONG": 17.94,
+     "pct_SHORT": 18.33,
+     "pct_NO_TRADE": 63.73,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 315
+    },
+    "2026-09": {
+     "n_labelled": 722618,
+     "LONG": 130896,
+     "SHORT": 136608,
+     "NO_TRADE": 455114,
+     "pct_LONG": 18.11,
+     "pct_SHORT": 18.9,
+     "pct_NO_TRADE": 62.98,
+     "ambiguous": 0,
+     "lost_warmup": 4800,
+     "lost_boundary": 135
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890475,
+     "LONG": 522589,
+     "SHORT": 531987,
+     "NO_TRADE": 1835899,
+     "pct_LONG": 18.08,
+     "pct_SHORT": 18.4,
+     "pct_NO_TRADE": 63.52,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 30
+    },
+    "LONDON": {
+     "n_labelled": 2066109,
+     "LONG": 373243,
+     "SHORT": 379279,
+     "NO_TRADE": 1313587,
+     "pct_LONG": 18.07,
+     "pct_SHORT": 18.36,
+     "pct_NO_TRADE": 63.58,
+     "ambiguous": 0,
+     "lost_warmup": 1800,
+     "lost_boundary": 15
+    },
+    "NEW_YORK": {
+     "n_labelled": 2011156,
+     "LONG": 319761,
+     "SHORT": 333859,
+     "NO_TRADE": 1357536,
+     "pct_LONG": 15.9,
+     "pct_SHORT": 16.6,
+     "pct_NO_TRADE": 67.5,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 1740
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1654930,
+     "LONG": 347040,
+     "SHORT": 353004,
+     "NO_TRADE": 954886,
+     "pct_LONG": 20.97,
+     "pct_SHORT": 21.33,
+     "pct_NO_TRADE": 57.7,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 15
+    },
+    "OFF_HOURS": {
+     "n_labelled": 758116,
+     "LONG": 109658,
+     "SHORT": 109911,
+     "NO_TRADE": 538547,
+     "pct_LONG": 14.46,
+     "pct_SHORT": 14.5,
+     "pct_NO_TRADE": 71.04,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 8979827,
+     "LONG": 1600307,
+     "SHORT": 1632476,
+     "NO_TRADE": 5747044,
+     "pct_LONG": 17.82,
+     "pct_SHORT": 18.18,
+     "pct_NO_TRADE": 64.0,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 1725
+    },
+    "post": {
+     "n_labelled": 400959,
+     "LONG": 71984,
+     "SHORT": 75564,
+     "NO_TRADE": 253411,
+     "pct_LONG": 17.95,
+     "pct_SHORT": 18.85,
+     "pct_NO_TRADE": 63.2,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 75
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 17.83,
+    "stop_first_pct": 27.64,
+    "timeout_pct": 54.53
+   },
+   "short_outcome": {
+    "profit_first_pct": 18.21,
+    "stop_first_pct": 27.25,
+    "timeout_pct": 54.54
+   },
+   "event_duration_s": {
+    "median": 9,
+    "p90": 14,
+    "horizon_s": 15
+   },
+   "mean_barrier_points": 75.0
+  },
+  "tb_H15|C1_moderate": {
+   "spec": {
+    "name": "tb_H15",
+    "family": "tb",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2354773,
+    "LONG": 329093,
+    "SHORT": 337292,
+    "NO_TRADE": 1688388,
+    "pct_LONG": 13.98,
+    "pct_SHORT": 14.32,
+    "pct_NO_TRADE": 71.7,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99144,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 409008,
+     "LONG": 55725,
+     "SHORT": 57195,
+     "NO_TRADE": 296088,
+     "pct_LONG": 13.62,
+     "pct_SHORT": 13.98,
+     "pct_NO_TRADE": 72.39,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 415883,
+     "LONG": 58269,
+     "SHORT": 60563,
+     "NO_TRADE": 297051,
+     "pct_LONG": 14.01,
+     "pct_SHORT": 14.56,
+     "pct_NO_TRADE": 71.43,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 476975,
+     "LONG": 69979,
+     "SHORT": 72485,
+     "NO_TRADE": 334511,
+     "pct_LONG": 14.67,
+     "pct_SHORT": 15.2,
+     "pct_NO_TRADE": 70.13,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 478283,
+     "LONG": 62249,
+     "SHORT": 61755,
+     "NO_TRADE": 354279,
+     "pct_LONG": 13.02,
+     "pct_SHORT": 12.91,
+     "pct_NO_TRADE": 74.07,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 410497,
+     "LONG": 59388,
+     "SHORT": 62221,
+     "NO_TRADE": 288888,
+     "pct_LONG": 14.47,
+     "pct_SHORT": 15.16,
+     "pct_NO_TRADE": 70.38,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 164127,
+     "LONG": 23483,
+     "SHORT": 23073,
+     "NO_TRADE": 117571,
+     "pct_LONG": 14.31,
+     "pct_SHORT": 14.06,
+     "pct_NO_TRADE": 71.63,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 102733,
+     "SHORT": 103641,
+     "NO_TRADE": 516899,
+     "pct_LONG": 14.2,
+     "pct_SHORT": 14.33,
+     "pct_NO_TRADE": 71.47,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 71364,
+     "SHORT": 74166,
+     "NO_TRADE": 374534,
+     "pct_LONG": 13.72,
+     "pct_SHORT": 14.26,
+     "pct_NO_TRADE": 72.02,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 503663,
+     "LONG": 60831,
+     "SHORT": 63351,
+     "NO_TRADE": 379481,
+     "pct_LONG": 12.08,
+     "pct_SHORT": 12.58,
+     "pct_NO_TRADE": 75.34,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416529,
+     "LONG": 73057,
+     "SHORT": 75762,
+     "NO_TRADE": 267710,
+     "pct_LONG": 17.54,
+     "pct_SHORT": 18.19,
+     "pct_NO_TRADE": 64.27,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 21108,
+     "SHORT": 20372,
+     "NO_TRADE": 149764,
+     "pct_LONG": 11.04,
+     "pct_SHORT": 10.65,
+     "pct_NO_TRADE": 78.31,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2272769,
+     "LONG": 317415,
+     "SHORT": 325702,
+     "NO_TRADE": 1629652,
+     "pct_LONG": 13.97,
+     "pct_SHORT": 14.33,
+     "pct_NO_TRADE": 71.7,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82004,
+     "LONG": 11678,
+     "SHORT": 11590,
+     "NO_TRADE": 58736,
+     "pct_LONG": 14.24,
+     "pct_SHORT": 14.13,
+     "pct_NO_TRADE": 71.63,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 16
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 13.98,
+    "stop_first_pct": 27.74,
+    "timeout_pct": 58.29
+   },
+   "short_outcome": {
+    "profit_first_pct": 14.32,
+    "stop_first_pct": 27.4,
+    "timeout_pct": 58.28
+   },
+   "event_duration_s": {
+    "median": 9,
+    "p90": 14,
+    "horizon_s": 15
+   },
+   "mean_barrier_points": 74.2
+  },
+  "tb_H15|C2_pessimistic": {
+   "spec": {
+    "name": "tb_H15",
+    "family": "tb",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2354773,
+    "LONG": 208885,
+    "SHORT": 216120,
+    "NO_TRADE": 1929768,
+    "pct_LONG": 8.87,
+    "pct_SHORT": 9.18,
+    "pct_NO_TRADE": 81.95,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99144,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 409008,
+     "LONG": 36056,
+     "SHORT": 37312,
+     "NO_TRADE": 335640,
+     "pct_LONG": 8.82,
+     "pct_SHORT": 9.12,
+     "pct_NO_TRADE": 82.06,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 415883,
+     "LONG": 37336,
+     "SHORT": 39806,
+     "NO_TRADE": 338741,
+     "pct_LONG": 8.98,
+     "pct_SHORT": 9.57,
+     "pct_NO_TRADE": 81.45,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 476975,
+     "LONG": 47243,
+     "SHORT": 48348,
+     "NO_TRADE": 381384,
+     "pct_LONG": 9.9,
+     "pct_SHORT": 10.14,
+     "pct_NO_TRADE": 79.96,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 478283,
+     "LONG": 36091,
+     "SHORT": 35503,
+     "NO_TRADE": 406689,
+     "pct_LONG": 7.55,
+     "pct_SHORT": 7.42,
+     "pct_NO_TRADE": 85.03,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 410497,
+     "LONG": 37759,
+     "SHORT": 40971,
+     "NO_TRADE": 331767,
+     "pct_LONG": 9.2,
+     "pct_SHORT": 9.98,
+     "pct_NO_TRADE": 80.82,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 164127,
+     "LONG": 14400,
+     "SHORT": 14180,
+     "NO_TRADE": 135547,
+     "pct_LONG": 8.77,
+     "pct_SHORT": 8.64,
+     "pct_NO_TRADE": 82.59,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 65432,
+     "SHORT": 66876,
+     "NO_TRADE": 590965,
+     "pct_LONG": 9.05,
+     "pct_SHORT": 9.25,
+     "pct_NO_TRADE": 81.71,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 43068,
+     "SHORT": 44482,
+     "NO_TRADE": 432514,
+     "pct_LONG": 8.28,
+     "pct_SHORT": 8.55,
+     "pct_NO_TRADE": 83.17,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 503663,
+     "LONG": 36181,
+     "SHORT": 37869,
+     "NO_TRADE": 429613,
+     "pct_LONG": 7.18,
+     "pct_SHORT": 7.52,
+     "pct_NO_TRADE": 85.3,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416529,
+     "LONG": 51909,
+     "SHORT": 54809,
+     "NO_TRADE": 309811,
+     "pct_LONG": 12.46,
+     "pct_SHORT": 13.16,
+     "pct_NO_TRADE": 74.38,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 12295,
+     "SHORT": 12084,
+     "NO_TRADE": 166865,
+     "pct_LONG": 6.43,
+     "pct_SHORT": 6.32,
+     "pct_NO_TRADE": 87.25,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2272769,
+     "LONG": 202045,
+     "SHORT": 209135,
+     "NO_TRADE": 1861589,
+     "pct_LONG": 8.89,
+     "pct_SHORT": 9.2,
+     "pct_NO_TRADE": 81.91,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82004,
+     "LONG": 6840,
+     "SHORT": 6985,
+     "NO_TRADE": 68179,
+     "pct_LONG": 8.34,
+     "pct_SHORT": 8.52,
+     "pct_NO_TRADE": 83.14,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 16
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 8.87,
+    "stop_first_pct": 27.86,
+    "timeout_pct": 63.27
+   },
+   "short_outcome": {
+    "profit_first_pct": 9.18,
+    "stop_first_pct": 27.51,
+    "timeout_pct": 63.31
+   },
+   "event_duration_s": {
+    "median": 10,
+    "p90": 14,
+    "horizon_s": 15
+   },
+   "mean_barrier_points": 74.2
+  },
+  "tb_H60|C0_spread_only": {
+   "spec": {
+    "name": "tb_H60",
+    "family": "tb",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9375386,
+    "LONG": 2172247,
+    "SHORT": 2232998,
+    "NO_TRADE": 4970141,
+    "pct_LONG": 23.17,
+    "pct_SHORT": 23.82,
+    "pct_NO_TRADE": 53.01,
+    "ambiguous": 0,
+    "lost_warmup": 72000,
+    "lost_boundary": 7200
+   },
+   "coverage_fraction_labelled": 0.99162,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1564206,
+     "LONG": 358084,
+     "SHORT": 369006,
+     "NO_TRADE": 837116,
+     "pct_LONG": 22.89,
+     "pct_SHORT": 23.59,
+     "pct_NO_TRADE": 53.52,
+     "ambiguous": 0,
+     "lost_warmup": 12600,
+     "lost_boundary": 1200
+    },
+    "2026-05": {
+     "n_labelled": 1712865,
+     "LONG": 377751,
+     "SHORT": 397635,
+     "NO_TRADE": 937479,
+     "pct_LONG": 22.05,
+     "pct_SHORT": 23.21,
+     "pct_NO_TRADE": 54.73,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 1320
+    },
+    "2026-06": {
+     "n_labelled": 1779905,
+     "LONG": 423802,
+     "SHORT": 437647,
+     "NO_TRADE": 918456,
+     "pct_LONG": 23.81,
+     "pct_SHORT": 24.59,
+     "pct_NO_TRADE": 51.6,
+     "ambiguous": 0,
+     "lost_warmup": 15000,
+     "lost_boundary": 1500
+    },
+    "2026-07": {
+     "n_labelled": 1866408,
+     "LONG": 435592,
+     "SHORT": 445004,
+     "NO_TRADE": 985812,
+     "pct_LONG": 23.34,
+     "pct_SHORT": 23.84,
+     "pct_NO_TRADE": 52.82,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 1380
+    },
+    "2026-08": {
+     "n_labelled": 1729789,
+     "LONG": 406576,
+     "SHORT": 405277,
+     "NO_TRADE": 917936,
+     "pct_LONG": 23.5,
+     "pct_SHORT": 23.43,
+     "pct_NO_TRADE": 53.07,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 1260
+    },
+    "2026-09": {
+     "n_labelled": 722213,
+     "LONG": 170442,
+     "SHORT": 178429,
+     "NO_TRADE": 373342,
+     "pct_LONG": 23.6,
+     "pct_SHORT": 24.71,
+     "pct_NO_TRADE": 51.69,
+     "ambiguous": 0,
+     "lost_warmup": 4800,
+     "lost_boundary": 540
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890385,
+     "LONG": 682806,
+     "SHORT": 703198,
+     "NO_TRADE": 1504381,
+     "pct_LONG": 23.62,
+     "pct_SHORT": 24.33,
+     "pct_NO_TRADE": 52.05,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 120
+    },
+    "LONDON": {
+     "n_labelled": 2066064,
+     "LONG": 488868,
+     "SHORT": 496470,
+     "NO_TRADE": 1080726,
+     "pct_LONG": 23.66,
+     "pct_SHORT": 24.03,
+     "pct_NO_TRADE": 52.31,
+     "ambiguous": 0,
+     "lost_warmup": 1800,
+     "lost_boundary": 60
+    },
+    "NEW_YORK": {
+     "n_labelled": 2005936,
+     "LONG": 421776,
+     "SHORT": 448226,
+     "NO_TRADE": 1135934,
+     "pct_LONG": 21.03,
+     "pct_SHORT": 22.34,
+     "pct_NO_TRADE": 56.63,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 6960
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1654885,
+     "LONG": 423067,
+     "SHORT": 429895,
+     "NO_TRADE": 801923,
+     "pct_LONG": 25.56,
+     "pct_SHORT": 25.98,
+     "pct_NO_TRADE": 48.46,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 60
+    },
+    "OFF_HOURS": {
+     "n_labelled": 758116,
+     "LONG": 155730,
+     "SHORT": 155209,
+     "NO_TRADE": 447177,
+     "pct_LONG": 20.54,
+     "pct_SHORT": 20.47,
+     "pct_NO_TRADE": 58.99,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 8974652,
+     "LONG": 2077364,
+     "SHORT": 2132654,
+     "NO_TRADE": 4764634,
+     "pct_LONG": 23.15,
+     "pct_SHORT": 23.76,
+     "pct_NO_TRADE": 53.09,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 6900
+    },
+    "post": {
+     "n_labelled": 400734,
+     "LONG": 94883,
+     "SHORT": 100344,
+     "NO_TRADE": 205507,
+     "pct_LONG": 23.68,
+     "pct_SHORT": 25.04,
+     "pct_NO_TRADE": 51.28,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 300
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 23.17,
+    "stop_first_pct": 29.7,
+    "timeout_pct": 47.13
+   },
+   "short_outcome": {
+    "profit_first_pct": 23.82,
+    "stop_first_pct": 28.95,
+    "timeout_pct": 47.23
+   },
+   "event_duration_s": {
+    "median": 32,
+    "p90": 54,
+    "horizon_s": 60
+   },
+   "mean_barrier_points": 148.1
+  },
+  "tb_H60|C1_moderate": {
+   "spec": {
+    "name": "tb_H60",
+    "family": "tb",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2353288,
+    "LONG": 479703,
+    "SHORT": 496560,
+    "NO_TRADE": 1377025,
+    "pct_LONG": 20.38,
+    "pct_SHORT": 21.1,
+    "pct_NO_TRADE": 58.51,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99082,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 408738,
+     "LONG": 80442,
+     "SHORT": 84073,
+     "NO_TRADE": 244223,
+     "pct_LONG": 19.68,
+     "pct_SHORT": 20.57,
+     "pct_NO_TRADE": 59.75,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 415613,
+     "LONG": 81546,
+     "SHORT": 88249,
+     "NO_TRADE": 245818,
+     "pct_LONG": 19.62,
+     "pct_SHORT": 21.23,
+     "pct_NO_TRADE": 59.15,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 476615,
+     "LONG": 99358,
+     "SHORT": 104860,
+     "NO_TRADE": 272397,
+     "pct_LONG": 20.85,
+     "pct_SHORT": 22.0,
+     "pct_NO_TRADE": 57.15,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 478013,
+     "LONG": 97188,
+     "SHORT": 95422,
+     "NO_TRADE": 285403,
+     "pct_LONG": 20.33,
+     "pct_SHORT": 19.96,
+     "pct_NO_TRADE": 59.71,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 410272,
+     "LONG": 85821,
+     "SHORT": 90214,
+     "NO_TRADE": 234237,
+     "pct_LONG": 20.92,
+     "pct_SHORT": 21.99,
+     "pct_NO_TRADE": 57.09,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 164037,
+     "LONG": 35348,
+     "SHORT": 33742,
+     "NO_TRADE": 94947,
+     "pct_LONG": 21.55,
+     "pct_SHORT": 20.57,
+     "pct_NO_TRADE": 57.88,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 152254,
+     "SHORT": 155929,
+     "NO_TRADE": 415000,
+     "pct_LONG": 21.05,
+     "pct_SHORT": 21.56,
+     "pct_NO_TRADE": 57.39,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 106028,
+     "SHORT": 110019,
+     "NO_TRADE": 304017,
+     "pct_LONG": 20.39,
+     "pct_SHORT": 21.15,
+     "pct_NO_TRADE": 58.46,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502313,
+     "LONG": 91476,
+     "SHORT": 97157,
+     "NO_TRADE": 313680,
+     "pct_LONG": 18.21,
+     "pct_SHORT": 19.34,
+     "pct_NO_TRADE": 62.45,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416484,
+     "LONG": 95919,
+     "SHORT": 100243,
+     "NO_TRADE": 220322,
+     "pct_LONG": 23.03,
+     "pct_SHORT": 24.07,
+     "pct_NO_TRADE": 52.9,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 34026,
+     "SHORT": 33212,
+     "NO_TRADE": 124006,
+     "pct_LONG": 17.79,
+     "pct_SHORT": 17.37,
+     "pct_NO_TRADE": 64.84,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2271329,
+     "LONG": 461934,
+     "SHORT": 479473,
+     "NO_TRADE": 1329922,
+     "pct_LONG": 20.34,
+     "pct_SHORT": 21.11,
+     "pct_NO_TRADE": 58.55,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 81959,
+     "LONG": 17769,
+     "SHORT": 17087,
+     "NO_TRADE": 47103,
+     "pct_LONG": 21.68,
+     "pct_SHORT": 20.85,
+     "pct_NO_TRADE": 57.47,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 61
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 20.38,
+    "stop_first_pct": 29.83,
+    "timeout_pct": 49.78
+   },
+   "short_outcome": {
+    "profit_first_pct": 21.1,
+    "stop_first_pct": 29.11,
+    "timeout_pct": 49.79
+   },
+   "event_duration_s": {
+    "median": 33,
+    "p90": 54,
+    "horizon_s": 60
+   },
+   "mean_barrier_points": 146.5
+  },
+  "tb_H60|C2_pessimistic": {
+   "spec": {
+    "name": "tb_H60",
+    "family": "tb",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2353288,
+    "LONG": 375275,
+    "SHORT": 391843,
+    "NO_TRADE": 1586170,
+    "pct_LONG": 15.95,
+    "pct_SHORT": 16.65,
+    "pct_NO_TRADE": 67.4,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99082,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 408738,
+     "LONG": 63203,
+     "SHORT": 67865,
+     "NO_TRADE": 277670,
+     "pct_LONG": 15.46,
+     "pct_SHORT": 16.6,
+     "pct_NO_TRADE": 67.93,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 415613,
+     "LONG": 64666,
+     "SHORT": 70504,
+     "NO_TRADE": 280443,
+     "pct_LONG": 15.56,
+     "pct_SHORT": 16.96,
+     "pct_NO_TRADE": 67.48,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 476615,
+     "LONG": 80341,
+     "SHORT": 84368,
+     "NO_TRADE": 311906,
+     "pct_LONG": 16.86,
+     "pct_SHORT": 17.7,
+     "pct_NO_TRADE": 65.44,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 478013,
+     "LONG": 72203,
+     "SHORT": 70584,
+     "NO_TRADE": 335226,
+     "pct_LONG": 15.1,
+     "pct_SHORT": 14.77,
+     "pct_NO_TRADE": 70.13,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 410272,
+     "LONG": 67584,
+     "SHORT": 72409,
+     "NO_TRADE": 270279,
+     "pct_LONG": 16.47,
+     "pct_SHORT": 17.65,
+     "pct_NO_TRADE": 65.88,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 164037,
+     "LONG": 27278,
+     "SHORT": 26113,
+     "NO_TRADE": 110646,
+     "pct_LONG": 16.63,
+     "pct_SHORT": 15.92,
+     "pct_NO_TRADE": 67.45,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 120647,
+     "SHORT": 124118,
+     "NO_TRADE": 478418,
+     "pct_LONG": 16.68,
+     "pct_SHORT": 17.16,
+     "pct_NO_TRADE": 66.15,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 80347,
+     "SHORT": 84954,
+     "NO_TRADE": 354763,
+     "pct_LONG": 15.45,
+     "pct_SHORT": 16.34,
+     "pct_NO_TRADE": 68.22,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502313,
+     "LONG": 68250,
+     "SHORT": 73070,
+     "NO_TRADE": 360993,
+     "pct_LONG": 13.59,
+     "pct_SHORT": 14.55,
+     "pct_NO_TRADE": 71.87,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416484,
+     "LONG": 80846,
+     "SHORT": 85316,
+     "NO_TRADE": 250322,
+     "pct_LONG": 19.41,
+     "pct_SHORT": 20.48,
+     "pct_NO_TRADE": 60.1,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 25185,
+     "SHORT": 24385,
+     "NO_TRADE": 141674,
+     "pct_LONG": 13.17,
+     "pct_SHORT": 12.75,
+     "pct_NO_TRADE": 74.08,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2271329,
+     "LONG": 361924,
+     "SHORT": 378971,
+     "NO_TRADE": 1530434,
+     "pct_LONG": 15.93,
+     "pct_SHORT": 16.68,
+     "pct_NO_TRADE": 67.38,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 81959,
+     "LONG": 13351,
+     "SHORT": 12872,
+     "NO_TRADE": 55736,
+     "pct_LONG": 16.29,
+     "pct_SHORT": 15.71,
+     "pct_NO_TRADE": 68.0,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 61
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 15.95,
+    "stop_first_pct": 29.99,
+    "timeout_pct": 54.07
+   },
+   "short_outcome": {
+    "profit_first_pct": 16.65,
+    "stop_first_pct": 29.27,
+    "timeout_pct": 54.08
+   },
+   "event_duration_s": {
+    "median": 35,
+    "p90": 55,
+    "horizon_s": 60
+   },
+   "mean_barrier_points": 146.5
+  },
+  "tb_H300|C0_spread_only": {
+   "spec": {
+    "name": "tb_H300",
+    "family": "tb",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9346586,
+    "LONG": 2504152,
+    "SHORT": 2616732,
+    "NO_TRADE": 4225702,
+    "pct_LONG": 26.79,
+    "pct_SHORT": 28.0,
+    "pct_NO_TRADE": 45.21,
+    "ambiguous": 0,
+    "lost_warmup": 72000,
+    "lost_boundary": 36000
+   },
+   "coverage_fraction_labelled": 0.98858,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1559406,
+     "LONG": 408330,
+     "SHORT": 422198,
+     "NO_TRADE": 728878,
+     "pct_LONG": 26.18,
+     "pct_SHORT": 27.07,
+     "pct_NO_TRADE": 46.74,
+     "ambiguous": 0,
+     "lost_warmup": 12600,
+     "lost_boundary": 6000
+    },
+    "2026-05": {
+     "n_labelled": 1707585,
+     "LONG": 433988,
+     "SHORT": 472876,
+     "NO_TRADE": 800721,
+     "pct_LONG": 25.42,
+     "pct_SHORT": 27.69,
+     "pct_NO_TRADE": 46.89,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 6600
+    },
+    "2026-06": {
+     "n_labelled": 1773905,
+     "LONG": 476309,
+     "SHORT": 508307,
+     "NO_TRADE": 789289,
+     "pct_LONG": 26.85,
+     "pct_SHORT": 28.65,
+     "pct_NO_TRADE": 44.49,
+     "ambiguous": 0,
+     "lost_warmup": 15000,
+     "lost_boundary": 7500
+    },
+    "2026-07": {
+     "n_labelled": 1860888,
+     "LONG": 503338,
+     "SHORT": 528744,
+     "NO_TRADE": 828806,
+     "pct_LONG": 27.05,
+     "pct_SHORT": 28.41,
+     "pct_NO_TRADE": 44.54,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 6900
+    },
+    "2026-08": {
+     "n_labelled": 1724749,
+     "LONG": 483792,
+     "SHORT": 469384,
+     "NO_TRADE": 771573,
+     "pct_LONG": 28.05,
+     "pct_SHORT": 27.21,
+     "pct_NO_TRADE": 44.74,
+     "ambiguous": 0,
+     "lost_warmup": 13200,
+     "lost_boundary": 6300
+    },
+    "2026-09": {
+     "n_labelled": 720053,
+     "LONG": 198395,
+     "SHORT": 215223,
+     "NO_TRADE": 306435,
+     "pct_LONG": 27.55,
+     "pct_SHORT": 29.89,
+     "pct_NO_TRADE": 42.56,
+     "ambiguous": 0,
+     "lost_warmup": 4800,
+     "lost_boundary": 2700
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2889905,
+     "LONG": 786675,
+     "SHORT": 820125,
+     "NO_TRADE": 1283105,
+     "pct_LONG": 27.22,
+     "pct_SHORT": 28.38,
+     "pct_NO_TRADE": 44.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 600
+    },
+    "LONDON": {
+     "n_labelled": 2065824,
+     "LONG": 568939,
+     "SHORT": 583472,
+     "NO_TRADE": 913413,
+     "pct_LONG": 27.54,
+     "pct_SHORT": 28.24,
+     "pct_NO_TRADE": 44.22,
+     "ambiguous": 0,
+     "lost_warmup": 1800,
+     "lost_boundary": 300
+    },
+    "NEW_YORK": {
+     "n_labelled": 1978096,
+     "LONG": 486056,
+     "SHORT": 539243,
+     "NO_TRADE": 952797,
+     "pct_LONG": 24.57,
+     "pct_SHORT": 27.26,
+     "pct_NO_TRADE": 48.17,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 34800
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1654645,
+     "LONG": 471461,
+     "SHORT": 481476,
+     "NO_TRADE": 701708,
+     "pct_LONG": 28.49,
+     "pct_SHORT": 29.1,
+     "pct_NO_TRADE": 42.41,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 300
+    },
+    "OFF_HOURS": {
+     "n_labelled": 758116,
+     "LONG": 191021,
+     "SHORT": 192416,
+     "NO_TRADE": 374679,
+     "pct_LONG": 25.2,
+     "pct_SHORT": 25.38,
+     "pct_NO_TRADE": 49.42,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 8947052,
+     "LONG": 2395215,
+     "SHORT": 2496065,
+     "NO_TRADE": 4055772,
+     "pct_LONG": 26.77,
+     "pct_SHORT": 27.9,
+     "pct_NO_TRADE": 45.33,
+     "ambiguous": 0,
+     "lost_warmup": 69000,
+     "lost_boundary": 34500
+    },
+    "post": {
+     "n_labelled": 399534,
+     "LONG": 108937,
+     "SHORT": 120667,
+     "NO_TRADE": 169930,
+     "pct_LONG": 27.27,
+     "pct_SHORT": 30.2,
+     "pct_NO_TRADE": 42.53,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 1500
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 26.79,
+    "stop_first_pct": 31.22,
+    "timeout_pct": 41.99
+   },
+   "short_outcome": {
+    "profit_first_pct": 28.0,
+    "stop_first_pct": 29.86,
+    "timeout_pct": 42.14
+   },
+   "event_duration_s": {
+    "median": 147,
+    "p90": 262,
+    "horizon_s": 300
+   },
+   "mean_barrier_points": 330.2
+  },
+  "tb_H300|C1_moderate": {
+   "spec": {
+    "name": "tb_H300",
+    "family": "tb",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2345368,
+    "LONG": 592368,
+    "SHORT": 623001,
+    "NO_TRADE": 1129999,
+    "pct_LONG": 25.26,
+    "pct_SHORT": 26.56,
+    "pct_NO_TRADE": 48.18,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.98748,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 407298,
+     "LONG": 98431,
+     "SHORT": 103607,
+     "NO_TRADE": 205260,
+     "pct_LONG": 24.17,
+     "pct_SHORT": 25.44,
+     "pct_NO_TRADE": 50.4,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 414173,
+     "LONG": 96629,
+     "SHORT": 110404,
+     "NO_TRADE": 207140,
+     "pct_LONG": 23.33,
+     "pct_SHORT": 26.66,
+     "pct_NO_TRADE": 50.01,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 474695,
+     "LONG": 118065,
+     "SHORT": 130391,
+     "NO_TRADE": 226239,
+     "pct_LONG": 24.87,
+     "pct_SHORT": 27.47,
+     "pct_NO_TRADE": 47.66,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 476573,
+     "LONG": 126324,
+     "SHORT": 121422,
+     "NO_TRADE": 228827,
+     "pct_LONG": 26.51,
+     "pct_SHORT": 25.48,
+     "pct_NO_TRADE": 48.02,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 409072,
+     "LONG": 106328,
+     "SHORT": 114128,
+     "NO_TRADE": 188616,
+     "pct_LONG": 25.99,
+     "pct_SHORT": 27.9,
+     "pct_NO_TRADE": 46.11,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 163557,
+     "LONG": 46591,
+     "SHORT": 43049,
+     "NO_TRADE": 73917,
+     "pct_LONG": 28.49,
+     "pct_SHORT": 26.32,
+     "pct_NO_TRADE": 45.19,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 191038,
+     "SHORT": 191878,
+     "NO_TRADE": 339787,
+     "pct_LONG": 26.43,
+     "pct_SHORT": 26.55,
+     "pct_NO_TRADE": 47.02,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 131442,
+     "SHORT": 141166,
+     "NO_TRADE": 247456,
+     "pct_LONG": 25.27,
+     "pct_SHORT": 27.14,
+     "pct_NO_TRADE": 47.58,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495113,
+     "LONG": 112240,
+     "SHORT": 124558,
+     "NO_TRADE": 258315,
+     "pct_LONG": 22.67,
+     "pct_SHORT": 25.16,
+     "pct_NO_TRADE": 52.17,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416244,
+     "LONG": 109704,
+     "SHORT": 121678,
+     "NO_TRADE": 184862,
+     "pct_LONG": 26.36,
+     "pct_SHORT": 29.23,
+     "pct_NO_TRADE": 44.41,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 47944,
+     "SHORT": 43721,
+     "NO_TRADE": 99579,
+     "pct_LONG": 25.07,
+     "pct_SHORT": 22.86,
+     "pct_NO_TRADE": 52.07,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2263649,
+     "LONG": 568200,
+     "SHORT": 601572,
+     "NO_TRADE": 1093877,
+     "pct_LONG": 25.1,
+     "pct_SHORT": 26.58,
+     "pct_NO_TRADE": 48.32,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 81719,
+     "LONG": 24168,
+     "SHORT": 21429,
+     "NO_TRADE": 36122,
+     "pct_LONG": 29.57,
+     "pct_SHORT": 26.22,
+     "pct_NO_TRADE": 44.2,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 301
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 25.26,
+    "stop_first_pct": 31.34,
+    "timeout_pct": 43.4
+   },
+   "short_outcome": {
+    "profit_first_pct": 26.56,
+    "stop_first_pct": 29.91,
+    "timeout_pct": 43.53
+   },
+   "event_duration_s": {
+    "median": 151,
+    "p90": 264,
+    "horizon_s": 300
+   },
+   "mean_barrier_points": 326.6
+  },
+  "tb_H300|C2_pessimistic": {
+   "spec": {
+    "name": "tb_H300",
+    "family": "tb",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2345368,
+    "LONG": 530693,
+    "SHORT": 559397,
+    "NO_TRADE": 1255278,
+    "pct_LONG": 22.63,
+    "pct_SHORT": 23.85,
+    "pct_NO_TRADE": 53.52,
+    "ambiguous": 0,
+    "lost_warmup": 19800,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.98748,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 407298,
+     "LONG": 88174,
+     "SHORT": 93532,
+     "NO_TRADE": 225592,
+     "pct_LONG": 21.65,
+     "pct_SHORT": 22.96,
+     "pct_NO_TRADE": 55.39,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 414173,
+     "LONG": 86683,
+     "SHORT": 100768,
+     "NO_TRADE": 226722,
+     "pct_LONG": 20.93,
+     "pct_SHORT": 24.33,
+     "pct_NO_TRADE": 54.74,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 474695,
+     "LONG": 107004,
+     "SHORT": 118897,
+     "NO_TRADE": 248794,
+     "pct_LONG": 22.54,
+     "pct_SHORT": 25.05,
+     "pct_NO_TRADE": 52.41,
+     "ambiguous": 0,
+     "lost_warmup": 4200,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 476573,
+     "LONG": 111509,
+     "SHORT": 105190,
+     "NO_TRADE": 259874,
+     "pct_LONG": 23.4,
+     "pct_SHORT": 22.07,
+     "pct_NO_TRADE": 54.53,
+     "ambiguous": 0,
+     "lost_warmup": 3600,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 409072,
+     "LONG": 95453,
+     "SHORT": 103611,
+     "NO_TRADE": 210008,
+     "pct_LONG": 23.33,
+     "pct_SHORT": 25.33,
+     "pct_NO_TRADE": 51.34,
+     "ambiguous": 0,
+     "lost_warmup": 3000,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 163557,
+     "LONG": 41870,
+     "SHORT": 37399,
+     "NO_TRADE": 84288,
+     "pct_LONG": 25.6,
+     "pct_SHORT": 22.87,
+     "pct_NO_TRADE": 51.53,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 172971,
+     "SHORT": 173470,
+     "NO_TRADE": 376262,
+     "pct_LONG": 23.93,
+     "pct_SHORT": 24.0,
+     "pct_NO_TRADE": 52.06,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 520064,
+     "LONG": 116440,
+     "SHORT": 124731,
+     "NO_TRADE": 278893,
+     "pct_LONG": 22.39,
+     "pct_SHORT": 23.98,
+     "pct_NO_TRADE": 53.63,
+     "ambiguous": 0,
+     "lost_warmup": 1200,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495113,
+     "LONG": 98025,
+     "SHORT": 109477,
+     "NO_TRADE": 287611,
+     "pct_LONG": 19.8,
+     "pct_SHORT": 22.11,
+     "pct_NO_TRADE": 58.09,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416244,
+     "LONG": 101935,
+     "SHORT": 113650,
+     "NO_TRADE": 200659,
+     "pct_LONG": 24.49,
+     "pct_SHORT": 27.3,
+     "pct_NO_TRADE": 48.21,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 191244,
+     "LONG": 41322,
+     "SHORT": 38069,
+     "NO_TRADE": 111853,
+     "pct_LONG": 21.61,
+     "pct_SHORT": 19.91,
+     "pct_NO_TRADE": 58.49,
+     "ambiguous": 0,
+     "lost_warmup": 17400,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2263649,
+     "LONG": 508969,
+     "SHORT": 540889,
+     "NO_TRADE": 1213791,
+     "pct_LONG": 22.48,
+     "pct_SHORT": 23.89,
+     "pct_NO_TRADE": 53.62,
+     "ambiguous": 0,
+     "lost_warmup": 19200,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 81719,
+     "LONG": 21724,
+     "SHORT": 18508,
+     "NO_TRADE": 41487,
+     "pct_LONG": 26.58,
+     "pct_SHORT": 22.65,
+     "pct_NO_TRADE": 50.77,
+     "ambiguous": 0,
+     "lost_warmup": 600,
+     "lost_boundary": 301
+    }
+   },
+   "long_outcome": {
+    "profit_first_pct": 22.63,
+    "stop_first_pct": 31.48,
+    "timeout_pct": 45.89
+   },
+   "short_outcome": {
+    "profit_first_pct": 23.85,
+    "stop_first_pct": 30.07,
+    "timeout_pct": 46.08
+   },
+   "event_duration_s": {
+    "median": 157,
+    "p90": 266,
+    "horizon_s": 300
+   },
+   "mean_barrier_points": 326.6
+  },
+  "fh_H15|C0_spread_only": {
+   "spec": {
+    "name": "fh_H15",
+    "family": "fh",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9452786,
+    "LONG": 4032839,
+    "SHORT": 4037873,
+    "NO_TRADE": 1382074,
+    "pct_LONG": 42.66,
+    "pct_SHORT": 42.72,
+    "pct_NO_TRADE": 14.62,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 1800
+   },
+   "coverage_fraction_labelled": 0.99981,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1577706,
+     "LONG": 684244,
+     "SHORT": 680527,
+     "NO_TRADE": 212935,
+     "pct_LONG": 43.37,
+     "pct_SHORT": 43.13,
+     "pct_NO_TRADE": 13.5,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "2026-05": {
+     "n_labelled": 1727055,
+     "LONG": 734732,
+     "SHORT": 739712,
+     "NO_TRADE": 252611,
+     "pct_LONG": 42.54,
+     "pct_SHORT": 42.83,
+     "pct_NO_TRADE": 14.63,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 330
+    },
+    "2026-06": {
+     "n_labelled": 1796030,
+     "LONG": 766118,
+     "SHORT": 784931,
+     "NO_TRADE": 244981,
+     "pct_LONG": 42.66,
+     "pct_SHORT": 43.7,
+     "pct_NO_TRADE": 13.64,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 375
+    },
+    "2026-07": {
+     "n_labelled": 1880643,
+     "LONG": 785778,
+     "SHORT": 788502,
+     "NO_TRADE": 306363,
+     "pct_LONG": 41.78,
+     "pct_SHORT": 41.93,
+     "pct_NO_TRADE": 16.29,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 345
+    },
+    "2026-08": {
+     "n_labelled": 1743934,
+     "LONG": 750230,
+     "SHORT": 733713,
+     "NO_TRADE": 259991,
+     "pct_LONG": 43.02,
+     "pct_SHORT": 42.07,
+     "pct_NO_TRADE": 14.91,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 315
+    },
+    "2026-09": {
+     "n_labelled": 727418,
+     "LONG": 311737,
+     "SHORT": 310488,
+     "NO_TRADE": 105193,
+     "pct_LONG": 42.86,
+     "pct_SHORT": 42.68,
+     "pct_NO_TRADE": 14.46,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 135
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890475,
+     "LONG": 1248363,
+     "SHORT": 1249605,
+     "NO_TRADE": 392507,
+     "pct_LONG": 43.19,
+     "pct_SHORT": 43.23,
+     "pct_NO_TRADE": 13.58,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 30
+    },
+    "LONDON": {
+     "n_labelled": 2067909,
+     "LONG": 894597,
+     "SHORT": 893387,
+     "NO_TRADE": 279925,
+     "pct_LONG": 43.26,
+     "pct_SHORT": 43.2,
+     "pct_NO_TRADE": 13.54,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 15
+    },
+    "NEW_YORK": {
+     "n_labelled": 2011756,
+     "LONG": 804402,
+     "SHORT": 813463,
+     "NO_TRADE": 393891,
+     "pct_LONG": 39.99,
+     "pct_SHORT": 40.44,
+     "pct_NO_TRADE": 19.58,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1740
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655530,
+     "LONG": 760614,
+     "SHORT": 755604,
+     "NO_TRADE": 139312,
+     "pct_LONG": 45.94,
+     "pct_SHORT": 45.64,
+     "pct_NO_TRADE": 8.41,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 15
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 324863,
+     "SHORT": 325814,
+     "NO_TRADE": 176439,
+     "pct_LONG": 39.28,
+     "pct_SHORT": 39.39,
+     "pct_NO_TRADE": 21.33,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9048827,
+     "LONG": 3861044,
+     "SHORT": 3865834,
+     "NO_TRADE": 1321949,
+     "pct_LONG": 42.67,
+     "pct_SHORT": 42.72,
+     "pct_NO_TRADE": 14.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1725
+    },
+    "post": {
+     "n_labelled": 403959,
+     "LONG": 171795,
+     "SHORT": 172039,
+     "NO_TRADE": 60125,
+     "pct_LONG": 42.53,
+     "pct_SHORT": 42.59,
+     "pct_NO_TRADE": 14.88,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 75
+    }
+   }
+  },
+  "fh_H15|C1_moderate": {
+   "spec": {
+    "name": "fh_H15",
+    "family": "fh",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2374573,
+    "LONG": 846282,
+    "SHORT": 847258,
+    "NO_TRADE": 681033,
+    "pct_LONG": 35.64,
+    "pct_SHORT": 35.68,
+    "pct_NO_TRADE": 28.68,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99978,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412608,
+     "LONG": 150906,
+     "SHORT": 150302,
+     "NO_TRADE": 111400,
+     "pct_LONG": 36.57,
+     "pct_SHORT": 36.43,
+     "pct_NO_TRADE": 27.0,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 420083,
+     "LONG": 152147,
+     "SHORT": 153227,
+     "NO_TRADE": 114709,
+     "pct_LONG": 36.22,
+     "pct_SHORT": 36.48,
+     "pct_NO_TRADE": 27.31,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 481175,
+     "LONG": 174453,
+     "SHORT": 179038,
+     "NO_TRADE": 127684,
+     "pct_LONG": 36.26,
+     "pct_SHORT": 37.21,
+     "pct_NO_TRADE": 26.54,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 481883,
+     "LONG": 159261,
+     "SHORT": 159431,
+     "NO_TRADE": 163191,
+     "pct_LONG": 33.05,
+     "pct_SHORT": 33.09,
+     "pct_NO_TRADE": 33.87,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 413497,
+     "LONG": 150386,
+     "SHORT": 148438,
+     "NO_TRADE": 114673,
+     "pct_LONG": 36.37,
+     "pct_SHORT": 35.9,
+     "pct_NO_TRADE": 27.73,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 165327,
+     "LONG": 59129,
+     "SHORT": 56822,
+     "NO_TRADE": 49376,
+     "pct_LONG": 35.76,
+     "pct_SHORT": 34.37,
+     "pct_NO_TRADE": 29.87,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 263053,
+     "SHORT": 260827,
+     "NO_TRADE": 199393,
+     "pct_LONG": 36.37,
+     "pct_SHORT": 36.06,
+     "pct_NO_TRADE": 27.57,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 184833,
+     "SHORT": 186101,
+     "NO_TRADE": 150330,
+     "pct_LONG": 35.46,
+     "pct_SHORT": 35.7,
+     "pct_NO_TRADE": 28.84,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 504263,
+     "LONG": 163953,
+     "SHORT": 165244,
+     "NO_TRADE": 175066,
+     "pct_LONG": 32.51,
+     "pct_SHORT": 32.77,
+     "pct_NO_TRADE": 34.72,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417129,
+     "LONG": 171155,
+     "SHORT": 171626,
+     "NO_TRADE": 74348,
+     "pct_LONG": 41.03,
+     "pct_SHORT": 41.14,
+     "pct_NO_TRADE": 17.82,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 63288,
+     "SHORT": 63460,
+     "NO_TRADE": 81896,
+     "pct_LONG": 30.33,
+     "pct_SHORT": 30.42,
+     "pct_NO_TRADE": 39.25,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2291969,
+     "LONG": 817093,
+     "SHORT": 819717,
+     "NO_TRADE": 655159,
+     "pct_LONG": 35.65,
+     "pct_SHORT": 35.76,
+     "pct_NO_TRADE": 28.58,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82604,
+     "LONG": 29189,
+     "SHORT": 27541,
+     "NO_TRADE": 25874,
+     "pct_LONG": 35.34,
+     "pct_SHORT": 33.34,
+     "pct_NO_TRADE": 31.32,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    }
+   }
+  },
+  "fh_H15|C2_pessimistic": {
+   "spec": {
+    "name": "fh_H15",
+    "family": "fh",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2374573,
+    "LONG": 580438,
+    "SHORT": 581859,
+    "NO_TRADE": 1212276,
+    "pct_LONG": 24.44,
+    "pct_SHORT": 24.5,
+    "pct_NO_TRADE": 51.05,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99978,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412608,
+     "LONG": 106182,
+     "SHORT": 105745,
+     "NO_TRADE": 200681,
+     "pct_LONG": 25.73,
+     "pct_SHORT": 25.63,
+     "pct_NO_TRADE": 48.64,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 420083,
+     "LONG": 106629,
+     "SHORT": 107401,
+     "NO_TRADE": 206053,
+     "pct_LONG": 25.38,
+     "pct_SHORT": 25.57,
+     "pct_NO_TRADE": 49.05,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 481175,
+     "LONG": 124975,
+     "SHORT": 128118,
+     "NO_TRADE": 228082,
+     "pct_LONG": 25.97,
+     "pct_SHORT": 26.63,
+     "pct_NO_TRADE": 47.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 481883,
+     "LONG": 99155,
+     "SHORT": 99885,
+     "NO_TRADE": 282843,
+     "pct_LONG": 20.58,
+     "pct_SHORT": 20.73,
+     "pct_NO_TRADE": 58.7,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 413497,
+     "LONG": 103881,
+     "SHORT": 103112,
+     "NO_TRADE": 206504,
+     "pct_LONG": 25.12,
+     "pct_SHORT": 24.94,
+     "pct_NO_TRADE": 49.94,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 165327,
+     "LONG": 39616,
+     "SHORT": 37598,
+     "NO_TRADE": 88113,
+     "pct_LONG": 23.96,
+     "pct_SHORT": 22.74,
+     "pct_NO_TRADE": 53.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 181003,
+     "SHORT": 179077,
+     "NO_TRADE": 363193,
+     "pct_LONG": 25.03,
+     "pct_SHORT": 24.76,
+     "pct_NO_TRADE": 50.22,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 121091,
+     "SHORT": 122722,
+     "NO_TRADE": 277451,
+     "pct_LONG": 23.23,
+     "pct_SHORT": 23.54,
+     "pct_NO_TRADE": 53.23,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 504263,
+     "LONG": 104277,
+     "SHORT": 105640,
+     "NO_TRADE": 294346,
+     "pct_LONG": 20.68,
+     "pct_SHORT": 20.95,
+     "pct_NO_TRADE": 58.37,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417129,
+     "LONG": 134650,
+     "SHORT": 135656,
+     "NO_TRADE": 146823,
+     "pct_LONG": 32.28,
+     "pct_SHORT": 32.52,
+     "pct_NO_TRADE": 35.2,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 39417,
+     "SHORT": 38764,
+     "NO_TRADE": 130463,
+     "pct_LONG": 18.89,
+     "pct_SHORT": 18.58,
+     "pct_NO_TRADE": 62.53,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2291969,
+     "LONG": 561422,
+     "SHORT": 564078,
+     "NO_TRADE": 1166469,
+     "pct_LONG": 24.5,
+     "pct_SHORT": 24.61,
+     "pct_NO_TRADE": 50.89,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82604,
+     "LONG": 19016,
+     "SHORT": 17781,
+     "NO_TRADE": 45807,
+     "pct_LONG": 23.02,
+     "pct_SHORT": 21.53,
+     "pct_NO_TRADE": 55.45,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    }
+   }
+  },
+  "fh_H60|C0_spread_only": {
+   "spec": {
+    "name": "fh_H60",
+    "family": "fh",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9447386,
+    "LONG": 4382116,
+    "SHORT": 4434968,
+    "NO_TRADE": 630302,
+    "pct_LONG": 46.38,
+    "pct_SHORT": 46.94,
+    "pct_NO_TRADE": 6.67,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 7200
+   },
+   "coverage_fraction_labelled": 0.99924,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1576806,
+     "LONG": 738804,
+     "SHORT": 742997,
+     "NO_TRADE": 95005,
+     "pct_LONG": 46.85,
+     "pct_SHORT": 47.12,
+     "pct_NO_TRADE": 6.03,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1200
+    },
+    "2026-05": {
+     "n_labelled": 1726065,
+     "LONG": 800468,
+     "SHORT": 812032,
+     "NO_TRADE": 113565,
+     "pct_LONG": 46.38,
+     "pct_SHORT": 47.05,
+     "pct_NO_TRADE": 6.58,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1320
+    },
+    "2026-06": {
+     "n_labelled": 1794905,
+     "LONG": 827036,
+     "SHORT": 856931,
+     "NO_TRADE": 110938,
+     "pct_LONG": 46.08,
+     "pct_SHORT": 47.74,
+     "pct_NO_TRADE": 6.18,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1500
+    },
+    "2026-07": {
+     "n_labelled": 1879608,
+     "LONG": 861558,
+     "SHORT": 878382,
+     "NO_TRADE": 139668,
+     "pct_LONG": 45.84,
+     "pct_SHORT": 46.73,
+     "pct_NO_TRADE": 7.43,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1380
+    },
+    "2026-08": {
+     "n_labelled": 1742989,
+     "LONG": 818665,
+     "SHORT": 802237,
+     "NO_TRADE": 122087,
+     "pct_LONG": 46.97,
+     "pct_SHORT": 46.03,
+     "pct_NO_TRADE": 7.0,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1260
+    },
+    "2026-09": {
+     "n_labelled": 727013,
+     "LONG": 335585,
+     "SHORT": 342389,
+     "NO_TRADE": 49039,
+     "pct_LONG": 46.16,
+     "pct_SHORT": 47.1,
+     "pct_NO_TRADE": 6.75,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 540
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890385,
+     "LONG": 1350731,
+     "SHORT": 1365151,
+     "NO_TRADE": 174503,
+     "pct_LONG": 46.73,
+     "pct_SHORT": 47.23,
+     "pct_NO_TRADE": 6.04,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 120
+    },
+    "LONDON": {
+     "n_labelled": 2067864,
+     "LONG": 968840,
+     "SHORT": 973378,
+     "NO_TRADE": 125646,
+     "pct_LONG": 46.85,
+     "pct_SHORT": 47.07,
+     "pct_NO_TRADE": 6.08,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 60
+    },
+    "NEW_YORK": {
+     "n_labelled": 2006536,
+     "LONG": 892723,
+     "SHORT": 921820,
+     "NO_TRADE": 191993,
+     "pct_LONG": 44.49,
+     "pct_SHORT": 45.94,
+     "pct_NO_TRADE": 9.57,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6960
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655485,
+     "LONG": 794623,
+     "SHORT": 796941,
+     "NO_TRADE": 63921,
+     "pct_LONG": 48.0,
+     "pct_SHORT": 48.14,
+     "pct_NO_TRADE": 3.86,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 60
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 375199,
+     "SHORT": 377678,
+     "NO_TRADE": 74239,
+     "pct_LONG": 45.36,
+     "pct_SHORT": 45.66,
+     "pct_NO_TRADE": 8.98,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9043652,
+     "LONG": 4196881,
+     "SHORT": 4243985,
+     "NO_TRADE": 602786,
+     "pct_LONG": 46.41,
+     "pct_SHORT": 46.93,
+     "pct_NO_TRADE": 6.67,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6900
+    },
+    "post": {
+     "n_labelled": 403734,
+     "LONG": 185235,
+     "SHORT": 190983,
+     "NO_TRADE": 27516,
+     "pct_LONG": 45.88,
+     "pct_SHORT": 47.3,
+     "pct_NO_TRADE": 6.82,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    }
+   }
+  },
+  "fh_H60|C1_moderate": {
+   "spec": {
+    "name": "fh_H60",
+    "family": "fh",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2373088,
+    "LONG": 1020872,
+    "SHORT": 1029783,
+    "NO_TRADE": 322433,
+    "pct_LONG": 43.02,
+    "pct_SHORT": 43.39,
+    "pct_NO_TRADE": 13.59,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99915,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412338,
+     "LONG": 180266,
+     "SHORT": 179391,
+     "NO_TRADE": 52681,
+     "pct_LONG": 43.72,
+     "pct_SHORT": 43.51,
+     "pct_NO_TRADE": 12.78,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 419813,
+     "LONG": 181755,
+     "SHORT": 185093,
+     "NO_TRADE": 52965,
+     "pct_LONG": 43.29,
+     "pct_SHORT": 44.09,
+     "pct_NO_TRADE": 12.62,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 480815,
+     "LONG": 204914,
+     "SHORT": 215750,
+     "NO_TRADE": 60151,
+     "pct_LONG": 42.62,
+     "pct_SHORT": 44.87,
+     "pct_NO_TRADE": 12.51,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 481613,
+     "LONG": 201018,
+     "SHORT": 202425,
+     "NO_TRADE": 78170,
+     "pct_LONG": 41.74,
+     "pct_SHORT": 42.03,
+     "pct_NO_TRADE": 16.23,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 413272,
+     "LONG": 180680,
+     "SHORT": 177756,
+     "NO_TRADE": 54836,
+     "pct_LONG": 43.72,
+     "pct_SHORT": 43.01,
+     "pct_NO_TRADE": 13.27,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 165237,
+     "LONG": 72239,
+     "SHORT": 69368,
+     "NO_TRADE": 23630,
+     "pct_LONG": 43.72,
+     "pct_SHORT": 41.98,
+     "pct_NO_TRADE": 14.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 316460,
+     "SHORT": 315337,
+     "NO_TRADE": 91386,
+     "pct_LONG": 43.76,
+     "pct_SHORT": 43.6,
+     "pct_NO_TRADE": 12.64,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 223763,
+     "SHORT": 227749,
+     "NO_TRADE": 69752,
+     "pct_LONG": 42.93,
+     "pct_SHORT": 43.69,
+     "pct_NO_TRADE": 13.38,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502913,
+     "LONG": 204353,
+     "SHORT": 210517,
+     "NO_TRADE": 88043,
+     "pct_LONG": 40.63,
+     "pct_SHORT": 41.86,
+     "pct_NO_TRADE": 17.51,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417084,
+     "LONG": 190641,
+     "SHORT": 191994,
+     "NO_TRADE": 34449,
+     "pct_LONG": 45.71,
+     "pct_SHORT": 46.03,
+     "pct_NO_TRADE": 8.26,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 85655,
+     "SHORT": 84186,
+     "NO_TRADE": 38803,
+     "pct_LONG": 41.05,
+     "pct_SHORT": 40.35,
+     "pct_NO_TRADE": 18.6,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2290529,
+     "LONG": 984625,
+     "SHORT": 995535,
+     "NO_TRADE": 310369,
+     "pct_LONG": 42.99,
+     "pct_SHORT": 43.46,
+     "pct_NO_TRADE": 13.55,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 82559,
+     "LONG": 36247,
+     "SHORT": 34248,
+     "NO_TRADE": 12064,
+     "pct_LONG": 43.9,
+     "pct_SHORT": 41.48,
+     "pct_NO_TRADE": 14.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    }
+   }
+  },
+  "fh_H60|C2_pessimistic": {
+   "spec": {
+    "name": "fh_H60",
+    "family": "fh",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2373088,
+    "LONG": 862389,
+    "SHORT": 871323,
+    "NO_TRADE": 639376,
+    "pct_LONG": 36.34,
+    "pct_SHORT": 36.72,
+    "pct_NO_TRADE": 26.94,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99915,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412338,
+     "LONG": 154528,
+     "SHORT": 154096,
+     "NO_TRADE": 103714,
+     "pct_LONG": 37.48,
+     "pct_SHORT": 37.37,
+     "pct_NO_TRADE": 25.15,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 419813,
+     "LONG": 155300,
+     "SHORT": 158888,
+     "NO_TRADE": 105625,
+     "pct_LONG": 36.99,
+     "pct_SHORT": 37.85,
+     "pct_NO_TRADE": 25.16,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 480815,
+     "LONG": 176243,
+     "SHORT": 186125,
+     "NO_TRADE": 118447,
+     "pct_LONG": 36.66,
+     "pct_SHORT": 38.71,
+     "pct_NO_TRADE": 24.63,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 481613,
+     "LONG": 163066,
+     "SHORT": 164313,
+     "NO_TRADE": 154234,
+     "pct_LONG": 33.86,
+     "pct_SHORT": 34.12,
+     "pct_NO_TRADE": 32.02,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 413272,
+     "LONG": 152797,
+     "SHORT": 150461,
+     "NO_TRADE": 110014,
+     "pct_LONG": 36.97,
+     "pct_SHORT": 36.41,
+     "pct_NO_TRADE": 26.62,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 165237,
+     "LONG": 60455,
+     "SHORT": 57440,
+     "NO_TRADE": 47342,
+     "pct_LONG": 36.59,
+     "pct_SHORT": 34.76,
+     "pct_NO_TRADE": 28.65,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 270285,
+     "SHORT": 269586,
+     "NO_TRADE": 183312,
+     "pct_LONG": 37.37,
+     "pct_SHORT": 37.28,
+     "pct_NO_TRADE": 25.35,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 186718,
+     "SHORT": 190898,
+     "NO_TRADE": 143648,
+     "pct_LONG": 35.82,
+     "pct_SHORT": 36.62,
+     "pct_NO_TRADE": 27.56,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502913,
+     "LONG": 165996,
+     "SHORT": 171002,
+     "NO_TRADE": 165915,
+     "pct_LONG": 33.01,
+     "pct_SHORT": 34.0,
+     "pct_NO_TRADE": 32.99,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417084,
+     "LONG": 171775,
+     "SHORT": 173474,
+     "NO_TRADE": 71835,
+     "pct_LONG": 41.18,
+     "pct_SHORT": 41.59,
+     "pct_NO_TRADE": 17.22,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 67615,
+     "SHORT": 66363,
+     "NO_TRADE": 74666,
+     "pct_LONG": 32.41,
+     "pct_SHORT": 31.81,
+     "pct_NO_TRADE": 35.79,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2290529,
+     "LONG": 832416,
+     "SHORT": 843006,
+     "NO_TRADE": 615107,
+     "pct_LONG": 36.34,
+     "pct_SHORT": 36.8,
+     "pct_NO_TRADE": 26.85,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 82559,
+     "LONG": 29973,
+     "SHORT": 28317,
+     "NO_TRADE": 24269,
+     "pct_LONG": 36.3,
+     "pct_SHORT": 34.3,
+     "pct_NO_TRADE": 29.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    }
+   }
+  },
+  "fh_H300|C0_spread_only": {
+   "spec": {
+    "name": "fh_H300",
+    "family": "fh",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9418586,
+    "LONG": 4506992,
+    "SHORT": 4641534,
+    "NO_TRADE": 270060,
+    "pct_LONG": 47.85,
+    "pct_SHORT": 49.28,
+    "pct_NO_TRADE": 2.87,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 36000
+   },
+   "coverage_fraction_labelled": 0.99619,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1572006,
+     "LONG": 762204,
+     "SHORT": 768792,
+     "NO_TRADE": 41010,
+     "pct_LONG": 48.49,
+     "pct_SHORT": 48.91,
+     "pct_NO_TRADE": 2.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6000
+    },
+    "2026-05": {
+     "n_labelled": 1720785,
+     "LONG": 825811,
+     "SHORT": 847419,
+     "NO_TRADE": 47555,
+     "pct_LONG": 47.99,
+     "pct_SHORT": 49.25,
+     "pct_NO_TRADE": 2.76,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6600
+    },
+    "2026-06": {
+     "n_labelled": 1788905,
+     "LONG": 841796,
+     "SHORT": 898644,
+     "NO_TRADE": 48465,
+     "pct_LONG": 47.06,
+     "pct_SHORT": 50.23,
+     "pct_NO_TRADE": 2.71,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 7500
+    },
+    "2026-07": {
+     "n_labelled": 1874088,
+     "LONG": 887325,
+     "SHORT": 924774,
+     "NO_TRADE": 61989,
+     "pct_LONG": 47.35,
+     "pct_SHORT": 49.35,
+     "pct_NO_TRADE": 3.31,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6900
+    },
+    "2026-08": {
+     "n_labelled": 1737949,
+     "LONG": 849567,
+     "SHORT": 837820,
+     "NO_TRADE": 50562,
+     "pct_LONG": 48.88,
+     "pct_SHORT": 48.21,
+     "pct_NO_TRADE": 2.91,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6300
+    },
+    "2026-09": {
+     "n_labelled": 724853,
+     "LONG": 340289,
+     "SHORT": 364085,
+     "NO_TRADE": 20479,
+     "pct_LONG": 46.95,
+     "pct_SHORT": 50.23,
+     "pct_NO_TRADE": 2.83,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2700
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2889905,
+     "LONG": 1393588,
+     "SHORT": 1421697,
+     "NO_TRADE": 74620,
+     "pct_LONG": 48.22,
+     "pct_SHORT": 49.2,
+     "pct_NO_TRADE": 2.58,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 600
+    },
+    "LONDON": {
+     "n_labelled": 2067624,
+     "LONG": 991428,
+     "SHORT": 1021991,
+     "NO_TRADE": 54205,
+     "pct_LONG": 47.95,
+     "pct_SHORT": 49.43,
+     "pct_NO_TRADE": 2.62,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "NEW_YORK": {
+     "n_labelled": 1978696,
+     "LONG": 910752,
+     "SHORT": 986131,
+     "NO_TRADE": 81813,
+     "pct_LONG": 46.03,
+     "pct_SHORT": 49.84,
+     "pct_NO_TRADE": 4.13,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 34800
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655245,
+     "LONG": 812829,
+     "SHORT": 815111,
+     "NO_TRADE": 27305,
+     "pct_LONG": 49.11,
+     "pct_SHORT": 49.24,
+     "pct_NO_TRADE": 1.65,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 398395,
+     "SHORT": 396604,
+     "NO_TRADE": 32117,
+     "pct_LONG": 48.17,
+     "pct_SHORT": 47.95,
+     "pct_NO_TRADE": 3.88,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9016052,
+     "LONG": 4318623,
+     "SHORT": 4438672,
+     "NO_TRADE": 258757,
+     "pct_LONG": 47.9,
+     "pct_SHORT": 49.23,
+     "pct_NO_TRADE": 2.87,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 34500
+    },
+    "post": {
+     "n_labelled": 402534,
+     "LONG": 188369,
+     "SHORT": 202862,
+     "NO_TRADE": 11303,
+     "pct_LONG": 46.8,
+     "pct_SHORT": 50.4,
+     "pct_NO_TRADE": 2.81,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1500
+    }
+   }
+  },
+  "fh_H300|C1_moderate": {
+   "spec": {
+    "name": "fh_H300",
+    "family": "fh",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2365168,
+    "LONG": 1096614,
+    "SHORT": 1128966,
+    "NO_TRADE": 139588,
+    "pct_LONG": 46.37,
+    "pct_SHORT": 47.73,
+    "pct_NO_TRADE": 5.9,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.99582,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 410898,
+     "LONG": 192145,
+     "SHORT": 196487,
+     "NO_TRADE": 22266,
+     "pct_LONG": 46.76,
+     "pct_SHORT": 47.82,
+     "pct_NO_TRADE": 5.42,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 418373,
+     "LONG": 194021,
+     "SHORT": 200876,
+     "NO_TRADE": 23476,
+     "pct_LONG": 46.38,
+     "pct_SHORT": 48.01,
+     "pct_NO_TRADE": 5.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 478895,
+     "LONG": 217406,
+     "SHORT": 234465,
+     "NO_TRADE": 27024,
+     "pct_LONG": 45.4,
+     "pct_SHORT": 48.96,
+     "pct_NO_TRADE": 5.64,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 480173,
+     "LONG": 222221,
+     "SHORT": 223509,
+     "NO_TRADE": 34443,
+     "pct_LONG": 46.28,
+     "pct_SHORT": 46.55,
+     "pct_NO_TRADE": 7.17,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 412072,
+     "LONG": 192261,
+     "SHORT": 197804,
+     "NO_TRADE": 22007,
+     "pct_LONG": 46.66,
+     "pct_SHORT": 48.0,
+     "pct_NO_TRADE": 5.34,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 164757,
+     "LONG": 78560,
+     "SHORT": 75825,
+     "NO_TRADE": 10372,
+     "pct_LONG": 47.68,
+     "pct_SHORT": 46.02,
+     "pct_NO_TRADE": 6.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 345527,
+     "SHORT": 337626,
+     "NO_TRADE": 39550,
+     "pct_LONG": 47.81,
+     "pct_SHORT": 46.72,
+     "pct_NO_TRADE": 5.47,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 237519,
+     "SHORT": 253997,
+     "NO_TRADE": 29748,
+     "pct_LONG": 45.57,
+     "pct_SHORT": 48.73,
+     "pct_NO_TRADE": 5.71,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495713,
+     "LONG": 218862,
+     "SHORT": 237896,
+     "NO_TRADE": 38955,
+     "pct_LONG": 44.15,
+     "pct_SHORT": 47.99,
+     "pct_NO_TRADE": 7.86,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416844,
+     "LONG": 195528,
+     "SHORT": 206254,
+     "NO_TRADE": 15062,
+     "pct_LONG": 46.91,
+     "pct_SHORT": 49.48,
+     "pct_NO_TRADE": 3.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 99178,
+     "SHORT": 93193,
+     "NO_TRADE": 16273,
+     "pct_LONG": 47.53,
+     "pct_SHORT": 44.67,
+     "pct_NO_TRADE": 7.8,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2282849,
+     "LONG": 1056791,
+     "SHORT": 1091330,
+     "NO_TRADE": 134728,
+     "pct_LONG": 46.29,
+     "pct_SHORT": 47.81,
+     "pct_NO_TRADE": 5.9,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 82319,
+     "LONG": 39823,
+     "SHORT": 37636,
+     "NO_TRADE": 4860,
+     "pct_LONG": 48.38,
+     "pct_SHORT": 45.72,
+     "pct_NO_TRADE": 5.9,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    }
+   }
+  },
+  "fh_H300|C2_pessimistic": {
+   "spec": {
+    "name": "fh_H300",
+    "family": "fh",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2365168,
+    "LONG": 1025489,
+    "SHORT": 1056592,
+    "NO_TRADE": 283087,
+    "pct_LONG": 43.36,
+    "pct_SHORT": 44.67,
+    "pct_NO_TRADE": 11.97,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.99582,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 410898,
+     "LONG": 180675,
+     "SHORT": 184779,
+     "NO_TRADE": 45444,
+     "pct_LONG": 43.97,
+     "pct_SHORT": 44.97,
+     "pct_NO_TRADE": 11.06,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 418373,
+     "LONG": 182124,
+     "SHORT": 188864,
+     "NO_TRADE": 47385,
+     "pct_LONG": 43.53,
+     "pct_SHORT": 45.14,
+     "pct_NO_TRADE": 11.33,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 478895,
+     "LONG": 203682,
+     "SHORT": 220139,
+     "NO_TRADE": 55074,
+     "pct_LONG": 42.53,
+     "pct_SHORT": 45.97,
+     "pct_NO_TRADE": 11.5,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 480173,
+     "LONG": 204829,
+     "SHORT": 206195,
+     "NO_TRADE": 69149,
+     "pct_LONG": 42.66,
+     "pct_SHORT": 42.94,
+     "pct_NO_TRADE": 14.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 412072,
+     "LONG": 180884,
+     "SHORT": 185690,
+     "NO_TRADE": 45498,
+     "pct_LONG": 43.9,
+     "pct_SHORT": 45.06,
+     "pct_NO_TRADE": 11.04,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 164757,
+     "LONG": 73295,
+     "SHORT": 70925,
+     "NO_TRADE": 20537,
+     "pct_LONG": 44.49,
+     "pct_SHORT": 43.05,
+     "pct_NO_TRADE": 12.47,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 325440,
+     "SHORT": 316748,
+     "NO_TRADE": 80515,
+     "pct_LONG": 45.03,
+     "pct_SHORT": 43.83,
+     "pct_NO_TRADE": 11.14,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 221497,
+     "SHORT": 237363,
+     "NO_TRADE": 62404,
+     "pct_LONG": 42.49,
+     "pct_SHORT": 45.54,
+     "pct_NO_TRADE": 11.97,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495713,
+     "LONG": 200451,
+     "SHORT": 219240,
+     "NO_TRADE": 76022,
+     "pct_LONG": 40.44,
+     "pct_SHORT": 44.23,
+     "pct_NO_TRADE": 15.34,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416844,
+     "LONG": 187118,
+     "SHORT": 198287,
+     "NO_TRADE": 31439,
+     "pct_LONG": 44.89,
+     "pct_SHORT": 47.57,
+     "pct_NO_TRADE": 7.54,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 90983,
+     "SHORT": 84954,
+     "NO_TRADE": 32707,
+     "pct_LONG": 43.61,
+     "pct_SHORT": 40.72,
+     "pct_NO_TRADE": 15.68,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2282849,
+     "LONG": 988036,
+     "SHORT": 1021340,
+     "NO_TRADE": 273473,
+     "pct_LONG": 43.28,
+     "pct_SHORT": 44.74,
+     "pct_NO_TRADE": 11.98,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 82319,
+     "LONG": 37453,
+     "SHORT": 35252,
+     "NO_TRADE": 9614,
+     "pct_LONG": 45.5,
+     "pct_SHORT": 42.82,
+     "pct_NO_TRADE": 11.68,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    }
+   }
+  },
+  "opp_H15|C0_spread_only": {
+   "spec": {
+    "name": "opp_H15",
+    "family": "opp",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9452786,
+    "LONG": 4032405,
+    "SHORT": 4057367,
+    "NO_TRADE": 1363014,
+    "pct_LONG": 42.66,
+    "pct_SHORT": 42.92,
+    "pct_NO_TRADE": 14.42,
+    "ambiguous": 1,
+    "lost_warmup": 0,
+    "lost_boundary": 1800
+   },
+   "coverage_fraction_labelled": 0.99981,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1577706,
+     "LONG": 691591,
+     "SHORT": 689076,
+     "NO_TRADE": 197039,
+     "pct_LONG": 43.84,
+     "pct_SHORT": 43.68,
+     "pct_NO_TRADE": 12.49,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "2026-05": {
+     "n_labelled": 1727055,
+     "LONG": 736398,
+     "SHORT": 747982,
+     "NO_TRADE": 242675,
+     "pct_LONG": 42.64,
+     "pct_SHORT": 43.31,
+     "pct_NO_TRADE": 14.05,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 330
+    },
+    "2026-06": {
+     "n_labelled": 1796030,
+     "LONG": 778797,
+     "SHORT": 790803,
+     "NO_TRADE": 226430,
+     "pct_LONG": 43.36,
+     "pct_SHORT": 44.03,
+     "pct_NO_TRADE": 12.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 375
+    },
+    "2026-07": {
+     "n_labelled": 1880643,
+     "LONG": 773572,
+     "SHORT": 776243,
+     "NO_TRADE": 330828,
+     "pct_LONG": 41.13,
+     "pct_SHORT": 41.28,
+     "pct_NO_TRADE": 17.59,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 345
+    },
+    "2026-08": {
+     "n_labelled": 1743934,
+     "LONG": 744630,
+     "SHORT": 743079,
+     "NO_TRADE": 256225,
+     "pct_LONG": 42.7,
+     "pct_SHORT": 42.61,
+     "pct_NO_TRADE": 14.69,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 315
+    },
+    "2026-09": {
+     "n_labelled": 727418,
+     "LONG": 307417,
+     "SHORT": 310184,
+     "NO_TRADE": 109817,
+     "pct_LONG": 42.26,
+     "pct_SHORT": 42.64,
+     "pct_NO_TRADE": 15.1,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 135
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890475,
+     "LONG": 1258791,
+     "SHORT": 1266112,
+     "NO_TRADE": 365572,
+     "pct_LONG": 43.55,
+     "pct_SHORT": 43.8,
+     "pct_NO_TRADE": 12.65,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 30
+    },
+    "LONDON": {
+     "n_labelled": 2067909,
+     "LONG": 903258,
+     "SHORT": 906498,
+     "NO_TRADE": 258153,
+     "pct_LONG": 43.68,
+     "pct_SHORT": 43.84,
+     "pct_NO_TRADE": 12.48,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 15
+    },
+    "NEW_YORK": {
+     "n_labelled": 2011756,
+     "LONG": 779381,
+     "SHORT": 790994,
+     "NO_TRADE": 441381,
+     "pct_LONG": 38.74,
+     "pct_SHORT": 39.32,
+     "pct_NO_TRADE": 21.94,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 1740
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655530,
+     "LONG": 799876,
+     "SHORT": 800891,
+     "NO_TRADE": 54763,
+     "pct_LONG": 48.32,
+     "pct_SHORT": 48.38,
+     "pct_NO_TRADE": 3.31,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 15
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 291099,
+     "SHORT": 292872,
+     "NO_TRADE": 243145,
+     "pct_LONG": 35.19,
+     "pct_SHORT": 35.41,
+     "pct_NO_TRADE": 29.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9048827,
+     "LONG": 3863803,
+     "SHORT": 3887858,
+     "NO_TRADE": 1297166,
+     "pct_LONG": 42.7,
+     "pct_SHORT": 42.97,
+     "pct_NO_TRADE": 14.34,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 1725
+    },
+    "post": {
+     "n_labelled": 403959,
+     "LONG": 168602,
+     "SHORT": 169509,
+     "NO_TRADE": 65848,
+     "pct_LONG": 41.74,
+     "pct_SHORT": 41.96,
+     "pct_NO_TRADE": 16.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 75
+    }
+   }
+  },
+  "opp_H15|C1_moderate": {
+   "spec": {
+    "name": "opp_H15",
+    "family": "opp",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2374573,
+    "LONG": 648427,
+    "SHORT": 652937,
+    "NO_TRADE": 1073209,
+    "pct_LONG": 27.31,
+    "pct_SHORT": 27.5,
+    "pct_NO_TRADE": 45.2,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99978,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412608,
+     "LONG": 118478,
+     "SHORT": 118580,
+     "NO_TRADE": 175550,
+     "pct_LONG": 28.71,
+     "pct_SHORT": 28.74,
+     "pct_NO_TRADE": 42.55,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 420083,
+     "LONG": 121788,
+     "SHORT": 122569,
+     "NO_TRADE": 175726,
+     "pct_LONG": 28.99,
+     "pct_SHORT": 29.18,
+     "pct_NO_TRADE": 41.83,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 481175,
+     "LONG": 143336,
+     "SHORT": 146658,
+     "NO_TRADE": 191181,
+     "pct_LONG": 29.79,
+     "pct_SHORT": 30.48,
+     "pct_NO_TRADE": 39.73,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 481883,
+     "LONG": 105136,
+     "SHORT": 105467,
+     "NO_TRADE": 271280,
+     "pct_LONG": 21.82,
+     "pct_SHORT": 21.89,
+     "pct_NO_TRADE": 56.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 413497,
+     "LONG": 117241,
+     "SHORT": 118074,
+     "NO_TRADE": 178182,
+     "pct_LONG": 28.35,
+     "pct_SHORT": 28.55,
+     "pct_NO_TRADE": 43.09,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 165327,
+     "LONG": 42448,
+     "SHORT": 41589,
+     "NO_TRADE": 81290,
+     "pct_LONG": 25.68,
+     "pct_SHORT": 25.16,
+     "pct_NO_TRADE": 49.17,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 201419,
+     "SHORT": 200774,
+     "NO_TRADE": 321080,
+     "pct_LONG": 27.85,
+     "pct_SHORT": 27.76,
+     "pct_NO_TRADE": 44.39,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 131335,
+     "SHORT": 134204,
+     "NO_TRADE": 255725,
+     "pct_LONG": 25.2,
+     "pct_SHORT": 25.75,
+     "pct_NO_TRADE": 49.06,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 504263,
+     "LONG": 111274,
+     "SHORT": 113407,
+     "NO_TRADE": 279582,
+     "pct_LONG": 22.07,
+     "pct_SHORT": 22.49,
+     "pct_NO_TRADE": 55.44,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417129,
+     "LONG": 164905,
+     "SHORT": 165307,
+     "NO_TRADE": 86917,
+     "pct_LONG": 39.53,
+     "pct_SHORT": 39.63,
+     "pct_NO_TRADE": 20.84,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 39494,
+     "SHORT": 39245,
+     "NO_TRADE": 129905,
+     "pct_LONG": 18.93,
+     "pct_SHORT": 18.81,
+     "pct_NO_TRADE": 62.26,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2291969,
+     "LONG": 628711,
+     "SHORT": 633860,
+     "NO_TRADE": 1029398,
+     "pct_LONG": 27.43,
+     "pct_SHORT": 27.66,
+     "pct_NO_TRADE": 44.91,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82604,
+     "LONG": 19716,
+     "SHORT": 19077,
+     "NO_TRADE": 43811,
+     "pct_LONG": 23.87,
+     "pct_SHORT": 23.09,
+     "pct_NO_TRADE": 53.04,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    }
+   }
+  },
+  "opp_H15|C2_pessimistic": {
+   "spec": {
+    "name": "opp_H15",
+    "family": "opp",
+    "horizon_s": 15,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2374573,
+    "LONG": 231750,
+    "SHORT": 236724,
+    "NO_TRADE": 1906099,
+    "pct_LONG": 9.76,
+    "pct_SHORT": 9.97,
+    "pct_NO_TRADE": 80.27,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 528
+   },
+   "coverage_fraction_labelled": 0.99978,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412608,
+     "LONG": 43919,
+     "SHORT": 45469,
+     "NO_TRADE": 323220,
+     "pct_LONG": 10.64,
+     "pct_SHORT": 11.02,
+     "pct_NO_TRADE": 78.34,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-05": {
+     "n_labelled": 420083,
+     "LONG": 43031,
+     "SHORT": 45001,
+     "NO_TRADE": 332051,
+     "pct_LONG": 10.24,
+     "pct_SHORT": 10.71,
+     "pct_NO_TRADE": 79.04,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-06": {
+     "n_labelled": 481175,
+     "LONG": 59462,
+     "SHORT": 60507,
+     "NO_TRADE": 361206,
+     "pct_LONG": 12.36,
+     "pct_SHORT": 12.57,
+     "pct_NO_TRADE": 75.07,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 128
+    },
+    "2026-07": {
+     "n_labelled": 481883,
+     "LONG": 26557,
+     "SHORT": 25782,
+     "NO_TRADE": 429544,
+     "pct_LONG": 5.51,
+     "pct_SHORT": 5.35,
+     "pct_NO_TRADE": 89.14,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 96
+    },
+    "2026-08": {
+     "n_labelled": 413497,
+     "LONG": 44795,
+     "SHORT": 46671,
+     "NO_TRADE": 322031,
+     "pct_LONG": 10.83,
+     "pct_SHORT": 11.29,
+     "pct_NO_TRADE": 77.88,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 80
+    },
+    "2026-09": {
+     "n_labelled": 165327,
+     "LONG": 13986,
+     "SHORT": 13294,
+     "NO_TRADE": 138047,
+     "pct_LONG": 8.46,
+     "pct_SHORT": 8.04,
+     "pct_NO_TRADE": 83.5,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723273,
+     "LONG": 67517,
+     "SHORT": 68540,
+     "NO_TRADE": 587216,
+     "pct_LONG": 9.33,
+     "pct_SHORT": 9.48,
+     "pct_NO_TRADE": 81.19,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 32
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 35814,
+     "SHORT": 36405,
+     "NO_TRADE": 449045,
+     "pct_LONG": 6.87,
+     "pct_SHORT": 6.98,
+     "pct_NO_TRADE": 86.15,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 504263,
+     "LONG": 34188,
+     "SHORT": 35400,
+     "NO_TRADE": 434675,
+     "pct_LONG": 6.78,
+     "pct_SHORT": 7.02,
+     "pct_NO_TRADE": 86.2,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 480
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417129,
+     "LONG": 80886,
+     "SHORT": 82901,
+     "NO_TRADE": 253342,
+     "pct_LONG": 19.39,
+     "pct_SHORT": 19.87,
+     "pct_NO_TRADE": 60.73,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 13345,
+     "SHORT": 13478,
+     "NO_TRADE": 181821,
+     "pct_LONG": 6.4,
+     "pct_SHORT": 6.46,
+     "pct_NO_TRADE": 87.14,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2291969,
+     "LONG": 226109,
+     "SHORT": 231131,
+     "NO_TRADE": 1834729,
+     "pct_LONG": 9.87,
+     "pct_SHORT": 10.08,
+     "pct_NO_TRADE": 80.05,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 512
+    },
+    "post": {
+     "n_labelled": 82604,
+     "LONG": 5641,
+     "SHORT": 5593,
+     "NO_TRADE": 71370,
+     "pct_LONG": 6.83,
+     "pct_SHORT": 6.77,
+     "pct_NO_TRADE": 86.4,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 16
+    }
+   }
+  },
+  "opp_H60|C0_spread_only": {
+   "spec": {
+    "name": "opp_H60",
+    "family": "opp",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9447386,
+    "LONG": 4607673,
+    "SHORT": 4640127,
+    "NO_TRADE": 199586,
+    "pct_LONG": 48.77,
+    "pct_SHORT": 49.12,
+    "pct_NO_TRADE": 2.11,
+    "ambiguous": 1,
+    "lost_warmup": 0,
+    "lost_boundary": 7200
+   },
+   "coverage_fraction_labelled": 0.99924,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1576806,
+     "LONG": 774691,
+     "SHORT": 774368,
+     "NO_TRADE": 27747,
+     "pct_LONG": 49.13,
+     "pct_SHORT": 49.11,
+     "pct_NO_TRADE": 1.76,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 1200
+    },
+    "2026-05": {
+     "n_labelled": 1726065,
+     "LONG": 838781,
+     "SHORT": 853664,
+     "NO_TRADE": 33620,
+     "pct_LONG": 48.59,
+     "pct_SHORT": 49.46,
+     "pct_NO_TRADE": 1.95,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1320
+    },
+    "2026-06": {
+     "n_labelled": 1794905,
+     "LONG": 874051,
+     "SHORT": 888401,
+     "NO_TRADE": 32453,
+     "pct_LONG": 48.7,
+     "pct_SHORT": 49.5,
+     "pct_NO_TRADE": 1.81,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1500
+    },
+    "2026-07": {
+     "n_labelled": 1879608,
+     "LONG": 914702,
+     "SHORT": 916857,
+     "NO_TRADE": 48049,
+     "pct_LONG": 48.66,
+     "pct_SHORT": 48.78,
+     "pct_NO_TRADE": 2.56,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1380
+    },
+    "2026-08": {
+     "n_labelled": 1742989,
+     "LONG": 852736,
+     "SHORT": 850226,
+     "NO_TRADE": 40027,
+     "pct_LONG": 48.92,
+     "pct_SHORT": 48.78,
+     "pct_NO_TRADE": 2.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1260
+    },
+    "2026-09": {
+     "n_labelled": 727013,
+     "LONG": 352712,
+     "SHORT": 356611,
+     "NO_TRADE": 17690,
+     "pct_LONG": 48.52,
+     "pct_SHORT": 49.05,
+     "pct_NO_TRADE": 2.43,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 540
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2890385,
+     "LONG": 1424999,
+     "SHORT": 1439943,
+     "NO_TRADE": 25443,
+     "pct_LONG": 49.3,
+     "pct_SHORT": 49.82,
+     "pct_NO_TRADE": 0.88,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 120
+    },
+    "LONDON": {
+     "n_labelled": 2067864,
+     "LONG": 1025771,
+     "SHORT": 1028200,
+     "NO_TRADE": 13893,
+     "pct_LONG": 49.61,
+     "pct_SHORT": 49.72,
+     "pct_NO_TRADE": 0.67,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 60
+    },
+    "NEW_YORK": {
+     "n_labelled": 2006536,
+     "LONG": 936121,
+     "SHORT": 947771,
+     "NO_TRADE": 122644,
+     "pct_LONG": 46.65,
+     "pct_SHORT": 47.23,
+     "pct_NO_TRADE": 6.11,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 6960
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655485,
+     "LONG": 826542,
+     "SHORT": 826453,
+     "NO_TRADE": 2490,
+     "pct_LONG": 49.93,
+     "pct_SHORT": 49.92,
+     "pct_NO_TRADE": 0.15,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 60
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 394240,
+     "SHORT": 397760,
+     "NO_TRADE": 35116,
+     "pct_LONG": 47.66,
+     "pct_SHORT": 48.09,
+     "pct_NO_TRADE": 4.25,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9043652,
+     "LONG": 4411273,
+     "SHORT": 4442946,
+     "NO_TRADE": 189433,
+     "pct_LONG": 48.78,
+     "pct_SHORT": 49.13,
+     "pct_NO_TRADE": 2.09,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 6900
+    },
+    "post": {
+     "n_labelled": 403734,
+     "LONG": 196400,
+     "SHORT": 197181,
+     "NO_TRADE": 10153,
+     "pct_LONG": 48.65,
+     "pct_SHORT": 48.84,
+     "pct_NO_TRADE": 2.51,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    }
+   }
+  },
+  "opp_H60|C1_moderate": {
+   "spec": {
+    "name": "opp_H60",
+    "family": "opp",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2373088,
+    "LONG": 1055106,
+    "SHORT": 1067390,
+    "NO_TRADE": 250592,
+    "pct_LONG": 44.46,
+    "pct_SHORT": 44.98,
+    "pct_NO_TRADE": 10.56,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99915,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412338,
+     "LONG": 186587,
+     "SHORT": 188325,
+     "NO_TRADE": 37426,
+     "pct_LONG": 45.25,
+     "pct_SHORT": 45.67,
+     "pct_NO_TRADE": 9.08,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 419813,
+     "LONG": 190474,
+     "SHORT": 193189,
+     "NO_TRADE": 36150,
+     "pct_LONG": 45.37,
+     "pct_SHORT": 46.02,
+     "pct_NO_TRADE": 8.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 480815,
+     "LONG": 215025,
+     "SHORT": 224031,
+     "NO_TRADE": 41759,
+     "pct_LONG": 44.72,
+     "pct_SHORT": 46.59,
+     "pct_NO_TRADE": 8.69,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 481613,
+     "LONG": 205303,
+     "SHORT": 205152,
+     "NO_TRADE": 71158,
+     "pct_LONG": 42.63,
+     "pct_SHORT": 42.6,
+     "pct_NO_TRADE": 14.77,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 413272,
+     "LONG": 185321,
+     "SHORT": 185065,
+     "NO_TRADE": 42886,
+     "pct_LONG": 44.84,
+     "pct_SHORT": 44.78,
+     "pct_NO_TRADE": 10.38,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 165237,
+     "LONG": 72396,
+     "SHORT": 71628,
+     "NO_TRADE": 21213,
+     "pct_LONG": 43.81,
+     "pct_SHORT": 43.35,
+     "pct_NO_TRADE": 12.84,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 328803,
+     "SHORT": 331813,
+     "NO_TRADE": 62567,
+     "pct_LONG": 45.47,
+     "pct_SHORT": 45.88,
+     "pct_NO_TRADE": 8.65,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 235524,
+     "SHORT": 240378,
+     "NO_TRADE": 45362,
+     "pct_LONG": 45.18,
+     "pct_SHORT": 46.11,
+     "pct_NO_TRADE": 8.7,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502913,
+     "LONG": 205448,
+     "SHORT": 209152,
+     "NO_TRADE": 88313,
+     "pct_LONG": 40.85,
+     "pct_SHORT": 41.59,
+     "pct_NO_TRADE": 17.56,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417084,
+     "LONG": 204286,
+     "SHORT": 205407,
+     "NO_TRADE": 7391,
+     "pct_LONG": 48.98,
+     "pct_SHORT": 49.25,
+     "pct_NO_TRADE": 1.77,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 81045,
+     "SHORT": 80640,
+     "NO_TRADE": 46959,
+     "pct_LONG": 38.84,
+     "pct_SHORT": 38.65,
+     "pct_NO_TRADE": 22.51,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2290529,
+     "LONG": 1018944,
+     "SHORT": 1032344,
+     "NO_TRADE": 239241,
+     "pct_LONG": 44.49,
+     "pct_SHORT": 45.07,
+     "pct_NO_TRADE": 10.44,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 82559,
+     "LONG": 36162,
+     "SHORT": 35046,
+     "NO_TRADE": 11351,
+     "pct_LONG": 43.8,
+     "pct_SHORT": 42.45,
+     "pct_NO_TRADE": 13.75,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    }
+   }
+  },
+  "opp_H60|C2_pessimistic": {
+   "spec": {
+    "name": "opp_H60",
+    "family": "opp",
+    "horizon_s": 60,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2373088,
+    "LONG": 696220,
+    "SHORT": 710022,
+    "NO_TRADE": 966846,
+    "pct_LONG": 29.34,
+    "pct_SHORT": 29.92,
+    "pct_NO_TRADE": 40.74,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 2013
+   },
+   "coverage_fraction_labelled": 0.99915,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 412338,
+     "LONG": 128259,
+     "SHORT": 131374,
+     "NO_TRADE": 152705,
+     "pct_LONG": 31.11,
+     "pct_SHORT": 31.86,
+     "pct_NO_TRADE": 37.03,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-05": {
+     "n_labelled": 419813,
+     "LONG": 129404,
+     "SHORT": 134736,
+     "NO_TRADE": 155673,
+     "pct_LONG": 30.82,
+     "pct_SHORT": 32.09,
+     "pct_NO_TRADE": 37.08,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-06": {
+     "n_labelled": 480815,
+     "LONG": 154316,
+     "SHORT": 161384,
+     "NO_TRADE": 165115,
+     "pct_LONG": 32.09,
+     "pct_SHORT": 33.56,
+     "pct_NO_TRADE": 34.34,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 488
+    },
+    "2026-07": {
+     "n_labelled": 481613,
+     "LONG": 114564,
+     "SHORT": 113146,
+     "NO_TRADE": 253903,
+     "pct_LONG": 23.79,
+     "pct_SHORT": 23.49,
+     "pct_NO_TRADE": 52.72,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 366
+    },
+    "2026-08": {
+     "n_labelled": 413272,
+     "LONG": 123519,
+     "SHORT": 125279,
+     "NO_TRADE": 164474,
+     "pct_LONG": 29.89,
+     "pct_SHORT": 30.31,
+     "pct_NO_TRADE": 39.8,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 305
+    },
+    "2026-09": {
+     "n_labelled": 165237,
+     "LONG": 46158,
+     "SHORT": 44103,
+     "NO_TRADE": 74976,
+     "pct_LONG": 27.93,
+     "pct_SHORT": 26.69,
+     "pct_NO_TRADE": 45.37,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 723183,
+     "LONG": 220708,
+     "SHORT": 222911,
+     "NO_TRADE": 279564,
+     "pct_LONG": 30.52,
+     "pct_SHORT": 30.82,
+     "pct_NO_TRADE": 38.66,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 122
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 142515,
+     "SHORT": 146996,
+     "NO_TRADE": 231753,
+     "pct_LONG": 27.34,
+     "pct_SHORT": 28.2,
+     "pct_NO_TRADE": 44.46,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 502913,
+     "LONG": 117173,
+     "SHORT": 121644,
+     "NO_TRADE": 264096,
+     "pct_LONG": 23.3,
+     "pct_SHORT": 24.19,
+     "pct_NO_TRADE": 52.51,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1830
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 417084,
+     "LONG": 172292,
+     "SHORT": 174407,
+     "NO_TRADE": 70385,
+     "pct_LONG": 41.31,
+     "pct_SHORT": 41.82,
+     "pct_NO_TRADE": 16.88,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 43532,
+     "SHORT": 44064,
+     "NO_TRADE": 121048,
+     "pct_LONG": 20.86,
+     "pct_SHORT": 21.12,
+     "pct_NO_TRADE": 58.02,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2290529,
+     "LONG": 675074,
+     "SHORT": 689582,
+     "NO_TRADE": 925873,
+     "pct_LONG": 29.47,
+     "pct_SHORT": 30.11,
+     "pct_NO_TRADE": 40.42,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1952
+    },
+    "post": {
+     "n_labelled": 82559,
+     "LONG": 21146,
+     "SHORT": 20440,
+     "NO_TRADE": 40973,
+     "pct_LONG": 25.61,
+     "pct_SHORT": 24.76,
+     "pct_NO_TRADE": 49.63,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 61
+    }
+   }
+  },
+  "opp_H300|C0_spread_only": {
+   "spec": {
+    "name": "opp_H300",
+    "family": "opp",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C0_spread_only",
+   "overall": {
+    "n_labelled": 9418586,
+    "LONG": 4676210,
+    "SHORT": 4712399,
+    "NO_TRADE": 29977,
+    "pct_LONG": 49.65,
+    "pct_SHORT": 50.03,
+    "pct_NO_TRADE": 0.32,
+    "ambiguous": 1,
+    "lost_warmup": 0,
+    "lost_boundary": 36000
+   },
+   "coverage_fraction_labelled": 0.99619,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 1572006,
+     "LONG": 785218,
+     "SHORT": 783411,
+     "NO_TRADE": 3377,
+     "pct_LONG": 49.95,
+     "pct_SHORT": 49.84,
+     "pct_NO_TRADE": 0.21,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 6000
+    },
+    "2026-05": {
+     "n_labelled": 1720785,
+     "LONG": 849242,
+     "SHORT": 865797,
+     "NO_TRADE": 5746,
+     "pct_LONG": 49.35,
+     "pct_SHORT": 50.31,
+     "pct_NO_TRADE": 0.33,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6600
+    },
+    "2026-06": {
+     "n_labelled": 1788905,
+     "LONG": 883998,
+     "SHORT": 899497,
+     "NO_TRADE": 5410,
+     "pct_LONG": 49.42,
+     "pct_SHORT": 50.28,
+     "pct_NO_TRADE": 0.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 7500
+    },
+    "2026-07": {
+     "n_labelled": 1874088,
+     "LONG": 931410,
+     "SHORT": 936078,
+     "NO_TRADE": 6600,
+     "pct_LONG": 49.7,
+     "pct_SHORT": 49.95,
+     "pct_NO_TRADE": 0.35,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6900
+    },
+    "2026-08": {
+     "n_labelled": 1737949,
+     "LONG": 866707,
+     "SHORT": 864564,
+     "NO_TRADE": 6678,
+     "pct_LONG": 49.87,
+     "pct_SHORT": 49.75,
+     "pct_NO_TRADE": 0.38,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 6300
+    },
+    "2026-09": {
+     "n_labelled": 724853,
+     "LONG": 359635,
+     "SHORT": 363052,
+     "NO_TRADE": 2166,
+     "pct_LONG": 49.61,
+     "pct_SHORT": 50.09,
+     "pct_NO_TRADE": 0.3,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2700
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 2889905,
+     "LONG": 1436981,
+     "SHORT": 1452670,
+     "NO_TRADE": 254,
+     "pct_LONG": 49.72,
+     "pct_SHORT": 50.27,
+     "pct_NO_TRADE": 0.01,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 600
+    },
+    "LONDON": {
+     "n_labelled": 2067624,
+     "LONG": 1032518,
+     "SHORT": 1034943,
+     "NO_TRADE": 163,
+     "pct_LONG": 49.94,
+     "pct_SHORT": 50.05,
+     "pct_NO_TRADE": 0.01,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "NEW_YORK": {
+     "n_labelled": 1978696,
+     "LONG": 967328,
+     "SHORT": 982623,
+     "NO_TRADE": 28745,
+     "pct_LONG": 48.89,
+     "pct_SHORT": 49.66,
+     "pct_NO_TRADE": 1.45,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 34800
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 1655245,
+     "LONG": 827538,
+     "SHORT": 827554,
+     "NO_TRADE": 153,
+     "pct_LONG": 49.99,
+     "pct_SHORT": 50.0,
+     "pct_NO_TRADE": 0.01,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 300
+    },
+    "OFF_HOURS": {
+     "n_labelled": 827116,
+     "LONG": 411845,
+     "SHORT": 414609,
+     "NO_TRADE": 662,
+     "pct_LONG": 49.79,
+     "pct_SHORT": 50.13,
+     "pct_NO_TRADE": 0.08,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 9016052,
+     "LONG": 4475924,
+     "SHORT": 4511097,
+     "NO_TRADE": 29031,
+     "pct_LONG": 49.64,
+     "pct_SHORT": 50.03,
+     "pct_NO_TRADE": 0.32,
+     "ambiguous": 1,
+     "lost_warmup": 0,
+     "lost_boundary": 34500
+    },
+    "post": {
+     "n_labelled": 402534,
+     "LONG": 200286,
+     "SHORT": 201302,
+     "NO_TRADE": 946,
+     "pct_LONG": 49.76,
+     "pct_SHORT": 50.01,
+     "pct_NO_TRADE": 0.24,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1500
+    }
+   }
+  },
+  "opp_H300|C1_moderate": {
+   "spec": {
+    "name": "opp_H300",
+    "family": "opp",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C1_moderate",
+   "overall": {
+    "n_labelled": 2365168,
+    "LONG": 1165068,
+    "SHORT": 1183503,
+    "NO_TRADE": 16597,
+    "pct_LONG": 49.26,
+    "pct_SHORT": 50.04,
+    "pct_NO_TRADE": 0.7,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.99582,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 410898,
+     "LONG": 203110,
+     "SHORT": 205314,
+     "NO_TRADE": 2474,
+     "pct_LONG": 49.43,
+     "pct_SHORT": 49.97,
+     "pct_NO_TRADE": 0.6,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 418373,
+     "LONG": 206013,
+     "SHORT": 210046,
+     "NO_TRADE": 2314,
+     "pct_LONG": 49.24,
+     "pct_SHORT": 50.21,
+     "pct_NO_TRADE": 0.55,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 478895,
+     "LONG": 231841,
+     "SHORT": 244026,
+     "NO_TRADE": 3028,
+     "pct_LONG": 48.41,
+     "pct_SHORT": 50.96,
+     "pct_NO_TRADE": 0.63,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 480173,
+     "LONG": 236613,
+     "SHORT": 238955,
+     "NO_TRADE": 4605,
+     "pct_LONG": 49.28,
+     "pct_SHORT": 49.76,
+     "pct_NO_TRADE": 0.96,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 412072,
+     "LONG": 205808,
+     "SHORT": 204195,
+     "NO_TRADE": 2069,
+     "pct_LONG": 49.94,
+     "pct_SHORT": 49.55,
+     "pct_NO_TRADE": 0.5,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 164757,
+     "LONG": 81683,
+     "SHORT": 80967,
+     "NO_TRADE": 2107,
+     "pct_LONG": 49.58,
+     "pct_SHORT": 49.14,
+     "pct_NO_TRADE": 1.28,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 358390,
+     "SHORT": 363381,
+     "NO_TRADE": 932,
+     "pct_LONG": 49.59,
+     "pct_SHORT": 50.28,
+     "pct_NO_TRADE": 0.13,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 257858,
+     "SHORT": 262849,
+     "NO_TRADE": 557,
+     "pct_LONG": 49.47,
+     "pct_SHORT": 50.43,
+     "pct_NO_TRADE": 0.11,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495713,
+     "LONG": 237997,
+     "SHORT": 245675,
+     "NO_TRADE": 12041,
+     "pct_LONG": 48.01,
+     "pct_SHORT": 49.56,
+     "pct_NO_TRADE": 2.43,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416844,
+     "LONG": 207626,
+     "SHORT": 209137,
+     "NO_TRADE": 81,
+     "pct_LONG": 49.81,
+     "pct_SHORT": 50.17,
+     "pct_NO_TRADE": 0.02,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 103197,
+     "SHORT": 102461,
+     "NO_TRADE": 2986,
+     "pct_LONG": 49.46,
+     "pct_SHORT": 49.11,
+     "pct_NO_TRADE": 1.43,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2282849,
+     "LONG": 1123774,
+     "SHORT": 1143487,
+     "NO_TRADE": 15588,
+     "pct_LONG": 49.23,
+     "pct_SHORT": 50.09,
+     "pct_NO_TRADE": 0.68,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 82319,
+     "LONG": 41294,
+     "SHORT": 40016,
+     "NO_TRADE": 1009,
+     "pct_LONG": 50.16,
+     "pct_SHORT": 48.61,
+     "pct_NO_TRADE": 1.23,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    }
+   }
+  },
+  "opp_H300|C2_pessimistic": {
+   "spec": {
+    "name": "opp_H300",
+    "family": "opp",
+    "horizon_s": 300,
+    "vol_window_s": 600,
+    "barrier_m": 1.0,
+    "barrier_spread_floor": 3.0,
+    "fh_margin_points": 0.0,
+    "opp_kappa": 2.0,
+    "opp_rho": 1.0
+   },
+   "scenario": "C2_pessimistic",
+   "overall": {
+    "n_labelled": 2365168,
+    "LONG": 1107303,
+    "SHORT": 1128082,
+    "NO_TRADE": 129783,
+    "pct_LONG": 46.82,
+    "pct_SHORT": 47.7,
+    "pct_NO_TRADE": 5.49,
+    "ambiguous": 0,
+    "lost_warmup": 0,
+    "lost_boundary": 9933
+   },
+   "coverage_fraction_labelled": 0.99582,
+   "by_month": {
+    "2026-04": {
+     "n_labelled": 410898,
+     "LONG": 194818,
+     "SHORT": 198963,
+     "NO_TRADE": 17117,
+     "pct_LONG": 47.41,
+     "pct_SHORT": 48.42,
+     "pct_NO_TRADE": 4.17,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-05": {
+     "n_labelled": 418373,
+     "LONG": 197395,
+     "SHORT": 203514,
+     "NO_TRADE": 17464,
+     "pct_LONG": 47.18,
+     "pct_SHORT": 48.64,
+     "pct_NO_TRADE": 4.17,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-06": {
+     "n_labelled": 478895,
+     "LONG": 221365,
+     "SHORT": 235865,
+     "NO_TRADE": 21665,
+     "pct_LONG": 46.22,
+     "pct_SHORT": 49.25,
+     "pct_NO_TRADE": 4.52,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 2408
+    },
+    "2026-07": {
+     "n_labelled": 480173,
+     "LONG": 220786,
+     "SHORT": 219620,
+     "NO_TRADE": 39767,
+     "pct_LONG": 45.98,
+     "pct_SHORT": 45.74,
+     "pct_NO_TRADE": 8.28,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1806
+    },
+    "2026-08": {
+     "n_labelled": 412072,
+     "LONG": 194239,
+     "SHORT": 195506,
+     "NO_TRADE": 22327,
+     "pct_LONG": 47.14,
+     "pct_SHORT": 47.44,
+     "pct_NO_TRADE": 5.42,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 1505
+    },
+    "2026-09": {
+     "n_labelled": 164757,
+     "LONG": 78700,
+     "SHORT": 74614,
+     "NO_TRADE": 11443,
+     "pct_LONG": 47.77,
+     "pct_SHORT": 45.29,
+     "pct_NO_TRADE": 6.95,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    }
+   },
+   "by_session": {
+    "ASIA": {
+     "n_labelled": 722703,
+     "LONG": 346763,
+     "SHORT": 349532,
+     "NO_TRADE": 26408,
+     "pct_LONG": 47.98,
+     "pct_SHORT": 48.36,
+     "pct_NO_TRADE": 3.65,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 602
+    },
+    "LONDON": {
+     "n_labelled": 521264,
+     "LONG": 248065,
+     "SHORT": 254110,
+     "NO_TRADE": 19089,
+     "pct_LONG": 47.59,
+     "pct_SHORT": 48.75,
+     "pct_NO_TRADE": 3.66,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    },
+    "NEW_YORK": {
+     "n_labelled": 495713,
+     "LONG": 215167,
+     "SHORT": 227917,
+     "NO_TRADE": 52629,
+     "pct_LONG": 43.41,
+     "pct_SHORT": 45.98,
+     "pct_NO_TRADE": 10.62,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9030
+    },
+    "LONDON_NEW_YORK_OVERLAP": {
+     "n_labelled": 416844,
+     "LONG": 205579,
+     "SHORT": 208722,
+     "NO_TRADE": 2543,
+     "pct_LONG": 49.32,
+     "pct_SHORT": 50.07,
+     "pct_NO_TRADE": 0.61,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    },
+    "OFF_HOURS": {
+     "n_labelled": 208644,
+     "LONG": 91729,
+     "SHORT": 87801,
+     "NO_TRADE": 29114,
+     "pct_LONG": 43.96,
+     "pct_SHORT": 42.08,
+     "pct_NO_TRADE": 13.95,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 0
+    }
+   },
+   "by_feed_regime": {
+    "pre": {
+     "n_labelled": 2282849,
+     "LONG": 1067677,
+     "SHORT": 1090998,
+     "NO_TRADE": 124174,
+     "pct_LONG": 46.77,
+     "pct_SHORT": 47.79,
+     "pct_NO_TRADE": 5.44,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 9632
+    },
+    "post": {
+     "n_labelled": 82319,
+     "LONG": 39626,
+     "SHORT": 37084,
+     "NO_TRADE": 5609,
+     "pct_LONG": 48.14,
+     "pct_SHORT": 45.05,
+     "pct_NO_TRADE": 6.81,
+     "ambiguous": 0,
+     "lost_warmup": 0,
+     "lost_boundary": 301
+    }
+   }
+  }
+ },
+ "purge_by_fold": {
+  "F1": {
+   "train_candidates": 3285550,
+   "train_kept": 3285550,
+   "train_purged_or_embargoed": 0,
+   "val_candidates": 1220355,
+   "val_kept": 1220355,
+   "val_purged": 0
+  },
+  "F2": {
+   "train_candidates": 4505905,
+   "train_kept": 4505905,
+   "train_purged_or_embargoed": 0,
+   "val_candidates": 1213573,
+   "val_kept": 1213573,
+   "val_purged": 0
+  },
+  "F3": {
+   "train_candidates": 5719478,
+   "train_kept": 5719478,
+   "train_purged_or_embargoed": 0,
+   "val_candidates": 1236216,
+   "val_kept": 1236216,
+   "val_purged": 0
+  },
+  "F4": {
+   "train_candidates": 6955694,
+   "train_kept": 6955694,
+   "train_purged_or_embargoed": 0,
+   "val_candidates": 1236222,
+   "val_kept": 1236222,
+   "val_purged": 0
+  },
+  "F5": {
+   "train_candidates": 8191916,
+   "train_kept": 8191916,
+   "train_purged_or_embargoed": 0,
+   "val_candidates": 1226550,
+   "val_kept": 1226550,
+   "val_purged": 0
+  }
+ },
+ "elapsed_s": 565.8
+}

@@ -1,0 +1,2132 @@
+{
+  "classification_basis": "provenance (inputs, look-back, fitting needs); never model performance",
+  "counts": {
+    "ALLOWED": 108,
+    "CONDITIONAL": 11,
+    "EXCLUDED": 0
+  },
+  "excluded": {},
+  "feature_set_name": "xauusd_core",
+  "feature_set_version": "xauusd_core-fs1-ac928c2b1771",
+  "features": [
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "tick_count_5s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "tick_rate_5s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 10,
+      "name": "tick_acceleration_5s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "tick_interval_mean_ms_5s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "up_tick_ratio_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "down_tick_ratio_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "tick_direction_imbalance_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "directional_persistence_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "tick_count_15s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "tick_rate_15s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "tick_acceleration_15s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "tick_interval_mean_ms_15s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "up_tick_ratio_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "down_tick_ratio_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "tick_direction_imbalance_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "directional_persistence_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "tick_count_60s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "tick_rate_60s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 120,
+      "name": "tick_acceleration_60s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "tick_interval_mean_ms_60s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "up_tick_ratio_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "down_tick_ratio_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "tick_direction_imbalance_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "directional_persistence_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "consecutive_up_ticks",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "microstructure",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "consecutive_down_ticks",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "state",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "staleness_s",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "state",
+      "group": "micro",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "empty_interval",
+      "notes": [
+        "feed-sensitive: its distribution shifted across FEED_REGIME_BOUNDARY / April-May vs June; fit-dependent transforms must be train-only"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "spread_points",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "relative_spread_bps",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "spread_change_points_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "spread_change_points_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "spread_mean_points_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "spread_mean_points_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "spread_mean_points_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "spread_median_points_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "spread_median_points_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 1800,
+      "name": "spread_percentile_1800s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "spread",
+      "group": "spread",
+      "leakage_risk": "LOW",
+      "lookback_s": 1800,
+      "name": "spread_zscore_1800s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "range_width_bps_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "range_position_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "dist_high_bps_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "dist_low_bps_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "range_width_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "range_position_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "dist_high_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "dist_low_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "range_width_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "range_position_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "dist_high_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "dist_low_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "compression_ratio_30s_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 1860,
+      "name": "range_expansion_ratio_60s_vs_30m",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 3660,
+      "name": "range_percentile_60s_1h",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 65,
+      "name": "breakout_dist_up_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 65,
+      "name": "breakout_dist_down_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 305,
+      "name": "breakout_dist_up_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 305,
+      "name": "breakout_dist_down_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 330,
+      "name": "failed_breakout_up_300s_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "range",
+      "group": "structure",
+      "leakage_risk": "LOW",
+      "lookback_s": 330,
+      "name": "failed_breakout_down_300s_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "realized_vol_bps_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "realized_vol_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "realized_vol_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 225,
+      "name": "atr14_bps_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_15s",
+      "timeframe": "15s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 900,
+      "name": "atr14_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_60s",
+      "timeframe": "60s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 4500,
+      "name": "atr14_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_300s",
+      "timeframe": "300s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "LOW",
+      "lookback_s": 3660,
+      "name": "vol_percentile_60s_1h",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "volatility",
+      "group": "volatility",
+      "leakage_risk": "LOW",
+      "lookback_s": 3660,
+      "name": "vol_zscore_60s_1h",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 5,
+      "name": "ret_bps_5s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "ret_bps_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "ret_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "ret_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "abs_ret_bps_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "abs_ret_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "abs_ret_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "momentum_alignment",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 35,
+      "name": "ema_slope_bps_per_s_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "ema_dist_bps_30s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 125,
+      "name": "ema_slope_bps_per_s_120s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 120,
+      "name": "ema_dist_bps_120s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 15,
+      "name": "price_velocity_bps_per_s_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "momentum",
+      "group": "momentum",
+      "leakage_risk": "LOW",
+      "lookback_s": 30,
+      "name": "price_acceleration_bps_per_s2_15s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "dist_mean_bps_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "zscore_mean_60s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 60,
+      "name": "dist_tickweighted_mean_bps_60s",
+      "notes": [
+        "weights are tick COUNTS (update counts); traded volume is never used"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "dist_mean_bps_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "zscore_mean_300s",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mean_reversion",
+      "group": "mean_reversion",
+      "leakage_risk": "LOW",
+      "lookback_s": 300,
+      "name": "dist_tickweighted_mean_bps_300s",
+      "notes": [
+        "weights are tick COUNTS (update counts); traded volume is never used"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "ticks",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 10,
+      "name": "htf_ret_bps_5s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_5s",
+      "timeframe": "5s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 10,
+      "name": "htf_range_bps_5s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_5s",
+      "timeframe": "5s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 10,
+      "name": "htf_close_dist_bps_5s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_5s",
+      "timeframe": "5s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 30,
+      "name": "htf_ret_bps_15s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_15s",
+      "timeframe": "15s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 30,
+      "name": "htf_range_bps_15s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_15s",
+      "timeframe": "15s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 30,
+      "name": "htf_close_dist_bps_15s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_15s",
+      "timeframe": "15s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 60,
+      "name": "htf_ret_bps_30s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_30s",
+      "timeframe": "30s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 60,
+      "name": "htf_range_bps_30s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_30s",
+      "timeframe": "30s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 60,
+      "name": "htf_close_dist_bps_30s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_30s",
+      "timeframe": "30s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 120,
+      "name": "htf_ret_bps_60s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_60s",
+      "timeframe": "60s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 120,
+      "name": "htf_range_bps_60s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_60s",
+      "timeframe": "60s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 120,
+      "name": "htf_close_dist_bps_60s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_60s",
+      "timeframe": "60s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 600,
+      "name": "htf_ret_bps_300s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_300s",
+      "timeframe": "300s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 600,
+      "name": "htf_range_bps_300s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_300s",
+      "timeframe": "300s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "mtf",
+      "group": "mtf",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 600,
+      "name": "htf_close_dist_bps_300s",
+      "notes": [
+        "uses completed higher-timeframe bars only (as-of alignment)"
+      ],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "bars_300s",
+      "timeframe": "300s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "session_code",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "is_asia",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "is_london",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "is_new_york",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "ALLOWED",
+      "condition": null,
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "LOW",
+      "lookback_s": 0,
+      "name": "is_london_new_york_overlap",
+      "notes": [],
+      "reasons": [
+        "trailing/as-of computation over past rows only (prefix-invariance tested)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "minutes_since_session_open",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "minutes_until_session_close",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "session_high_so_far",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "session_low_so_far",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "session_range_so_far_bps",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "dist_session_high_bps",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "dist_session_low_bps",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "dist_session_mean_bps",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+      "family": "session",
+      "group": "session",
+      "leakage_risk": "MEDIUM",
+      "lookback_s": 0,
+      "name": "session_so_far_complete",
+      "notes": [],
+      "reasons": [
+        "running aggregate inside the current session instance (MEDIUM leakage risk by design); partial when a session is observed mid-way (segment start, data start)"
+      ],
+      "source": "session",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "thresholds must be re-fit on the fold's TRAINING block (research.preprocessing) before use; the placeholder codes are not a valid model input",
+      "family": "regime",
+      "group": "regimes",
+      "leakage_risk": "LOW",
+      "lookback_s": 1800,
+      "name": "spread_regime_code",
+      "notes": [],
+      "reasons": [
+        "regime thresholds are UNCALIBRATED_PLACEHOLDER_DEFAULTS"
+      ],
+      "source": "regime_engine",
+      "timeframe": "1s",
+      "version": 1
+    },
+    {
+      "class": "CONDITIONAL",
+      "condition": "thresholds must be re-fit on the fold's TRAINING block (research.preprocessing) before use; the placeholder codes are not a valid model input",
+      "family": "regime",
+      "group": "regimes",
+      "leakage_risk": "LOW",
+      "lookback_s": 3600,
+      "name": "volatility_regime_code",
+      "notes": [],
+      "reasons": [
+        "regime thresholds are UNCALIBRATED_PLACEHOLDER_DEFAULTS"
+      ],
+      "source": "regime_engine",
+      "timeframe": "1s",
+      "version": 1
+    }
+  ],
+  "fitting_policy": "no feature or transform may be fit on the whole dataset; scalers/thresholds/baselines are fit per fold on the training block only",
+  "forbidden_model_columns": [
+    "eligible",
+    "feed_regime",
+    "flags",
+    "ingestion_time_utc",
+    "label",
+    "label_end_ms",
+    "last",
+    "normalization_rule",
+    "quality_flags",
+    "quarantined",
+    "segment_id",
+    "seq",
+    "source_time",
+    "source_time_msc",
+    "status",
+    "time_basis",
+    "time_basis_id",
+    "unknown_flag_bits",
+    "volume",
+    "volume_real"
+  ],
+  "model_input_allowed": [
+    "tick_count_5s",
+    "tick_rate_5s",
+    "tick_acceleration_5s",
+    "tick_interval_mean_ms_5s",
+    "up_tick_ratio_5s",
+    "down_tick_ratio_5s",
+    "tick_direction_imbalance_5s",
+    "directional_persistence_5s",
+    "tick_count_15s",
+    "tick_rate_15s",
+    "tick_acceleration_15s",
+    "tick_interval_mean_ms_15s",
+    "up_tick_ratio_15s",
+    "down_tick_ratio_15s",
+    "tick_direction_imbalance_15s",
+    "directional_persistence_15s",
+    "tick_count_60s",
+    "tick_rate_60s",
+    "tick_acceleration_60s",
+    "tick_interval_mean_ms_60s",
+    "up_tick_ratio_60s",
+    "down_tick_ratio_60s",
+    "tick_direction_imbalance_60s",
+    "directional_persistence_60s",
+    "consecutive_up_ticks",
+    "consecutive_down_ticks",
+    "staleness_s",
+    "empty_interval",
+    "spread_points",
+    "relative_spread_bps",
+    "spread_change_points_5s",
+    "spread_change_points_60s",
+    "spread_mean_points_15s",
+    "spread_mean_points_60s",
+    "spread_mean_points_300s",
+    "spread_median_points_60s",
+    "spread_median_points_300s",
+    "spread_percentile_1800s",
+    "spread_zscore_1800s",
+    "range_width_bps_30s",
+    "range_position_30s",
+    "dist_high_bps_30s",
+    "dist_low_bps_30s",
+    "range_width_bps_60s",
+    "range_position_60s",
+    "dist_high_bps_60s",
+    "dist_low_bps_60s",
+    "range_width_bps_300s",
+    "range_position_300s",
+    "dist_high_bps_300s",
+    "dist_low_bps_300s",
+    "compression_ratio_30s_300s",
+    "range_expansion_ratio_60s_vs_30m",
+    "range_percentile_60s_1h",
+    "breakout_dist_up_bps_60s",
+    "breakout_dist_down_bps_60s",
+    "breakout_dist_up_bps_300s",
+    "breakout_dist_down_bps_300s",
+    "failed_breakout_up_300s_30s",
+    "failed_breakout_down_300s_30s",
+    "realized_vol_bps_15s",
+    "realized_vol_bps_60s",
+    "realized_vol_bps_300s",
+    "atr14_bps_15s",
+    "atr14_bps_60s",
+    "atr14_bps_300s",
+    "vol_percentile_60s_1h",
+    "vol_zscore_60s_1h",
+    "ret_bps_5s",
+    "ret_bps_15s",
+    "ret_bps_60s",
+    "ret_bps_300s",
+    "abs_ret_bps_15s",
+    "abs_ret_bps_60s",
+    "abs_ret_bps_300s",
+    "momentum_alignment",
+    "ema_slope_bps_per_s_30s",
+    "ema_dist_bps_30s",
+    "ema_slope_bps_per_s_120s",
+    "ema_dist_bps_120s",
+    "price_velocity_bps_per_s_15s",
+    "price_acceleration_bps_per_s2_15s",
+    "dist_mean_bps_60s",
+    "zscore_mean_60s",
+    "dist_tickweighted_mean_bps_60s",
+    "dist_mean_bps_300s",
+    "zscore_mean_300s",
+    "dist_tickweighted_mean_bps_300s",
+    "htf_ret_bps_5s",
+    "htf_range_bps_5s",
+    "htf_close_dist_bps_5s",
+    "htf_ret_bps_15s",
+    "htf_range_bps_15s",
+    "htf_close_dist_bps_15s",
+    "htf_ret_bps_30s",
+    "htf_range_bps_30s",
+    "htf_close_dist_bps_30s",
+    "htf_ret_bps_60s",
+    "htf_range_bps_60s",
+    "htf_close_dist_bps_60s",
+    "htf_ret_bps_300s",
+    "htf_range_bps_300s",
+    "htf_close_dist_bps_300s",
+    "session_code",
+    "is_asia",
+    "is_london",
+    "is_new_york",
+    "is_london_new_york_overlap"
+  ],
+  "model_input_conditional": {
+    "dist_session_high_bps": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "dist_session_low_bps": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "dist_session_mean_bps": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "minutes_since_session_open": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "minutes_until_session_close": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "session_high_so_far": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "session_low_so_far": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "session_range_so_far_bps": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "session_so_far_complete": "use only where session_so_far_complete == 1 for the sample (else mask); never the session's final value",
+    "spread_regime_code": "thresholds must be re-fit on the fold's TRAINING block (research.preprocessing) before use; the placeholder codes are not a valid model input",
+    "volatility_regime_code": "thresholds must be re-fit on the fold's TRAINING block (research.preprocessing) before use; the placeholder codes are not a valid model input"
+  },
+  "n_features": 119,
+  "pipeline": {
+    "config_hash_note": "PipelineConfig(segment_gap_s=300) for Phase 2B",
+    "grid_s": 1,
+    "segment_gap_s": 300
+  },
+  "version": "feature_policy/1"
+}

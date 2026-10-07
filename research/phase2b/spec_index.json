@@ -1,0 +1,13 @@
+{
+  "files": {
+    "XAUUSD_RAW_V1.freeze.json": "5c2354a1a208928ddfffd0d1cbc32a2974b2f90c8092ecd319efa55790c8c075",
+    "cost_model_v0.json": "239ad1712ad063d9fb9ab29ecfb5463e4cc9defe3eae14615b33044f82960468",
+    "eligibility_summary.json": "18b65e23cbe13d4e035375d61eb6857438f7389b901a98682121509f467c36a8",
+    "feature_set_v1.json": "d224ee1b2abdb35fff2a14527070004668a7780333a2071e82f087ce2aab3291",
+    "folds_v1.json": "1f01e128f38ed23340c088a2c385aa4a22337b20fd9a4fcf3bc835692f34d940",
+    "labels_v0.json": "49c464ff667e21f3e4267f85793981deb37ea7be611753b51ca14e87beb5ce90",
+    "policy.json": "eb93465c57994256cb09517e6ca55af9d67749e16c286e271266037ff1801ac9"
+  },
+  "spec_hash": "57fb49f5eb10c5f0e8fd3a3c82c1c1c39603ee915be3cf510286c35475331845",
+  "spec_version": "phase2b_spec/1"
+}

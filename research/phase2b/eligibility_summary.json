@@ -1,0 +1,157 @@
+{
+  "development": {
+    "eligible_ticks": 72831953,
+    "segments": 120,
+    "trading_days": 115
+  },
+  "eligibility_view_id": "elig-3988b1382d2d68914e1e",
+  "excluded_days": [
+    {
+      "day": "2026-04-01",
+      "excluded": 245685,
+      "ticks": 245685
+    },
+    {
+      "day": "2026-04-02",
+      "excluded": 270476,
+      "ticks": 270476
+    }
+  ],
+  "exclusion_tag_counts_non_exclusive": {
+    "FUTURE_TICK": 0,
+    "MISSING_ASK": 0,
+    "MISSING_BID": 0,
+    "NEGATIVE_SPREAD": 0,
+    "NONFINITE": 0,
+    "TIME_AMBIGUOUS": 0,
+    "TIME_BASIS_UNCERTAIN": 516161,
+    "TIME_NONEXISTENT": 0,
+    "TIME_REVERSAL": 0
+  },
+  "final_holdout_counts_only": {
+    "eligible_ticks": 12229277,
+    "segments": 17,
+    "trading_days": 17
+  },
+  "fold_counts": {
+    "F1": {
+      "train": {
+        "eligible_ticks": 23453798,
+        "segments": 42,
+        "trading_days": 40
+      },
+      "validation": {
+        "eligible_ticks": 10376403,
+        "segments": 16,
+        "trading_days": 15
+      }
+    },
+    "F2": {
+      "train": {
+        "eligible_ticks": 33830201,
+        "segments": 58,
+        "trading_days": 55
+      },
+      "validation": {
+        "eligible_ticks": 9607816,
+        "segments": 17,
+        "trading_days": 15
+      }
+    },
+    "F3": {
+      "train": {
+        "eligible_ticks": 43438017,
+        "segments": 75,
+        "trading_days": 70
+      },
+      "validation": {
+        "eligible_ticks": 8920083,
+        "segments": 15,
+        "trading_days": 15
+      }
+    },
+    "F4": {
+      "train": {
+        "eligible_ticks": 52358100,
+        "segments": 90,
+        "trading_days": 85
+      },
+      "validation": {
+        "eligible_ticks": 9312260,
+        "segments": 15,
+        "trading_days": 15
+      }
+    },
+    "F5": {
+      "train": {
+        "eligible_ticks": 61670360,
+        "segments": 105,
+        "trading_days": 100
+      },
+      "validation": {
+        "eligible_ticks": 11161593,
+        "segments": 15,
+        "trading_days": 15
+      }
+    }
+  },
+  "pct_eligible": 99.3968,
+  "policy": [
+    "FUTURE_TICK",
+    "MISSING_ASK",
+    "MISSING_BID",
+    "NEGATIVE_SPREAD",
+    "NONFINITE",
+    "TIME_AMBIGUOUS",
+    "TIME_BASIS_UNCERTAIN",
+    "TIME_NONEXISTENT",
+    "TIME_REVERSAL"
+  ],
+  "raw_dataset_id": "tickraw-fe5b9137d477c7c866d5",
+  "retained_tag_counts_note": "DUP_TIMESTAMP, EXTREME_SPREAD, ZERO_SPREAD etc. are retained and counted in tick_quality, see the dataset profile",
+  "segments": {
+    "gap_s": 300,
+    "intra_day_boundaries": [
+      {
+        "day": "2026-04-22",
+        "gap_end_utc": "2026-04-22T07:05:05.010000+00:00",
+        "gap_s": 871.193,
+        "gap_start_utc": "2026-04-22T06:50:33.817000+00:00"
+      },
+      {
+        "day": "2026-05-26",
+        "gap_end_utc": "2026-05-26T16:54:02.309000+00:00",
+        "gap_s": 592.685,
+        "gap_start_utc": "2026-05-26T16:44:09.624000+00:00"
+      },
+      {
+        "day": "2026-06-15",
+        "gap_end_utc": "2026-06-15T09:36:00.242000+00:00",
+        "gap_s": 1340.589,
+        "gap_start_utc": "2026-06-15T09:13:39.653000+00:00"
+      },
+      {
+        "day": "2026-06-29",
+        "gap_end_utc": "2026-06-29T07:07:09.602000+00:00",
+        "gap_s": 7361.352,
+        "gap_start_utc": "2026-06-29T05:04:28.250000+00:00"
+      },
+      {
+        "day": "2026-06-29",
+        "gap_end_utc": "2026-06-29T12:41:16.433000+00:00",
+        "gap_s": 456.04,
+        "gap_start_utc": "2026-06-29T12:33:40.393000+00:00"
+      }
+    ],
+    "total": 137
+  },
+  "ticks_eligible": 85061230,
+  "ticks_excluded": 516161,
+  "ticks_total": 85577391,
+  "totals": {
+    "eligible": 85061230,
+    "excluded": 516161,
+    "segments": 137,
+    "ticks": 85577391
+  }
+}

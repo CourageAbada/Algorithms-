@@ -66,7 +66,7 @@ def feed_regime(utc_ms: np.ndarray) -> np.ndarray:
 
 
 def quality_policy_fingerprint() -> str:
-    body = {"version": QUALITY_POLICY_VERSION, "tags": {q.name: int(q) for q in Q}, "quarantine_mask": int(QUARANTINE_MASK),
+    body = {"version": QUALITY_POLICY_VERSION, "tags": {str(q.name): int(q) for q in Q}, "quarantine_mask": int(QUARANTINE_MASK),
             "config_defaults": asdict(QualityConfig())}
     return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
 
@@ -75,8 +75,8 @@ def policy_manifest() -> dict[str, Any]:
     return {
         "eligibility_policy_version": ELIGIBILITY_POLICY_VERSION, "quality_policy_version": QUALITY_POLICY_VERSION,
         "quality_policy_sha256": quality_policy_fingerprint(),
-        "exclude_tags": sorted(q.name for q in EXCLUDE_TAGS), "exclude_mask": EXCLUDE_MASK,
-        "retained_tags": sorted(q.name for q in RETAIN_TAGS),
+        "exclude_tags": sorted(str(q.name) for q in EXCLUDE_TAGS), "exclude_mask": EXCLUDE_MASK,
+        "retained_tags": sorted(str(q.name) for q in RETAIN_TAGS),
         "raw_data_modified": False,
         "segment_policy": {"version": SEGMENT_POLICY_VERSION, "gap_s": SEGMENT_GAP_S, "basis": "gap between consecutive ELIGIBLE ticks (normalized UTC)",
                            "applies_to": ["rolling features", "returns/targets", "labels", "events", "trade simulation", "sequences"],

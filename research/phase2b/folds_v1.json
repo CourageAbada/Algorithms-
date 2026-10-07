@@ -1,0 +1,90 @@
+{
+  "development_last_day": "2026-09-11",
+  "embargo_s": 1800,
+  "final_holdout": {
+    "embargo_s": 1800,
+    "end_ms": 1791320400000,
+    "first_day": "2026-09-14",
+    "last_day": "2026-10-06",
+    "start_ms": 1789333200000
+  },
+  "first_eligible_day": "2026-04-06",
+  "folds": [
+    {
+      "name": "F1",
+      "train_end_ms": 1780088400000,
+      "train_first_day": "2026-04-06",
+      "train_last_day": "2026-05-29",
+      "train_start_ms": 1775422800000,
+      "val_end_ms": 1781902800000,
+      "val_first_day": "2026-06-01",
+      "val_last_day": "2026-06-19",
+      "val_start_ms": 1780261200000
+    },
+    {
+      "name": "F2",
+      "train_end_ms": 1781902800000,
+      "train_first_day": "2026-04-06",
+      "train_last_day": "2026-06-19",
+      "train_start_ms": 1775422800000,
+      "val_end_ms": 1783717200000,
+      "val_first_day": "2026-06-22",
+      "val_last_day": "2026-07-10",
+      "val_start_ms": 1782075600000
+    },
+    {
+      "name": "F3",
+      "train_end_ms": 1783717200000,
+      "train_first_day": "2026-04-06",
+      "train_last_day": "2026-07-10",
+      "train_start_ms": 1775422800000,
+      "val_end_ms": 1785531600000,
+      "val_first_day": "2026-07-13",
+      "val_last_day": "2026-07-31",
+      "val_start_ms": 1783890000000
+    },
+    {
+      "name": "F4",
+      "train_end_ms": 1785531600000,
+      "train_first_day": "2026-04-06",
+      "train_last_day": "2026-07-31",
+      "train_start_ms": 1775422800000,
+      "val_end_ms": 1787346000000,
+      "val_first_day": "2026-08-03",
+      "val_last_day": "2026-08-21",
+      "val_start_ms": 1785704400000
+    },
+    {
+      "name": "F5",
+      "train_end_ms": 1787346000000,
+      "train_first_day": "2026-04-06",
+      "train_last_day": "2026-08-21",
+      "train_start_ms": 1775422800000,
+      "val_end_ms": 1789160400000,
+      "val_first_day": "2026-08-24",
+      "val_last_day": "2026-09-11",
+      "val_start_ms": 1787518800000
+    }
+  ],
+  "max_label_span_s": 301,
+  "rules": {
+    "embargo_s": 1800,
+    "feed_boundary": {
+      "boundary_utc_ms": 1788732124012,
+      "folds_with_post_boundary_training": [],
+      "folds_with_post_boundary_validation": [
+        "F5"
+      ]
+    },
+    "final_holdout": "closed to model/feature/label/threshold selection; no inspection of labels, features or outcomes inside it until the research design is frozen and an explicit authorization is given",
+    "preprocessing": "fit on the fold's training block only (research.preprocessing)",
+    "purge": "train label_end_ms <= val_start - embargo; val label_end_ms <= val_end",
+    "segments_respected": "labels never cross a segment boundary (labels.py)",
+    "train_before_validation": true
+  },
+  "scheme": "expanding-window walk-forward, whole source days, no random splits",
+  "selection_basis": "chronology and data coverage only: 8-week minimum first training block; 3-week validation blocks; holdout = the last 3 weeks + 2 days (17 trading days, ~13% of eligible days), leaving the boundary week 2026-09-07..11 in development so the pre/post-feed shift can be measured without touching the holdout",
+  "source_offset_s": 10800,
+  "version": "folds/1",
+  "violations": []
+}

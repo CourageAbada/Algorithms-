@@ -427,7 +427,6 @@ def test_loader_detects_edits_missing_components_and_code_drift(tmp_path, monkey
         spec.load_frozen_spec(d3)
 
 
-@pytest.mark.skipif(not (spec.SPEC_DIR / 'spec_index.json').exists(), reason='frozen spec not generated yet (removed once committed)')
 def test_the_committed_frozen_spec_loads_and_matches_the_code():
     s = spec.load_frozen_spec()                                      # research/phase2b in the repository
     assert s["XAUUSD_RAW_V1.freeze.json"]["dataset_id"] == policy.RAW_V1_DATASET_ID

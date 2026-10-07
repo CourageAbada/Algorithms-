@@ -52,7 +52,7 @@ def build_eligibility_view(store: TickStore, manifest: dict[str, Any]) -> dict[s
     carry_seg: int | None = None
     days: list[dict[str, Any]] = []
     tot = {"ticks": 0, "eligible": 0, "excluded": 0, "segments": 0}
-    reasons = {q.name: 0 for q in policy.EXCLUDE_TAGS}
+    reasons = {str(q.name): 0 for q in policy.EXCLUDE_TAGS}
     for c in manifest["chunks"]:
         day = date.fromisoformat(c["source_day"])
         key = ChunkKey(manifest["broker"], manifest["server"], manifest["instrument"], day)
@@ -72,7 +72,7 @@ def build_eligibility_view(store: TickStore, manifest: dict[str, Any]) -> dict[s
         ue = utc[v["eligible"]]
         n_el = int(v["eligible"].sum())
         for q in policy.EXCLUDE_TAGS:
-            reasons[q.name] += int(((qf & np.uint32(int(q))) != 0).sum())
+            reasons[str(q.name)] += int(((qf & np.uint32(int(q))) != 0).sum())
         tbl = pa.table({"seq": pa.array(np.arange(n, dtype="int64")), "eligible": pa.array(v["eligible"]),
                         "exclusion_flags": pa.array(v["exclusion_flags"]), "segment_id": pa.array(seg),
                         "feed_regime": pa.array(v["feed_regime"])}, schema=ELIGIBILITY_SCHEMA)
@@ -94,7 +94,7 @@ def build_eligibility_view(store: TickStore, manifest: dict[str, Any]) -> dict[s
             prev_last = int(ue[-1])
             carry_seg = int(seg[v["eligible"]][-1])
     view = {"manifest_type": "eligibility_view", "policy": policy.ELIGIBILITY_POLICY_VERSION,
-            "exclude_mask": policy.EXCLUDE_MASK, "exclude_tags": sorted(q.name for q in policy.EXCLUDE_TAGS),
+            "exclude_mask": policy.EXCLUDE_MASK, "exclude_tags": sorted(str(q.name) for q in policy.EXCLUDE_TAGS),
             "segment_gap_s": policy.SEGMENT_GAP_S, "raw_dataset_id": manifest["dataset_id"], "totals": tot,
             "exclusion_tag_counts_non_exclusive": reasons, "days": days}
     view["eligibility_view_id"] = "elig-" + sha256_bytes(canonical_json(

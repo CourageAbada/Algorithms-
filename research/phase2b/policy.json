@@ -1,0 +1,56 @@
+{
+  "eligibility_policy_version": "eligibility/1",
+  "exclude_mask": 56455,
+  "exclude_tags": [
+    "FUTURE_TICK",
+    "MISSING_ASK",
+    "MISSING_BID",
+    "NEGATIVE_SPREAD",
+    "NONFINITE",
+    "TIME_AMBIGUOUS",
+    "TIME_BASIS_UNCERTAIN",
+    "TIME_NONEXISTENT",
+    "TIME_REVERSAL"
+  ],
+  "feed_regime": {
+    "boundary_utc": "2026-09-06T22:02:04.012Z",
+    "boundary_utc_ms": 1788732124012,
+    "claim": "observed FEED change only; makes NO claim that the economic market regime changed",
+    "evidence": "raw tick flag bit 0x400 absent on every earlier tick and present on every tick from this instant",
+    "forbidden_as_features": [
+      "flags",
+      "unknown_flag_bits",
+      "quality_flags"
+    ],
+    "name": "FEED_REGIME_BOUNDARY",
+    "source_day_label": "2026-09-07"
+  },
+  "quality_policy_sha256": "dbaf7e10c8247f6f92feaf869624e62954fb3369a0e08a39fa9bf6f7b2da29a6",
+  "quality_policy_version": "quality_policy/1",
+  "raw_data_modified": false,
+  "retained_tags": [
+    "DUP_TICK",
+    "DUP_TIMESTAMP",
+    "EXTREME_SPREAD",
+    "LARGE_GAP",
+    "SEC_MSEC_MISMATCH",
+    "UNKNOWN_FLAG_BITS",
+    "ZERO_SPREAD"
+  ],
+  "segment_policy": {
+    "applies_to": [
+      "rolling features",
+      "returns/targets",
+      "labels",
+      "events",
+      "trade simulation",
+      "sequences"
+    ],
+    "basis": "gap between consecutive ELIGIBLE ticks (normalized UTC)",
+    "gap_s": 300,
+    "no_bridging": true,
+    "rationale": "300 s = Phase-1 LARGE_GAP threshold fixed before data was seen; largest ordinary gap 27 s; any threshold in [230,450] s gives the identical segmentation; not tuned on any model/label result",
+    "segment_id": "UTC ms of the first eligible tick of the segment",
+    "version": "segments/1"
+  }
+}

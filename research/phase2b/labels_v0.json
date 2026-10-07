@@ -1,0 +1,158 @@
+{
+  "candidates": [
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "tb",
+      "fh_margin_points": 0.0,
+      "horizon_s": 15,
+      "name": "tb_H15",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "tb",
+      "fh_margin_points": 0.0,
+      "horizon_s": 60,
+      "name": "tb_H60",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "tb",
+      "fh_margin_points": 0.0,
+      "horizon_s": 300,
+      "name": "tb_H300",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "fh",
+      "fh_margin_points": 0.0,
+      "horizon_s": 15,
+      "name": "fh_H15",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "fh",
+      "fh_margin_points": 0.0,
+      "horizon_s": 60,
+      "name": "fh_H60",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "fh",
+      "fh_margin_points": 0.0,
+      "horizon_s": 300,
+      "name": "fh_H300",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "opp",
+      "fh_margin_points": 0.0,
+      "horizon_s": 15,
+      "name": "opp_H15",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "opp",
+      "fh_margin_points": 0.0,
+      "horizon_s": 60,
+      "name": "opp_H60",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    },
+    {
+      "barrier_m": 1.0,
+      "barrier_spread_floor": 3.0,
+      "family": "opp",
+      "fh_margin_points": 0.0,
+      "horizon_s": 300,
+      "name": "opp_H300",
+      "opp_kappa": 2.0,
+      "opp_rho": 1.0,
+      "vol_window_s": 600
+    }
+  ],
+  "causality": "label at t uses only quotes in (t, t+L+H] for the outcome and quotes <= t for sigma/spread; never crosses a segment; label_end_ms = t + (L+H)*1000 is used for purge/embargo",
+  "classes": {
+    "-1": "SHORT",
+    "0": "NO_TRADE",
+    "1": "LONG"
+  },
+  "families": {
+    "fh": "fixed-horizon net return: bid_exit - ask_entry (long), bid_entry - ask_exit (short), minus extra round-trip cost",
+    "opp": "opportunity/NO_TRADE: cost-covering (kappa=2x) favourable excursion with adverse <= favourable/rho (rho=1) inside H",
+    "tb": "triple barrier on the executable side (bid for long exits, ask for short exits), barrier = max(m*sigma*mid*sqrt(H), 3*spread)"
+  },
+  "grid": {
+    "decision_information": "<= t_i",
+    "observation_time": "bar end t_i (= feature row timestamp)",
+    "seconds": 1
+  },
+  "horizon_rationale": {
+    "15": "very short: 2x the 5 s micro window, ~100 ticks at the median 7.8 Hz; 1 s latency is still <7% of the horizon",
+    "300": "medium-short: equals the 300 s feature window; upper end of an intended scalp, still ~2,300 ticks and well inside a segment",
+    "60": "short: equals the 60 s feature window and ~470 ticks; typical 1-min move (~3.5 bps = ~140 points) is >10x the median spread",
+    "basis": "observed tick rate, spread distribution (median 9 points) and feature timeframes - NOT historical profit",
+    "excluded": "<15 s: below the 1 s grid/latency resolution relative to horizon; >300 s: not a scalp and cuts the number of independent samples"
+  },
+  "horizons_s": [
+    15,
+    60,
+    300
+  ],
+  "parameters_fixed_a_priori": true,
+  "pre_registration": {
+    "cost_reporting": "every reported result must be shown under all three cost scenarios; unknown costs are never defaulted to zero",
+    "degeneracy_rule": "a label whose NO_TRADE share is below 5% in a scenario is NON-INFORMATIVE as an abstain label there: it is reported, never used as primary, and never rescued by re-tuning its parameters",
+    "diagnostics_source": "research/phase2b/diagnostics/label_diagnostics.json (development period only)",
+    "primary": {
+      "basis": "the only family whose NO_TRADE share is non-degenerate (45-82%) at every horizon and every cost scenario in the development-period label diagnostics; the middle horizon; selected from label balance only, no model or PnL result consulted",
+      "cost_scenarios": [
+        "C0_spread_only",
+        "C1_moderate",
+        "C2_pessimistic"
+      ],
+      "family": "tb",
+      "horizon_s": 60
+    },
+    "purpose": "close the forking path: the label is NOT chosen from model results",
+    "secondary": "all other candidates, reported as robustness; none may replace the primary without a new spec version"
+  },
+  "status": "CANDIDATES - specified, diagnostics only; none selected; no model trained",
+  "status_codes": {
+    "0": "OK",
+    "1": "WARMUP (trailing sigma window incomplete)",
+    "2": "BOUNDARY (window leaves the segment)"
+  },
+  "tie_rules": "same-second profit and stop -> stop first (conservative); both sides succeed in the same second -> NO_TRADE + ambiguous",
+  "tuning_on_results": "FORBIDDEN",
+  "version": "labels/0"
+}
