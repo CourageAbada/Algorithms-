@@ -15,6 +15,7 @@ dependencies = ["pyyaml>=6", "numpy>=1.26", "pandas>=2.2", "pyarrow>=15", "tzdat
 # Proposed; see docs/IMPLEMENTATION_PLAN.md "Dependencies". Not installed in Phase 0.
 data = ["polars"]
 ml = ["scikit-learn", "lightgbm", "xgboost", "catboost", "optuna", "shap"]
+research = ["scikit-learn>=1.5", "lightgbm>=4.3", "scipy>=1.11"]   # Phase 2B model research (logistic regression + gradient boosting)
 mt5 = ["MetaTrader5; platform_system=='Windows'"]
 api = ["fastapi", "uvicorn", "sqlalchemy", "psycopg[binary]"]
 dev = ["pytest", "pytest-asyncio", "hypothesis", "ruff", "mypy", "psutil"]
