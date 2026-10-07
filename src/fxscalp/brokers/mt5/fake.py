@@ -92,6 +92,16 @@ class FakeScenario:
     hang_s: float = 0.0
     dom_available: bool = False
     history_start_s: float | None = None    # ticks before this UTC epoch do not exist (history depth)
+    #: cold-history simulation: the first ``slow_first_n`` calls of ``slow_function`` sleep ``slow_s`` seconds
+    slow_function: str | None = None
+    slow_s: float = 0.0
+    slow_first_n: int = 0
+    #: the first ``terminal_error_first_n`` calls of ``terminal_error_function`` return None with a non-IPC error
+    terminal_error_function: str | None = None
+    terminal_error_first_n: int = 0
+    terminal_error: tuple[int, str] = (-1, "Terminal: Call failed")
+    #: the first ``none_first_n`` calls of copy_ticks_range return None with last_error=(1, "Success") (unavailable)
+    none_first_n: int = 0
 
 
 class FakeMT5Module:
@@ -111,14 +121,24 @@ class FakeMT5Module:
         self._err: tuple[int, str] = (1, "Success")
         self._initialized = False
         self._cache: dict[tuple[str, int], np.ndarray] = {}
+        self._n_calls: dict[str, int] = {}
 
     # ---------------- plumbing ----------------
     def _enter(self, name: str) -> bool:
         """Returns False if the call should fail (connection loss injection)."""
         self.calls.append(name)
         self.threads.add(threading.get_ident())
+        self._n_calls[name] = k = self._n_calls.get(name, 0) + 1
         if self.sc.hang_function == name:
             _time.sleep(self.sc.hang_s)
+        if self.sc.slow_function == name and k <= self.sc.slow_first_n:
+            _time.sleep(self.sc.slow_s)
+        if self.sc.terminal_error_function == name and k <= self.sc.terminal_error_first_n:
+            self._err = self.sc.terminal_error
+            return False
+        if name == "copy_ticks_range" and k <= self.sc.none_first_n:
+            self._err = (1, "Success")
+            return False
         if self.sc.fail_after_calls is not None and len(self.calls) > self.sc.fail_after_calls:
             self._err = (-10001, "IPC send failed")
             return False
@@ -308,6 +328,11 @@ class FakeMT5Module:
         if not self._enter("copy_ticks_from"):
             return None
         s = int(date_from.timestamp() * 1000) if isinstance(date_from, datetime) else int(date_from) * 1000
+        if self.sc.history_start_s is not None:
+            # like the real terminal: the first tick AFTER the date, even if that is the start of all history
+            hs = int(self.sc.history_start_s * 1000)
+            hs += int(self.sc.rule.offset_at_utc_ms(np.array([hs]))[0]) * 1000
+            s = max(s, hs)
         return self._range(symbol, s, s + 7 * 24 * 3600 * 1000)[:count]
 
     def symbol_info_tick(self, symbol: str) -> Any:

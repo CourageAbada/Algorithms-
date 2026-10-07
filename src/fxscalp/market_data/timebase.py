@@ -14,12 +14,18 @@ Nothing here assumes MT5 timestamps are UTC. The workflow is:
    instants are flagged, never silently resolved.
 
 Transformation (documented, never silent):  ``normalized_utc = source_time - offset(rule, instant)``.
+
+Validity period (Phase 1.1): a calibrated offset is only EVIDENCE for the period it was observed/consistency-checked
+over. A ``TimeBaseSpec`` built with ``bound_validity=True`` carries ``valid_from_utc_ms``/``valid_to_utc_ms``; ticks whose
+instant falls outside are still converted (best effort, never dropped) but flagged ``uncertain`` so that
+quality assessment tags them ``TIME_BASIS_UNCERTAIN``. "+3 h forever" is never assumed.
 """
 
 from __future__ import annotations
 
 import json
 import statistics
+import hashlib
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -266,6 +272,80 @@ def infer_dst_from_opens(opens: np.ndarray, anchor_offset_s: int, *, min_weeks_e
 
 
 # --------------------------------------------------------------------------------------------
+# Step 2b: is ONE offset consistent across the observed history? (weekly-open evidence)
+# --------------------------------------------------------------------------------------------
+WEEK_S = 604800
+
+
+@dataclass(frozen=True)
+class OffsetConsistency:
+    consistent: bool
+    n_weeks: int
+    first_open_utc_ms: int | None       # earliest weekly open used (UTC via the measured offset)
+    last_open_utc_ms: int | None
+    median_tow_s: float | None          # median source time-of-week of the open (s since Sunday 00:00, source domain)
+    max_abs_dev_s: float | None
+    n_outlier_weeks: int
+    outlier_opens_utc: tuple[str, ...]
+    step_between_halves_s: float | None  # median(tow, later half) - median(tow, earlier half)
+    tol_s: int
+    notes: tuple[str, ...] = ()
+
+
+def assess_offset_consistency(opens_source_s: np.ndarray, offset_s: int, *, tol_s: int = 900, min_weeks: int = 4,
+                              min_inlier_fraction: float = 0.9) -> OffsetConsistency:
+    """Does the weekly open fall at the same source time-of-week in every observed week?
+
+    If it does, the SAME source-vs-UTC offset applied throughout (assuming a UTC/NY-anchored open - an inference,
+    not a verification). A step in time-of-week means the offset changed (DST or otherwise) inside the window.
+    Wrap-safe: time-of-week is compared circularly, so an open at Sunday 23:55 / Monday 00:05 is not an outlier.
+    """
+    opens = np.sort(np.asarray(opens_source_s, dtype="int64"))
+    if opens.size < min_weeks:
+        return OffsetConsistency(False, int(opens.size), None, None, None, None, 0, (), None, tol_s,
+                                 (f"only {opens.size} weekly opens (< {min_weeks}): consistency cannot be assessed",))
+    tow = (opens + 4 * 86400) % WEEK_S          # epoch day 0 was a Thursday
+    ref = float(tow[0])
+    dev = ((tow - ref + WEEK_S / 2) % WEEK_S) - WEEK_S / 2
+    med = float(np.median(dev))
+    rel = dev - med
+    out = np.abs(rel) > tol_s
+    half = len(rel) // 2
+    step = float(np.median(dev[half:]) - np.median(dev[:half])) if half >= 1 else 0.0
+    inlier_frac = 1.0 - float(out.mean())
+    ok = inlier_frac >= min_inlier_fraction and abs(step) <= tol_s
+    notes: list[str] = []
+    if not ok:
+        notes.append("weekly-open time-of-week is NOT constant across the window: the offset (or the open convention) "
+                     "changed; do not apply a single offset to the whole period")
+    utc_ms = (opens - offset_s) * 1000
+    outliers = tuple(str(np.datetime64(int(u), "ms")) for u in utc_ms[out][:20])
+    return OffsetConsistency(bool(ok), int(opens.size), int(utc_ms[0]), int(utc_ms[-1]), float((ref + med) % WEEK_S),
+                             float(np.max(np.abs(rel))), int(out.sum()), outliers, step, tol_s, tuple(notes))
+
+
+def us_dst_transition_in_window(from_utc_ms: int, to_utc_ms: int) -> bool:
+    """True if the America/New_York DST state differs anywhere between the two instants (sampled weekly)."""
+    idx = pd.date_range(pd.Timestamp(from_utc_ms, unit="ms", tz="UTC"), pd.Timestamp(to_utc_ms, unit="ms", tz="UTC"),
+                        freq="7D")
+    pts = list(idx) + [pd.Timestamp(to_utc_ms, unit="ms", tz="UTC")]
+    states = {bool(t.tz_convert(NY_ZONE).dst()) for t in pts}
+    return len(states) > 1
+
+
+def dst_status(dst: "DstInference | None", from_utc_ms: int | None, to_utc_ms: int | None) -> str:
+    if dst is not None and dst.classification == "us_dst_anchored":
+        return "determined_us_dst_anchored"
+    if dst is not None and dst.classification == "fixed_offset_vs_ny_open":
+        return "determined_fixed_offset"
+    if from_utc_ms is None or to_utc_ms is None:
+        return "unresolved"
+    if us_dst_transition_in_window(from_utc_ms, to_utc_ms):
+        return "unresolved_transition_inside_window_inconclusive"
+    return "unresolved_no_us_dst_transition_in_observed_window"
+
+
+# --------------------------------------------------------------------------------------------
 # Step 3: combine
 # --------------------------------------------------------------------------------------------
 @dataclass(frozen=True)
@@ -279,6 +359,11 @@ class TimeBaseSpec:
     estimate: OffsetEstimate | None
     dst_inference: DstInference | None
     notes: tuple[str, ...] = ()
+    #: validity period of the calibration (None = unbounded, legacy behaviour). Outside it ticks are TIME_BASIS_UNCERTAIN.
+    valid_from_utc_ms: int | None = None
+    valid_to_utc_ms: int | None = None
+    dst_status: str = "unresolved"
+    consistency: OffsetConsistency | None = None
 
     def to_json(self) -> dict[str, Any]:
         d = asdict(self)
@@ -288,16 +373,27 @@ class TimeBaseSpec:
     def identity(self) -> dict[str, Any]:
         """The part of the spec that determines HOW times are converted (excludes calibration timestamps and
         residuals, so re-calibrating to the same rule does not change a dataset's identity)."""
-        return {"basis": self.basis.value, "rule": asdict(self.rule) if self.rule else None,
-                "dst_determined": self.dst_determined}
+        d: dict[str, Any] = {"basis": self.basis.value, "rule": asdict(self.rule) if self.rule else None,
+                             "dst_determined": self.dst_determined}
+        if self.valid_from_utc_ms is not None or self.valid_to_utc_ms is not None:   # legacy specs keep their identity
+            d["valid_from_utc_ms"], d["valid_to_utc_ms"] = self.valid_from_utc_ms, self.valid_to_utc_ms
+        return d
+
+    def basis_id(self) -> str:
+        """Short stable id of HOW times are converted (rule + validity); stored on every tick row."""
+        raw = json.dumps(self.identity(), sort_keys=True, default=str).encode()
+        return "tb-" + hashlib.sha256(raw).hexdigest()[:16]
 
     @staticmethod
     def from_json(d: dict[str, Any]) -> "TimeBaseSpec":
         rule = ServerTimeRule(**d["rule"]) if d.get("rule") else None
         est = OffsetEstimate(**{**d["estimate"], "notes": tuple(d["estimate"].get("notes", ()))}) if d.get("estimate") else None
         dst = DstInference(**{**d["dst_inference"], "notes": tuple(d["dst_inference"].get("notes", ()))}) if d.get("dst_inference") else None
+        cons = OffsetConsistency(**{**d["consistency"], "outlier_opens_utc": tuple(d["consistency"].get("outlier_opens_utc", ())),
+                                    "notes": tuple(d["consistency"].get("notes", ()))}) if d.get("consistency") else None
         return TimeBaseSpec(TimeBasis(d["basis"]), rule, d["dst_determined"], d["calibrated_at_utc"], d["broker"],
-                            d["server"], est, dst, tuple(d.get("notes", ())))
+                            d["server"], est, dst, tuple(d.get("notes", ())), d.get("valid_from_utc_ms"),
+                            d.get("valid_to_utc_ms"), d.get("dst_status", "unresolved"), cons)
 
 
 def unverified_spec(broker: str, server: str, reason: str) -> TimeBaseSpec:
@@ -305,7 +401,8 @@ def unverified_spec(broker: str, server: str, reason: str) -> TimeBaseSpec:
 
 
 def resolve_time_basis(estimate: OffsetEstimate, dst: DstInference | None, *, broker: str, server: str,
-                       calibrated_at_utc: datetime | None = None) -> TimeBaseSpec:
+                       calibrated_at_utc: datetime | None = None, consistency: OffsetConsistency | None = None,
+                       bound_validity: bool = False) -> TimeBaseSpec:
     when = calibrated_at_utc or datetime.now(timezone.utc)
     if estimate.status != "ok" or estimate.offset_s is None:
         return TimeBaseSpec(TimeBasis.UNVERIFIED, None, False, when.isoformat(), broker, server, estimate, dst,
@@ -321,8 +418,21 @@ def resolve_time_basis(estimate: OffsetEstimate, dst: DstInference | None, *, br
             else "DST behaviour NOT determined from the available data; conversion of data far from the "
                  "calibration date may be off by 1 h across DST changes")
     basis = TimeBasis.UTC_VERIFIED if off == 0 else TimeBasis.SERVER_FIXED_OFFSET
+    v_from = v_to = None
+    notes = [note]
+    if bound_validity:
+        v_to = int(when.timestamp() * 1000)
+        if consistency is not None and consistency.consistent and consistency.first_open_utc_ms is not None:
+            v_from = int(consistency.first_open_utc_ms)
+            notes.append(f"offset validity bounded to the period with consistent weekly-open evidence "
+                         f"({consistency.n_weeks} weeks) up to the calibration instant; data outside it is "
+                         "TIME_BASIS_UNCERTAIN")
+        else:
+            v_from = v_to - 24 * 3600 * 1000
+            notes.append("no consistent weekly-open evidence: validity bounded to the 24 h before the calibration; "
+                         "data outside it is TIME_BASIS_UNCERTAIN")
     return TimeBaseSpec(basis, ServerTimeRule.fixed(off), fixed_supported, when.isoformat(), broker, server,
-                        estimate, dst, (note,))
+                        estimate, dst, tuple(notes), v_from, v_to, dst_status(dst, v_from, v_to), consistency)
 
 
 def _now_iso() -> str:
@@ -338,6 +448,7 @@ class NormalizedTime:
     ambiguous: np.ndarray
     nonexistent: np.ndarray
     basis: TimeBasis
+    uncertain: np.ndarray | None = None      # True where the instant is outside the calibration's validity period
 
 
 class TimeBase:
@@ -361,7 +472,16 @@ class TimeBase:
         else:
             rule = self.spec.rule
         utc, amb, non = rule.source_to_utc_ms(source_ms)
-        return NormalizedTime(utc, amb, non, self.spec.basis)
+        unc: np.ndarray | None = None
+        if self.spec.rule is None:
+            unc = np.ones(utc.shape, dtype=bool)            # 'UTC==source' is an assumption: every row is uncertain
+        elif self.spec.valid_from_utc_ms is not None or self.spec.valid_to_utc_ms is not None:
+            unc = np.zeros(utc.shape, dtype=bool)
+            if self.spec.valid_from_utc_ms is not None:
+                unc |= utc < self.spec.valid_from_utc_ms
+            if self.spec.valid_to_utc_ms is not None:
+                unc |= utc > self.spec.valid_to_utc_ms
+        return NormalizedTime(utc, amb, non, self.spec.basis, unc)
 
     def utc_to_source_s(self, utc_s: np.ndarray | int) -> np.ndarray:
         """Inverse mapping, used to express UTC request windows in the source domain."""
@@ -378,3 +498,36 @@ class TimeBase:
         return TimeBase(TimeBaseSpec.from_json(json.loads(path.read_text(encoding="utf-8"))))
 
 
+
+
+# --------------------------------------------------------------------------------------------
+# Versioned, immutable calibration RECORD (what we measured, over which period, with what confidence)
+# --------------------------------------------------------------------------------------------
+CALIBRATION_RECORD_VERSION = "timecal/1"
+
+
+def build_calibration_record(spec: TimeBaseSpec) -> dict[str, Any]:
+    est, cons = spec.estimate, spec.consistency
+    ms_iso = lambda v: None if v is None else datetime.fromtimestamp(v / 1000, tz=timezone.utc).isoformat()  # noqa: E731
+    confidence = "low"
+    if est is not None and est.status == "ok" and est.offset_s is not None:
+        strong = est.n_used >= 30 and (est.mad_s or 0) <= 1.0 and abs(est.residual_s or 0) <= 2.0
+        weeks_ok = cons is not None and cons.consistent and cons.n_weeks >= 8
+        confidence = "high" if (strong and weeks_ok) else "medium" if (strong or weeks_ok) else "low"
+    body = {
+        "schema_version": CALIBRATION_RECORD_VERSION, "broker": spec.broker, "server": spec.server,
+        "basis": spec.basis.value, "rule": asdict(spec.rule) if spec.rule else None,
+        "basis_id": spec.basis_id(),
+        "effective_from_utc": ms_iso(spec.valid_from_utc_ms), "effective_to_utc": ms_iso(spec.valid_to_utc_ms),
+        "offset_s": est.offset_s if est else None, "n_samples": est.n_total if est else 0,
+        "n_samples_used": est.n_used if est else 0, "residual_s": est.residual_s if est else None,
+        "mad_s": est.mad_s if est else None, "dst_status": spec.dst_status, "dst_determined": spec.dst_determined,
+        "confidence": confidence, "calibrated_at_utc": spec.calibrated_at_utc,
+        "weekly_open_consistency": asdict(cons) if cons else None,
+        "assumptions": ["local Windows clock is NTP-accurate", "weekly open is anchored to 17:00 America/New_York "
+                        "(inference only)", "offset applies only inside effective_from..effective_to"],
+        "notes": list(spec.notes),
+    }
+    rid = hashlib.sha256(json.dumps({k: v for k, v in body.items() if k != "calibrated_at_utc"}, sort_keys=True,
+                                    default=str).encode()).hexdigest()[:16]
+    return {"record_id": f"timecal-{rid}", **body}

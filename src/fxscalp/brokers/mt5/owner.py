@@ -27,7 +27,7 @@ from concurrent.futures import Future
 from concurrent.futures import TimeoutError as FutureTimeout
 from typing import Any, Callable
 
-from fxscalp.brokers.errors import CallTimeoutError, ConnectionLostError
+from fxscalp.brokers.errors import CallTimeoutError, ConnectionLostError, RequestTimeoutError
 
 _STOP = object()
 
@@ -97,7 +97,14 @@ class MT5Owner:
                 self._lat[label].append(time.perf_counter() - t0)
 
     def call(self, fn: Callable[..., Any], *args: Any, label: str | None = None,
-             timeout_s: float | None = None, **kwargs: Any) -> Any:
+             timeout_s: float | None = None, soft: bool = False, **kwargs: Any) -> Any:
+        """Run ``fn`` on the owner thread.
+
+        ``soft=False`` (default): a deadline overrun marks the owner WEDGED and raises CallTimeoutError.
+        ``soft=True`` (history requests): a deadline overrun raises RequestTimeoutError and does NOT wedge the
+        owner. The blocking call is still running on the owner thread (it cannot be cancelled); any later call,
+        e.g. the caller's health check, queues behind it and therefore also tells whether it ever returns.
+        """
         if self.is_owner_thread():
             raise RuntimeError("MT5Owner.call() invoked from the owner thread (would deadlock)")
         if self._wedged:
@@ -111,6 +118,10 @@ class MT5Owner:
         try:
             return fut.result(timeout)
         except FutureTimeout:
+            if soft:
+                raise RequestTimeoutError(
+                    f"MT5 request {label!r} did not return within {timeout:.1f}s (cold history load or slow "
+                    "terminal); the connection is not assumed lost: a health check decides") from None
             self._wedged = True
             raise CallTimeoutError(
                 f"MT5 call {label!r} did not return within {timeout:.1f}s; the terminal may be hung. "

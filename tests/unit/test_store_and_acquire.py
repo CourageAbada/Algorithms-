@@ -211,7 +211,7 @@ def test_empty_day_is_recorded_explicitly(adapter, tmp_path):
     acq, st = make_acquirer(adapter, tmp_path)
     r = acq.acquire_day(dt.date(2025, 10, 12))                        # Sunday: market closed all (source) day
     assert r.status == "empty" and r.rows == 0
-    assert st.chunk_manifest(ChunkKey("Fake Broker Ltd", "FakeBroker-Demo", "XAU_USD", dt.date(2025, 10, 12)))["empty_reason"] == "no_ticks_returned"
+    assert st.chunk_manifest(ChunkKey("Fake Broker Ltd", "FakeBroker-Demo", "XAU_USD", dt.date(2025, 10, 12)))["empty_reason"] == "legitimate_empty_result"
 
 
 def test_anomalies_are_tagged_and_raw_rows_preserved(tmp_path):
@@ -312,14 +312,32 @@ def test_history_depth_probe_when_no_recent_data():
     assert p.earliest_source_day is None
 
 
-def test_request_limit_probe_detects_cap():
+def test_request_limit_probe_detects_cap_only_with_evidence():
     a = FakeMT5Adapter(FakeScenario(ticks_per_day=60000, max_rows_per_request=1500, weekend_closure=False))
     a.connect()
-    p = probe_request_limits(a, "XAUUSDm", 1_760_000_000, windows_s=(1800, 7200, 86400))
-    assert p.suspected_cap == 1500
+    end = 1_760_000_000
+    p = probe_request_limits(a, "XAUUSDm", end, windows_s=(1800, 7200, 86400), latest_known_s=end)
+    assert p.status == "SUSPECTED" and p.suspected_cap == 1500
     b = FakeMT5Adapter(FakeScenario(weekend_closure=False))
     b.connect()
-    assert probe_request_limits(b, "XAUUSDm", 1_760_000_000, windows_s=(1800, 7200)).suspected_cap is None
+    q = probe_request_limits(b, "XAUUSDm", end, windows_s=(1800, 7200), latest_known_s=end)
+    assert q.suspected_cap is None and q.status == "UNDETERMINED" and q.max_rows_observed > 0
+
+
+def test_request_limit_probe_refuses_windows_ending_after_the_latest_known_market_time():
+    a = FakeMT5Adapter(FakeScenario(weekend_closure=False))
+    a.connect()
+    with pytest.raises(ValueError):
+        probe_request_limits(a, "XAUUSDm", 1_760_000_100, windows_s=(1800,), latest_known_s=1_760_000_000)
+
+
+def test_request_limit_probe_plateau_at_now_is_not_a_cap():
+    """Regression: the old probe extended windows past the latest data, so counts plateaued and a cap was invented."""
+    a = FakeMT5Adapter(FakeScenario(weekend_closure=False))
+    a.connect()
+    last_tick_s = 1_760_000_000
+    p = probe_request_limits(a, "XAUUSDm", last_tick_s, windows_s=(3600, 6 * 3600, 86400), latest_known_s=last_tick_s)
+    assert p.suspected_cap is None and p.status == "UNDETERMINED"
 
 
 # ---------------- atomic write durability (Windows-compatible semantics) ----------------

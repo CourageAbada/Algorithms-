@@ -103,7 +103,8 @@ def _atomic_write_parquet(table: pa.Table, path: Path) -> None:
     def _write(fh: Any) -> None:
         pq.write_table(table, fh, compression=PARQUET_COMPRESSION, compression_level=PARQUET_COMPRESSION_LEVEL,
                        row_group_size=ROW_GROUP_SIZE,
-                       use_dictionary=["time_basis"] if "time_basis" in table.column_names else False,
+                       use_dictionary=[c for c in ("time_basis", "normalization_rule", "time_basis_id")
+                                       if c in table.column_names] or False,
                        write_statistics=True)
     _atomic_write(path, _write, mode="wb")
 

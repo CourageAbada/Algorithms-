@@ -15,9 +15,9 @@ import pyarrow as pa
 
 from fxscalp.market_data.timebase import NormalizedTime
 
-RAW_SCHEMA_VERSION = "tick_raw/1"
+RAW_SCHEMA_VERSION = "tick_raw/2"      # /2: + normalization_rule, time_basis_id
 DERIVED_SCHEMA_VERSION = "tick_derived/1"
-QUALITY_SCHEMA_VERSION = "tick_quality/1"
+QUALITY_SCHEMA_VERSION = "tick_quality/2"  # /2: + unknown_flag_bits
 
 RAW_SCHEMA = pa.schema([
     pa.field("seq", pa.int64()),
@@ -26,6 +26,8 @@ RAW_SCHEMA = pa.schema([
     pa.field("normalized_utc_time", pa.timestamp("ms", tz="UTC")),
     pa.field("ingestion_time_utc", pa.timestamp("ms", tz="UTC")),
     pa.field("time_basis", pa.string()),
+    pa.field("normalization_rule", pa.string()),          # e.g. fixed+10800s: HOW source_time became UTC
+    pa.field("time_basis_id", pa.string()),               # sha256 prefix of the time-basis identity (rule + validity)
     pa.field("bid", pa.float64()),
     pa.field("ask", pa.float64()),
     pa.field("last", pa.float64()),
@@ -42,10 +44,12 @@ DERIVED_SCHEMA = pa.schema([
 ])
 QUALITY_SCHEMA = pa.schema([
     pa.field("seq", pa.int64()), pa.field("quality_flags", pa.uint32()), pa.field("quarantined", pa.bool_()),
+    pa.field("unknown_flag_bits", pa.uint32()),   # raw flags & ~known bits (e.g. 0x400); raw `flags` is never altered
 ])
 
 
-def raw_table(ticks: np.ndarray, normalized: NormalizedTime, ingestion_utc: datetime, *, seq_start: int = 0) -> pa.Table:
+def raw_table(ticks: np.ndarray, normalized: NormalizedTime, ingestion_utc: datetime, *, seq_start: int = 0,
+              normalization_rule: str = "unspecified", time_basis_id: str = "unspecified") -> pa.Table:
     """Build the RAW table from a RAW_TICK_DTYPE array. ``ticks`` order is preserved exactly."""
     n = len(ticks)
     ing_ms = int(ingestion_utc.astimezone(timezone.utc).timestamp() * 1000)
@@ -56,6 +60,8 @@ def raw_table(ticks: np.ndarray, normalized: NormalizedTime, ingestion_utc: date
         "normalized_utc_time": pa.array(normalized.utc_ms.astype("int64"), type=pa.timestamp("ms", tz="UTC")),
         "ingestion_time_utc": pa.array(np.full(n, ing_ms, dtype="int64"), type=pa.timestamp("ms", tz="UTC")),
         "time_basis": pa.array([normalized.basis.value] * n, type=pa.string()),
+        "normalization_rule": pa.array([normalization_rule] * n, type=pa.string()),
+        "time_basis_id": pa.array([time_basis_id] * n, type=pa.string()),
         "bid": pa.array(ticks["bid"].astype("float64")),
         "ask": pa.array(ticks["ask"].astype("float64")),
         "last": pa.array(ticks["last"].astype("float64")),

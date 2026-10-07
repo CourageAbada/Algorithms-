@@ -18,10 +18,12 @@ from fxscalp.brokers.errors import BrokerError
 from fxscalp.brokers.symbols import SymbolMap
 from fxscalp.core.env import load_dotenv
 from fxscalp.market_data.acquire import AcquisitionConfig, TickAcquirer
+from fxscalp.market_data.retry import RetryPolicy
 from fxscalp.market_data.store import TickStore
 from fxscalp.market_data.timebase import TimeBase, TimeBasis
 from fxscalp.monitoring.logging_setup import configure_logging
-from fxscalp.workflows import calibrate_timebase, load_instrument_specs, make_adapter, run_discovery, timebase_file
+from fxscalp.workflows import (calibrate_timebase, load_instrument_specs, make_adapter, run_discovery,
+                               save_calibration_record, timebase_file)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -40,6 +42,8 @@ def main(argv: list[str] | None = None) -> int:
                    help="store data with time_basis=unverified (UTC==source assumed, flagged in every manifest)")
     p.add_argument("--split-rows", type=int, default=None, help="split a request window if it returns >= this many rows")
     p.add_argument("--min-call-interval", type=float, default=0.0)
+    p.add_argument("--oldest-first", action="store_true", help="acquire oldest day first (default: newest first = warming)")
+    p.add_argument("--max-retries", type=int, default=3, help="bounded retries for request timeouts/terminal errors")
     p.add_argument("--fake", action="store_true")
     p.add_argument("--fake-ticks-per-day", type=int, default=20000)
     a = p.parse_args(argv)
@@ -66,6 +70,9 @@ def main(argv: list[str] | None = None) -> int:
                                          dst_weeks=a.dst_weeks)
             tb = TimeBase(spec)
             tb.save(tbp)
+            rec_path, rec = save_calibration_record(root, spec)
+            print(f"calibration record {rec['record_id']} valid {rec['effective_from_utc']} .. {rec['effective_to_utc']} "
+                  f"dst_status={rec['dst_status']} confidence={rec['confidence']}")
         else:
             tb = TimeBase.load(tbp)
         print(f"time basis: {tb.basis.value} rule={tb.spec.rule.name if tb.spec.rule else None} "
@@ -80,6 +87,8 @@ def main(argv: list[str] | None = None) -> int:
                            account_currency=ident.currency,
                            config=AcquisitionConfig(split_rows_threshold=a.split_rows,
                                                     min_call_interval_s=a.min_call_interval,
+                                                    newest_first=not a.oldest_first,
+                                                    retry=RetryPolicy(max_retries=a.max_retries),
                                                     allow_unverified_time=a.allow_unverified_time))
         s = acq.acquire_range(date.fromisoformat(a.start), date.fromisoformat(a.end), force=a.force)
         for c in s.chunks:

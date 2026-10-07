@@ -22,12 +22,14 @@ from typing import Any, Callable
 import numpy as np
 
 from fxscalp.brokers.base import RAW_TICK_DTYPE, SymbolInfo, ReadOnlyBrokerAdapter
-from fxscalp.brokers.errors import ConnectionLostError, NoTickDataError
+from fxscalp.brokers.errors import (ConnectionLostError, HistoryUnavailableError, NoTickDataError,
+                                    RequestTimeoutError, TerminalRequestError)
 from fxscalp.brokers.mt5.convert import check_symbol_consistency
 from fxscalp.core.provenance import canonical_json, sha256_bytes, slug, software_versions
 from fxscalp.market_data import quality as Qm
 from fxscalp.market_data.schema import (DERIVED_SCHEMA_VERSION, QUALITY_SCHEMA_VERSION, RAW_SCHEMA_VERSION,
                                         derived_table, raw_table)
+from fxscalp.market_data.retry import RetryPolicy, call_with_retry
 from fxscalp.market_data.store import ChunkKey, TickStore, utcnow
 from fxscalp.market_data.timebase import TimeBase
 
@@ -43,12 +45,15 @@ class AcquisitionConfig:
     allow_unverified_time: bool = False
     max_connection_retries: int = 1
     quality: Qm.QualityConfig = field(default_factory=Qm.QualityConfig)
+    retry: RetryPolicy = field(default_factory=RetryPolicy)   # bounded backoff for timeouts / terminal errors
+    newest_first: bool = True        # progressive warming: recent days first, working backwards in day-sized chunks
+    receive_latency_s: float = 0.0   # measured live receive latency (added to the future-tick tolerance)
 
 
 @dataclass
 class ChunkResult:
     key: ChunkKey
-    status: str                 # "acquired" | "skipped_verified" | "empty" | "failed"
+    status: str                 # "acquired" | "skipped_verified" | "empty" | "unavailable" | "failed"
     rows: int = 0
     requests: int = 0
     clipped_rows: int = 0
@@ -65,6 +70,10 @@ class AcquisitionSummary:
     @property
     def failed(self) -> list[ChunkResult]:
         return [c for c in self.chunks if c.status == "failed"]
+
+    @property
+    def unavailable(self) -> list[ChunkResult]:
+        return [c for c in self.chunks if c.status == "unavailable"]
 
 
 def day_window_s(day: date) -> tuple[int, int]:
@@ -106,6 +115,8 @@ class TickAcquirer:
         self._last_call = 0.0
         self._requests = 0
         self._latencies: list[float] = []
+        self._retry_events: list[dict[str, Any]] = []
+        self._current_key: ChunkKey | None = None
         self._timebase_sha = sha256_bytes(canonical_json(timebase.spec.identity()).encode())
         self._meta_sha, self._meta_issues = persist_symbol_metadata(store.root, broker, server, canonical,
                                                                     symbol_info, account_currency)
@@ -119,22 +130,32 @@ class TickAcquirer:
         while True:
             t0 = time.perf_counter()
             try:
-                arr = self.adapter.get_ticks_range(self.sym, s, e)
+                # timeouts / terminal errors: bounded retry with backoff (each retry logged). A legitimately empty
+                # result is returned as an empty array; "no data" surfaces as HistoryUnavailableError (NOT silently
+                # turned into an empty chunk); connection loss falls through to the reconnect path below.
+                arr = call_with_retry(lambda: self.adapter.get_ticks_range(self.sym, s, e), self.cfg.retry,
+                                      label=f"ticks[{s},{e}]", sleep=self._sleep, on_event=self._on_retry_event)
                 self._latencies.append(time.perf_counter() - t0)
                 self._requests += 1
                 self._last_call = time.monotonic()
                 return arr
-            except NoTickDataError:
-                self._latencies.append(time.perf_counter() - t0)
-                self._requests += 1
-                self._last_call = time.monotonic()
-                return np.empty(0, dtype=RAW_TICK_DTYPE)
             except ConnectionLostError:
                 attempt += 1
                 if attempt > self.cfg.max_connection_retries or self._reconnect is None:
                     raise
                 log.warning("connection lost during tick request; reconnecting (attempt %d)", attempt)
                 self._reconnect()
+
+    def _on_retry_event(self, ev: dict[str, Any]) -> None:
+        ev = {**ev, "instrument": self.canonical, "day": self._current_key.source_day.isoformat() if self._current_key else None}
+        self._retry_events.append(ev)
+        self._append_log(ev)
+
+    def _append_log(self, rec: dict[str, Any]) -> None:
+        p = self.store.root / "acquisition_log.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(rec, default=str) + "\n")
 
     def _fetch_window(self, s: int, e: int) -> tuple[np.ndarray, int]:
         """Rows with source_time_msc in [s*1000, e*1000), in broker order. Returns (rows, clipped_count)."""
@@ -152,6 +173,8 @@ class TickAcquirer:
     # ---- one chunk -----------------------------------------------------------------------------
     def acquire_day(self, day: date, *, force: bool = False) -> ChunkResult:
         key = ChunkKey(self.broker, self.server, self.canonical, day)
+        self._current_key = key
+        self._retry_events = []
         t0 = time.perf_counter()
         if not force:
             ok, _ = self.store.verify_chunk(key)
@@ -164,23 +187,32 @@ class TickAcquirer:
             arr, clipped = self._fetch_window(s, e)
             ingestion = utcnow()
             norm = self.tb.normalize(arr["time_msc"], allow_unverified=self.cfg.allow_unverified_time)
-            tbl = raw_table(arr, norm, ingestion)
+            rule_name = self.tb.spec.rule.name if self.tb.spec.rule else "assumed_utc_equals_source"
+            tbl = raw_table(arr, norm, ingestion, normalization_rule=rule_name, time_basis_id=self.tb.spec.basis_id())
             prev = self._previous_tick(day)
+            est = self.tb.spec.estimate
+            clock_resid = abs(est.residual_s) if est is not None and est.residual_s is not None else 0.0
             q = Qm.assess(arr["time"], arr["time_msc"], arr["bid"], arr["ask"], arr["last"], arr["volume"],
                           arr["flags"], ambiguous=norm.ambiguous, nonexistent=norm.nonexistent, cfg=self.cfg.quality,
-                          prev=prev)
+                          prev=prev, uncertain=norm.uncertain, normalized_utc_ms=norm.utc_ms,
+                          ingestion_utc_ms=int(ingestion.timestamp() * 1000),
+                          receive_latency_s=self.cfg.receive_latency_s + clock_resid)
             lat = self._latencies[-(self._requests - req0):] if self._requests > req0 else []
             manifest = self.store.write_raw_chunk(key, tbl, {
                 "broker_symbol": self.sym, "requested_window_source_s": [s, e], "window_semantics": "[start,end) source ms",
                 "requests": self._requests - req0, "clipped_rows_outside_window": clipped,
                 "time_basis": norm.basis.value, "timebase_spec_sha256": self._timebase_sha,
                 "timebase_rule": self.tb.spec.rule.name if self.tb.spec.rule else None,
-                "dst_determined": self.tb.spec.dst_determined,
+                "time_basis_id": self.tb.spec.basis_id(), "dst_determined": self.tb.spec.dst_determined,
+                "dst_status": self.tb.spec.dst_status,
+                "time_validity_utc_ms": [self.tb.spec.valid_from_utc_ms, self.tb.spec.valid_to_utc_ms],
+                "time_basis_uncertain_rows": 0 if norm.uncertain is None else int(norm.uncertain.sum()),
+                "retries": len(self._retry_events), "retry_reasons": sorted({e["reason"] for e in self._retry_events}),
                 "ambiguous_time_rows": int(norm.ambiguous.sum()), "nonexistent_time_rows": int(norm.nonexistent.sum()),
                 "ingestion_time_utc": ingestion.isoformat(), "account_fingerprint": self.account_fp,
                 "symbol_info_sha256": self._meta_sha, "request_latency_s": {
                     "n": len(lat), "max": max(lat) if lat else None, "mean": float(np.mean(lat)) if lat else None},
-                "empty_reason": "no_ticks_returned" if len(arr) == 0 else None,
+                "empty_reason": "legitimate_empty_result" if len(arr) == 0 else None,
             })
             self.store.write_derived("tick_basic", key, derived_table(tbl, self.info.point), manifest,
                                      {"schema_version": DERIVED_SCHEMA_VERSION, "point": self.info.point,
@@ -192,6 +224,12 @@ class TickAcquirer:
             self._log_event(key, "acquired" if len(arr) else "empty", len(arr), clipped, q)
             return ChunkResult(key, "acquired" if len(arr) else "empty", len(arr), self._requests - req0, clipped,
                                time.perf_counter() - t0, quarantined=int(q.quarantined.sum()))
+        except HistoryUnavailableError as exc:
+            # "no data" without an error is NOT proof of an empty market day: nothing is stored (a stored empty chunk is
+            # immutable), so the day can be retried later or excluded by the history-depth boundary.
+            self._log_event(key, "unavailable", 0, 0, None, error=f"{type(exc).__name__}: {exc}")
+            return ChunkResult(key, "unavailable", requests=self._requests - req0, seconds=time.perf_counter() - t0,
+                               detail=f"history unavailable: {exc}")
         except Exception as exc:  # noqa: BLE001 - recorded, then re-raised by the range loop policy
             self._log_event(key, "failed", 0, 0, None, error=f"{type(exc).__name__}: {exc}")
             raise
@@ -215,18 +253,25 @@ class TickAcquirer:
         rec = {"ts": utcnow().isoformat(), "instrument": key.instrument, "day": key.source_day.isoformat(),
                "status": status, "rows": rows, "clipped": clipped, "error": error,
                "quarantined": None if q is None else int(q.quarantined.sum())}
-        p = self.store.root / "acquisition_log.jsonl"
-        p.parent.mkdir(parents=True, exist_ok=True)
-        with open(p, "a", encoding="utf-8") as fh:
-            fh.write(json.dumps(rec) + "\n")
+        self._append_log(rec)
         log.info("tick chunk %s", status, extra={"ctx": rec})
 
     # ---- range / dataset -------------------------------------------------------------------------
     def acquire_range(self, start_day: date, end_day: date, *, force: bool = False,
-                      stop_on_error: bool = True) -> AcquisitionSummary:
-        results: list[ChunkResult] = []
+                      stop_on_error: bool = True, newest_first: bool | None = None) -> AcquisitionSummary:
+        """Day-sized chunks, newest first by default (progressive warming of the terminal's cold history: recent days
+        first, then backwards). Verified chunks are skipped (never re-downloaded) unless ``force``. A day whose
+        history is unavailable is reported and skipped; any other error stops the run (resume later)."""
+        nf = self.cfg.newest_first if newest_first is None else newest_first
+        days: list[date] = []
         d = start_day
         while d <= end_day:
+            days.append(d)
+            d += timedelta(days=1)
+        if nf:
+            days.reverse()
+        results: list[ChunkResult] = []
+        for d in days:
             try:
                 results.append(self.acquire_day(d, force=force))
             except Exception as exc:  # noqa: BLE001
@@ -234,9 +279,9 @@ class TickAcquirer:
                                            detail=f"{type(exc).__name__}: {exc}"))
                 if stop_on_error:
                     break
-            d += timedelta(days=1)
+        results.sort(key=lambda r: r.key.source_day)
         manifest = None
-        if results and not any(r.status == "failed" for r in results):
+        if results and not any(r.status in ("failed", "unavailable") for r in results) and len(results) == len(days):
             manifest = self.write_dataset_manifest(start_day, end_day)
         return AcquisitionSummary(results, manifest)
 
@@ -331,24 +376,174 @@ class RequestLimitProbe:
     rows: list[dict[str, Any]]
     suspected_cap: int | None
     note: str
+    status: str = "UNDETERMINED"      # "SUSPECTED" (evidence of a per-request cap) | "UNDETERMINED" (none established)
+    max_rows_observed: int = 0
+    end_s: int | None = None
 
 
-def probe_request_limits(adapter: ReadOnlyBrokerAdapter, broker_symbol: str, start_s: int,
-                         windows_s: tuple[int, ...] = (3600, 6 * 3600, 86400, 3 * 86400)) -> RequestLimitProbe:
-    """Request growing windows from the same start; a row count that stops growing hints at a per-call cap."""
+def probe_request_limits(adapter: ReadOnlyBrokerAdapter, broker_symbol: str, end_s: int,
+                         windows_s: tuple[int, ...] = (3600, 6 * 3600, 86400, 3 * 86400), *,
+                         latest_known_s: int | None = None, policy: RetryPolicy = RetryPolicy(),
+                         sleep: Callable[[float], None] = time.sleep) -> RequestLimitProbe:
+    """Does the terminal cap the rows of one tick request? Evidence-based; never invents a cap.
+
+    All windows are ``[end_s - w, end_s]`` (nested, growing BACKWARDS) and ``end_s`` must be at or before the latest
+    known market timestamp (``latest_known_s``), so no window extends into the future and a plateau cannot be an
+    artefact of reaching 'now'. A cap is only suspected when a larger window returns fewer rows than the smaller window
+    plus the rows of the disjoint extra segment, requested separately, i.e. when rows demonstrably went missing.
+    Otherwise the result is UNDETERMINED, with the largest row count seen without any sign of truncation.
+    """
+    if latest_known_s is not None and end_s > latest_known_s:
+        raise ValueError("end_s must be at or before the latest known market timestamp")
+
+    def n_rows(a: int, b: int) -> int:
+        try:
+            return len(call_with_retry(lambda: adapter.get_ticks_range(broker_symbol, a, b), policy,
+                                       label=f"limits[{a},{b}]", sleep=sleep))
+        except HistoryUnavailableError:
+            return 0
+
     rows: list[dict[str, Any]] = []
-    for w in windows_s:
+    prev_n, prev_w = None, None
+    cap: int | None = None
+    evidence = ""
+    for w in sorted(windows_s):
+        t0 = time.perf_counter()
+        n = n_rows(end_s - w, end_s)
+        dt = time.perf_counter() - t0
+        row = {"window_s": w, "rows": n, "latency_s": round(dt, 4), "rows_per_s": round(n / dt, 1) if dt > 0 else None}
+        if prev_n is not None and prev_w is not None:
+            seg = n_rows(end_s - w, end_s - prev_w)          # the extra, disjoint segment
+            row["extra_segment_rows"] = seg
+            # inclusive boundaries can duplicate a tick or two at the seam: allow a small tolerance
+            if seg > 0 and n < prev_n + seg - max(5, int(0.001 * (prev_n + seg))):
+                cap = n
+                evidence = (f"window {w}s returned {n} rows but the {prev_w}s window ({prev_n}) plus the separately "
+                            f"requested extra segment ({seg}) implies about {prev_n + seg}: rows are missing")
+        rows.append(row)
+        prev_n, prev_w = n, w
+    mx = max((r["rows"] for r in rows), default=0)
+    if cap is not None:
+        return RequestLimitProbe(rows, cap, evidence, "SUSPECTED", mx, end_s)
+    return RequestLimitProbe(rows, None, f"UNDETERMINED: no evidence of truncation up to {mx:,} rows per request; the "
+                             "cap (if any) is above what was tested", "UNDETERMINED", mx, end_s)
+
+
+# --------------------------------------------------------------------------------------------
+# History-depth discovery: conservative, bounded, cached
+# --------------------------------------------------------------------------------------------
+@dataclass
+class DepthDiscovery:
+    status: str                         # boundary_found | limit_reached | no_recent_data | inconclusive
+    earliest_data_day: date | None      # earliest probed trading day with ticks (bracketed to a trading day)
+    empty_confirmed_day: date | None    # latest probed day BEFORE it confirmed empty by two probes
+    samples: list[dict[str, Any]]
+    calls: int
+    observed_at_utc: str
+    note: str
+    cached: bool = False
+
+    def to_json(self) -> dict[str, Any]:
+        return {"schema_version": "history_depth/1", "status": self.status,
+                "earliest_data_day": self.earliest_data_day.isoformat() if self.earliest_data_day else None,
+                "empty_confirmed_day": self.empty_confirmed_day.isoformat() if self.empty_confirmed_day else None,
+                "samples": self.samples, "calls": self.calls, "observed_at_utc": self.observed_at_utc, "note": self.note}
+
+    @staticmethod
+    def from_json(d: dict[str, Any]) -> "DepthDiscovery":
+        f = lambda v: date.fromisoformat(v) if v else None   # noqa: E731
+        return DepthDiscovery(d["status"], f(d["earliest_data_day"]), f(d["empty_confirmed_day"]), d["samples"], d["calls"],
+                              d["observed_at_utc"], d["note"], cached=True)
+
+
+def history_depth_path(root: Path, broker: str, server: str, canonical: str) -> Path:
+    return root / "metadata" / "history_depth" / slug(broker) / slug(server) / f"{canonical}.json"
+
+
+def discover_history_depth(adapter: ReadOnlyBrokerAdapter, broker_symbol: str, now_source_s: int, *,
+                           cache_path: Path | None = None, max_cache_age_days: float = 7.0, force: bool = False,
+                           max_weeks: int = 60, hour_source: int = 13, window_s: int = 3600,
+                           policy: RetryPolicy = RetryPolicy(), sleep: Callable[[float], None] = time.sleep) -> DepthDiscovery:
+    """Find where tick history begins without hammering the terminal.
+
+    Walks BACKWARDS one week at a time (each step also gradually warms the terminal's cold history), probing a single
+    1-hour window per week (Wednesday). The first week with no data must be CONFIRMED by a second probe (Tuesday) so a
+    holiday is not mistaken for the boundary; then at most four weekday probes bracket the boundary to a trading day,
+    and probing STOPS: nothing deeper is ever requested once an unavailable boundary is established. An error that
+    survives the retry policy ends the walk as 'inconclusive' (never read as a boundary). The result is stored with its
+    observation date and reused while younger than ``max_cache_age_days``.
+    """
+    now_utc = datetime.now(timezone.utc)
+    if cache_path is not None and cache_path.exists() and not force:
+        try:
+            cached = DepthDiscovery.from_json(json.loads(cache_path.read_text(encoding="utf-8")))
+            age_d = (now_utc - datetime.fromisoformat(cached.observed_at_utc)).total_seconds() / 86400
+            if age_d <= max_cache_age_days and cached.status in ("boundary_found", "limit_reached"):
+                return cached
+        except (ValueError, KeyError, json.JSONDecodeError):
+            pass
+    samples: list[dict[str, Any]] = []
+
+    def probe(day: date) -> str:
+        s = int(datetime(day.year, day.month, day.day, hour_source, tzinfo=timezone.utc).timestamp())
         t0 = time.perf_counter()
         try:
-            n = len(adapter.get_ticks_range(broker_symbol, start_s, start_s + w))
-        except NoTickDataError:
-            n = 0
-        dt = time.perf_counter() - t0
-        rows.append({"window_s": w, "rows": n, "latency_s": round(dt, 4),
-                     "rows_per_s": round(n / dt, 1) if dt > 0 else None})
-    cap = None
-    for a, b in zip(rows, rows[1:]):
-        if b["rows"] == a["rows"] and a["rows"] > 0 and b["window_s"] > a["window_s"]:
-            cap = a["rows"]
-    return RequestLimitProbe(rows, cap, "a plateau across growing windows suggests a per-request row cap"
-                             if cap else "no plateau observed (cap not triggered at these sizes)")
+            n = len(call_with_retry(lambda: adapter.get_ticks_range(broker_symbol, s, s + window_s), policy,
+                                    label=f"depth[{day}]", sleep=sleep))
+            out = "data" if n > 0 else "empty"
+        except HistoryUnavailableError:
+            n, out = 0, "empty"
+        except (RequestTimeoutError, TerminalRequestError) as exc:
+            n, out = 0, f"error:{type(exc).__name__}"
+        samples.append({"day": day.isoformat(), "rows": n, "outcome": out, "latency_s": round(time.perf_counter() - t0, 3)})
+        return out
+
+    src_now = datetime.fromtimestamp(now_source_s, tz=timezone.utc).date()
+    ref = _wednesday_of(src_now - timedelta(days=7))
+    last_data: date | None = None
+    result: DepthDiscovery | None = None
+    for k in range(max_weeks + 1):
+        day = ref - timedelta(days=7 * k)
+        o = probe(day)
+        if o == "data":
+            last_data = day
+            continue
+        if o.startswith("error"):
+            result = DepthDiscovery("inconclusive", last_data, None, samples, len(samples), now_utc.isoformat(),
+                                    f"probe error ({o}) after retries; history reaches at least {last_data}", False)
+            break
+        # empty: confirm with a second weekday of the same week
+        o2 = probe(day - timedelta(days=1))
+        if o2 == "data":
+            last_data = day - timedelta(days=1)       # the Wednesday was a holiday gap; the week has data
+            continue
+        if o2.startswith("error"):
+            result = DepthDiscovery("inconclusive", last_data, None, samples, len(samples), now_utc.isoformat(),
+                                    f"confirmation probe error ({o2}); history reaches at least {last_data}", False)
+            break
+        if last_data is None:
+            result = DepthDiscovery("no_recent_data", None, day, samples, len(samples), now_utc.isoformat(),
+                                    "no ticks in the most recent probed week (market closed or no feed)", False)
+            break
+        earliest = last_data
+        d = day + timedelta(days=1)
+        while d < last_data:
+            if d.weekday() < 5:
+                oo = probe(d)
+                if oo == "data":
+                    earliest = d
+                    break
+                if oo.startswith("error"):
+                    break
+            d += timedelta(days=1)
+        result = DepthDiscovery("boundary_found", earliest, day - timedelta(days=1), samples, len(samples),
+                                now_utc.isoformat(), "first week with confirmed-empty probes bracketed to a trading day; "
+                                "assumes no holes before the boundary", False)
+        break
+    if result is None:
+        result = DepthDiscovery("limit_reached", last_data, None, samples, len(samples), now_utc.isoformat(),
+                                f"data present at the {max_weeks}-week probe limit", False)
+    if cache_path is not None and result.status != "inconclusive":
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(json.dumps(result.to_json(), indent=2, sort_keys=True), encoding="utf-8")
+    return result

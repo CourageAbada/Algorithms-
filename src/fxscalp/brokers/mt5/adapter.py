@@ -22,8 +22,9 @@ from fxscalp.brokers.accounts import PHASE1_ALLOWED_ACCOUNT_CLASSES, AccountClas
 from fxscalp.brokers.base import (AccountInfo, AdapterHealth, BrokerAdapter, OrderRequest, OrderResult,
                                   SymbolInfo, TerminalInfo, Tick)
 from fxscalp.brokers.errors import (AccountMismatchError, AccountNotAllowedError, CallTimeoutError, ConnectionLostError, DataFormatError,
-                                    MT5AuthError, MT5InitializationError, NoTickDataError, StaleTickError,
-                                    SymbolNotFoundError, TradingDisabledError)
+                                    HistoryUnavailableError, MT5AuthError, MT5InitializationError, NoTickDataError,
+                                    RequestTimeoutError, StaleTickError, SymbolNotFoundError, TerminalRequestError,
+                                    TradingDisabledError)
 from fxscalp.brokers.mt5 import convert
 from fxscalp.brokers.mt5.api import ReadOnlyMT5Api, load_mt5_module
 from fxscalp.brokers.mt5.owner import MT5Owner
@@ -32,6 +33,12 @@ log = logging.getLogger("fxscalp.mt5")
 
 _IPC_ERROR_RANGE = range(-10005, -9999)   # RES_E_INTERNAL_FAIL .. _TIMEOUT (verified constants)
 _RES_AUTH_FAILED = -6                      # RES_E_AUTH_FAILED (verified constant)
+#: last_error codes that accompany a None history result meaning "no data" (success / not found), not a failure.
+_NO_DATA_CODES = frozenset({0, 1, -4})
+#: Defaults derived from measurement (docs/MT5_VERIFICATION_RESULT_2026-10-07.md): cold tick-history loads took
+#: 36 s and failed after ~95 s ('Terminal: Call failed'). ~2x the worst observation, so a genuine hang is still caught.
+DEFAULT_HISTORY_TIMEOUT_S = 180.0
+DEFAULT_HEALTH_TIMEOUT_S = 60.0
 _TIMEFRAMES = ("M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M30",
                "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1", "W1", "MN1")
 
@@ -40,6 +47,7 @@ class AdapterState(str, Enum):
     DISCONNECTED = "DISCONNECTED"
     CONNECTING = "CONNECTING"
     CONNECTED = "CONNECTED"      # initialised AND verified (demo gate passed)
+    DEGRADED = "DEGRADED"        # a request timed out; health UNKNOWN until the follow-up health check decides
     LOST = "LOST"                # connection/owner failure; reconnect required
     REJECTED = "REJECTED"        # account not allowed; session closed
     CLOSED = "CLOSED"
@@ -78,7 +86,9 @@ class MT5BrokerAdapter(BrokerAdapter):
     def __init__(self, credentials: Mt5Credentials | None = None, *,
                  module_loader: Callable[[], Any] = load_mt5_module,
                  allowed_classes: frozenset[AccountClass] = PHASE1_ALLOWED_ACCOUNT_CLASSES,
-                 call_timeout_s: float = 30.0, min_call_interval_s: float = 0.0):
+                 call_timeout_s: float = 30.0, min_call_interval_s: float = 0.0,
+                 history_timeout_s: float = DEFAULT_HISTORY_TIMEOUT_S,
+                 health_timeout_s: float = DEFAULT_HEALTH_TIMEOUT_S):
         self._creds = credentials or Mt5Credentials()
         self._loader = module_loader
         self._allowed = allowed_classes
@@ -90,6 +100,10 @@ class MT5BrokerAdapter(BrokerAdapter):
         self._min_interval = min_call_interval_s
         self._last_call = 0.0
         self._state_lock = threading.Lock()
+        self._history_timeout_s = history_timeout_s
+        self._health_timeout_s = health_timeout_s
+        #: every request timeout and what the follow-up health check concluded (audit trail for reports)
+        self.timeout_events: list[dict[str, Any]] = []
 
     # ---- state ---------------------------------------------------------------------------
     @property
@@ -111,7 +125,7 @@ class MT5BrokerAdapter(BrokerAdapter):
 
     # ---- low-level call wrapper --------------------------------------------------------------
     def _call(self, fname: str, *args: Any, timeout_s: float | None = None, require_connected: bool = True,
-              **kwargs: Any) -> Any:
+              history: bool = False, **kwargs: Any) -> Any:
         if require_connected and self._state != AdapterState.CONNECTED:
             raise ConnectionLostError(f"MT5 adapter state is {self._state.value}; call connect() first"
                                       if self._state in (AdapterState.DISCONNECTED, AdapterState.CLOSED)
@@ -122,8 +136,13 @@ class MT5BrokerAdapter(BrokerAdapter):
             wait = self._min_interval - (time.monotonic() - self._last_call)
             if wait > 0:
                 time.sleep(wait)
+        if history and timeout_s is None:
+            timeout_s = self._history_timeout_s
         try:
-            res = self._owner.call(fn, *args, label=fname, timeout_s=timeout_s, **kwargs)
+            res = self._owner.call(fn, *args, label=fname, timeout_s=timeout_s, soft=history, **kwargs)
+        except RequestTimeoutError as exc:
+            self._resolve_request_timeout(fname, timeout_s, exc)   # raises RequestTimeoutError or CallTimeoutError
+            raise
         except CallTimeoutError:
             self._set_state(AdapterState.LOST, f"timeout in {fname}")
             raise
@@ -133,6 +152,43 @@ class MT5BrokerAdapter(BrokerAdapter):
         finally:
             self._last_call = time.monotonic()
         return res
+
+    def _resolve_request_timeout(self, fname: str, timeout_s: float | None, exc: RequestTimeoutError) -> None:
+        """A history request timed out. Health is UNKNOWN (DEGRADED) until a lightweight health check decides:
+        terminal_info queued behind the still-running call. Returns only by raising: RequestTimeoutError if the
+        connection is healthy, CallTimeoutError (state LOST) if it is not."""
+        event: dict[str, Any] = {"function": fname, "timeout_s": timeout_s, "ts_utc": datetime.now(timezone.utc).isoformat()}
+        self._set_state(AdapterState.DEGRADED, f"request timeout in {fname}; health check pending")
+        log.warning("mt5 request timeout in %s after %ss; running health check (up to %ss)", fname, timeout_s,
+                    self._health_timeout_s, extra={"ctx": {"event": "request_timeout", "function": fname}})
+        t0 = time.monotonic()
+        try:
+            ti = self._owner.call(self._api.function("terminal_info"), label="terminal_info",  # type: ignore[union-attr]
+                                  timeout_s=self._health_timeout_s)
+            ok = ti is not None and bool(getattr(ti, "connected", True))
+            detail = "terminal_info ok" if ok else "terminal_info missing or terminal not connected to trade server"
+        except Exception as hexc:  # noqa: BLE001 - includes CallTimeoutError (owner stays blocked) and owner failures
+            ok, detail = False, f"{type(hexc).__name__}: {hexc}"
+        event.update({"health_ok": ok, "health_detail": detail, "health_check_s": round(time.monotonic() - t0, 2)})
+        self.timeout_events.append(event)
+        if ok:
+            self._set_state(AdapterState.CONNECTED, "health check passed after request timeout")
+            log.info("mt5 health check passed after timeout in %s (%.1fs)", fname, event["health_check_s"],
+                     extra={"ctx": {"event": "health", "ok": True}})
+            raise exc
+        self._set_state(AdapterState.LOST, f"health check failed after timeout in {fname}")
+        raise CallTimeoutError(f"MT5 request {fname!r} timed out and the health check failed ({detail}); "
+                               "the session is marked lost; restart the terminal and reconnect.") from exc
+
+    def _classify_none(self, what: str) -> None:
+        """A history call returned None. Raise the precise error: IPC loss -> ConnectionLostError; 'no data'
+        codes -> HistoryUnavailableError; any other terminal error -> TerminalRequestError (retryable)."""
+        code, msg = self._last_error()
+        if code in _IPC_ERROR_RANGE:
+            self._raise_for_none(what)
+        if code in _NO_DATA_CODES:
+            raise HistoryUnavailableError(f"{what} returned no data (last_error=({code}, {msg}))")
+        raise TerminalRequestError(f"{what} failed in the terminal (last_error=({code}, {msg}))", code)
 
     def _last_error(self) -> tuple[int, str]:
         try:
@@ -335,14 +391,10 @@ class MT5BrokerAdapter(BrokerAdapter):
         t1 = datetime.fromtimestamp(end_epoch_s, tz=timezone.utc)
         flags = self._api.COPY_TICKS_ALL  # type: ignore[union-attr]
         t_start = time.perf_counter()
-        res = self._call("copy_ticks_range", broker_symbol, t0, t1, flags)
+        res = self._call("copy_ticks_range", broker_symbol, t0, t1, flags, history=True)
         elapsed = time.perf_counter() - t_start
         if res is None:
-            code, msg = self._last_error()
-            if code in _IPC_ERROR_RANGE:
-                self._raise_for_none("copy_ticks_range")
-            raise NoTickDataError(f"copy_ticks_range({broker_symbol}) returned no data for [{start_epoch_s}, "
-                                  f"{end_epoch_s}] (last_error=({code}, {msg}))")
+            self._classify_none(f"copy_ticks_range({broker_symbol}, [{start_epoch_s}, {end_epoch_s}])")
         arr = convert.ticks_to_array(res)
         log.info("mt5 ticks fetched", extra={"ctx": {"event": "ticks", "symbol": broker_symbol, "rows": int(len(arr)),
                                                      "start": start_epoch_s, "end": end_epoch_s,
@@ -354,12 +406,9 @@ class MT5BrokerAdapter(BrokerAdapter):
             raise ValueError("count must be positive")
         self._ensure_selected(broker_symbol)
         res = self._call("copy_ticks_from", broker_symbol, datetime.fromtimestamp(start_epoch_s, tz=timezone.utc),
-                         int(count), self._api.COPY_TICKS_ALL)  # type: ignore[union-attr]
+                         int(count), self._api.COPY_TICKS_ALL, history=True)  # type: ignore[union-attr]
         if res is None:
-            code, msg = self._last_error()
-            if code in _IPC_ERROR_RANGE:
-                self._raise_for_none("copy_ticks_from")
-            raise NoTickDataError(f"copy_ticks_from({broker_symbol}) returned no data (last_error=({code}, {msg}))")
+            self._classify_none(f"copy_ticks_from({broker_symbol})")
         return convert.ticks_to_array(res)
 
     def get_rates_range(self, broker_symbol: str, timeframe: str, start_epoch_s: int, end_epoch_s: int) -> np.ndarray:
@@ -369,12 +418,9 @@ class MT5BrokerAdapter(BrokerAdapter):
         tf = getattr(self._api, f"TIMEFRAME_{timeframe}")
         res = self._call("copy_rates_range", broker_symbol, tf,
                          datetime.fromtimestamp(start_epoch_s, tz=timezone.utc),
-                         datetime.fromtimestamp(end_epoch_s, tz=timezone.utc))
+                         datetime.fromtimestamp(end_epoch_s, tz=timezone.utc), history=True)
         if res is None:
-            code, msg = self._last_error()
-            if code in _IPC_ERROR_RANGE:
-                self._raise_for_none("copy_rates_range")
-            raise NoTickDataError(f"copy_rates_range({broker_symbol},{timeframe}) returned no data (last_error=({code}, {msg}))")
+            self._classify_none(f"copy_rates_range({broker_symbol},{timeframe})")
         return convert.rates_to_array(res)
 
     def get_market_book(self, broker_symbol: str) -> list[dict[str, Any]] | None:

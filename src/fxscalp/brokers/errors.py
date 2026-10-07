@@ -52,7 +52,26 @@ class ConnectionLostError(BrokerError):
 
 
 class CallTimeoutError(ConnectionLostError):
-    """A blocking MT5 call exceeded its deadline; the session is treated as lost."""
+    """A blocking MT5 call exceeded its deadline AND the follow-up health check failed: the session is lost."""
+
+
+class RequestTimeoutError(BrokerError):
+    """A (history) request exceeded its deadline. This alone does NOT mean the connection is lost: cold history
+    loads legitimately take 36-95 s. The adapter runs a health check; only if that fails does it raise
+    CallTimeoutError/ConnectionLostError."""
+
+
+class TerminalRequestError(BrokerError):
+    """The terminal answered a request with a non-IPC error (e.g. -1 'Terminal: Call failed'). Retryable; the
+    connection itself is not considered lost."""
+
+    def __init__(self, message: str, code: int | None = None):
+        super().__init__(message)
+        self.code = code
+
+
+class HistoryUnavailableError(NoTickDataError):
+    """The terminal reported no data for a range without an error (history not available / not downloaded)."""
 
 
 class DataFormatError(BrokerError):

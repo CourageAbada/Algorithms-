@@ -30,13 +30,15 @@ from fxscalp.brokers.mt5.convert import compare_spread_with_tick
 from fxscalp.core.env import load_dotenv
 from fxscalp.core.provenance import software_versions
 from fxscalp.market_data import quality as Qm
-from fxscalp.market_data.acquire import persist_symbol_metadata, probe_history_depth, probe_request_limits
+from fxscalp.market_data.acquire import (discover_history_depth, history_depth_path, persist_symbol_metadata,
+                                         probe_request_limits)
 from fxscalp.market_data.timebase import TimeBase
+from fxscalp.market_data.verification import assess_bar_completeness, assess_latest_tick_freshness
 from fxscalp.monitoring.logging_setup import REDACTED, configure_logging
 from fxscalp.workflows import (calibrate_timebase, load_instrument_specs, make_adapter, run_discovery,
-                               timebase_file)
+                               save_calibration_record, timebase_file)
 
-REPORT_VERSION = "mt5_verify/1"
+REPORT_VERSION = "mt5_verify/2"
 PRIMARY = "XAU_USD"
 log = logging.getLogger("fxscalp.verify")
 
@@ -158,8 +160,10 @@ def run(args: argparse.Namespace) -> int:
                                       interval_s=args.time_interval, dst_weeks=args.dst_weeks)
         tb = TimeBase(spec)
         tb.save(timebase_file(data_root, broker, server))
+        rec_path, rec = save_calibration_record(data_root, spec)
         rep.data["time_semantics"] = {"spec": spec.to_json(), "evidence": ev,
                                       "interpretation": f"source_time - UTC = {spec.estimate.offset_s if spec.estimate else None} s",
+                                      "calibration_record": {"path": str(rec_path), **rec},
                                       "documentation_claim": "MT5 docs: times are UTC",
                                       "documentation_claim_status": "tested above (not assumed)"}
         est = spec.estimate
@@ -168,7 +172,23 @@ def run(args: argparse.Namespace) -> int:
                   f"basis={spec.basis.value}", notes=list(est.notes) if est else [])
         rep.check("time_dst", "DST behaviour determined", "PASS" if spec.dst_determined else "WARN",
                   "determined from weekly-open evidence (assumption-labelled)" if spec.dst_determined else
-                  "not determined (use --dst-weeks 52 on a connected terminal with deep history)")
+                  f"not determined: {spec.dst_status}")
+        cons = spec.consistency
+        rep.check("time_validity", "Offset validity period established",
+                  "PASS" if cons is not None and cons.consistent else "WARN",
+                  f"valid {rec['effective_from_utc']} .. {rec['effective_to_utc']}; weekly opens={0 if cons is None else cons.n_weeks} "
+                  f"consistent={None if cons is None else cons.consistent}; confidence={rec['confidence']}")
+        # ---- stale / future latest tick (uses the measured offset, receive latency and clock residual) -------------
+        if est and est.offset_s is not None:
+            t_recv0 = time.time()
+            lt = adapter.get_latest_tick(psym)
+            t_recv1 = time.time()
+            fr = assess_latest_tick_freshness(lt.time_msc_raw, est.offset_s, (t_recv0 + t_recv1) / 2,
+                                              call_latency_s=t_recv1 - t_recv0, clock_residual_s=est.residual_s or 0.0)
+            rep.data["latest_tick_freshness"] = {"status": fr.status, "age_s": round(fr.age_s, 3), "stale_limit_s": fr.stale_limit_s,
+                                                 "future_limit_s": round(fr.future_limit_s, 3), "note": fr.note}
+            rep.check("tick_freshness", "Latest tick stale/future check", "PASS" if fr.status == "FRESH" else "WARN",
+                      f"{fr.status}: age={fr.age_s:.2f}s ({fr.note})")
 
         # ---- ticks -------------------------------------------------------------------------------
         off = est.offset_s if est and est.offset_s is not None else 0
@@ -197,9 +217,25 @@ def run(args: argparse.Namespace) -> int:
                   f"mismatches={bad['SEC_MSEC_MISMATCH']}")
         # ---- bars --------------------------------------------------------------------------------
         try:
-            rates = adapter.get_rates_range(psym, "M1", s0, e0)
-            rep.data["bars"] = {"timeframe": "M1", "rows": int(len(rates)), "fields": list(rates.dtype.names)}
-            rep.check("bars", "Historical bars (M1)", "PASS" if len(rates) else "WARN", f"{len(rates)} bars")
+            best = None
+            attempts = []
+            for attempt in range(3):      # the terminal builds bar history lazily: an early response can be incomplete
+                rates = adapter.get_rates_range(psym, "M1", s0, e0)
+                comp = assess_bar_completeness(rates["time"], arr["time_msc"])
+                attempts.append({"attempt": attempt + 1, "bars": int(len(rates)), "status": comp.status,
+                                 "coverage": comp.coverage})
+                if best is None or (comp.coverage or 0) >= (best[1].coverage or 0):
+                    best = (rates, comp)
+                if comp.status in ("PASS", "INCONCLUSIVE") or attempt == 2:
+                    break
+                time.sleep(3.0)
+            rates, comp = best
+            rep.data["bars"] = {"timeframe": "M1", "rows": int(len(rates)), "fields": list(rates.dtype.names),
+                                "completeness": {"status": comp.status, "tick_minutes": comp.minutes_with_ticks,
+                                                 "covered": comp.minutes_covered, "coverage": comp.coverage,
+                                                 "note": comp.note, "attempts": attempts}}
+            rep.check("bars", "Historical bars (M1) complete vs ticks", {"INCONCLUSIVE": "WARN"}.get(comp.status, comp.status),
+                      f"{len(rates)} bars; {comp.note}")
         except BrokerError as exc:
             rep.check("bars", "Historical bars (M1)", "WARN", str(exc))
         # ---- DOM ---------------------------------------------------------------------------------
@@ -207,17 +243,23 @@ def run(args: argparse.Namespace) -> int:
             rep.check("dom", "Depth of market", "SKIP", "--skip-dom")
         else:
             book = adapter.get_market_book(psym)
-            rep.data["dom"] = {"available": book is not None, "levels": None if book is None else len(book)}
+            rep.data["dom"] = {"available": bool(book), "levels": 0 if not book else len(book)}
             rep.check("dom", "Depth of market (read-only)", "PASS" if book else "WARN", "available" if book else "not available")
         # ---- limits / depth ----------------------------------------------------------------------
         if not args.no_probe:
-            lim = probe_request_limits(adapter, psym, s0)
-            rep.data["request_limits"] = {"rows": lim.rows, "suspected_cap": lim.suspected_cap, "note": lim.note}
-            dep = probe_history_depth(adapter, psym, now_source)
-            rep.data["history_depth"] = {"earliest_source_day": None if dep.earliest_source_day is None else dep.earliest_source_day.isoformat(),
-                                         "calls": dep.calls, "note": dep.note, "samples": dep.samples}
-            rep.check("history_depth", "XAU_USD tick history depth probe", "PASS" if dep.earliest_source_day else "WARN", dep.note
-                      + f" earliest={dep.earliest_source_day}")
+            latest_known = int(arr["time"][-1]) if len(arr) else e0
+            lim = probe_request_limits(adapter, psym, latest_known - 60, latest_known_s=latest_known)
+            rep.data["request_limits"] = {"status": lim.status, "rows": lim.rows, "suspected_cap": lim.suspected_cap,
+                                          "max_rows_observed": lim.max_rows_observed, "end_source_s": lim.end_s, "note": lim.note}
+            rep.check("request_limits", "Per-request row cap", "PASS" if lim.status == "UNDETERMINED" else "WARN",
+                      f"{lim.status}: {lim.note}")
+            dep = discover_history_depth(adapter, psym, now_source,
+                                         cache_path=history_depth_path(data_root, broker, server, PRIMARY),
+                                         force=args.refresh_depth)
+            rep.data["history_depth"] = dep.to_json() | {"from_cache": dep.cached}
+            rep.check("history_depth", "XAU_USD tick history depth", "PASS" if dep.status == "boundary_found" else "WARN",
+                      f"{dep.status}: earliest={dep.earliest_data_day} (observed {dep.observed_at_utc[:10]}"
+                      f"{', cached' if dep.cached else ''}); {dep.note}")
         # ---- latency -----------------------------------------------------------------------------
         lat = []
         for _ in range(args.latency_samples):
@@ -236,6 +278,7 @@ def run(args: argparse.Namespace) -> int:
             rep.check("no_trading", "Order submission blocked (TradingDisabledError)", "PASS")
         if args.fake:
             rep.data["no_trading_attestation"] = {"fake_trading_calls": list(adapter.fake.trading_calls)}  # type: ignore[attr-defined]
+        rep.data["request_timeouts"] = list(getattr(adapter, "timeout_events", []))
         rep.data["no_trading_attestation"] = {**rep.data.get("no_trading_attestation", {}),
                                               "api_allow_list_only": True, "order_functions_called": []}
         rep.data["real_mt5_verified"] = (not args.fake) and not rep.failed()
@@ -317,6 +360,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--map-dir", default=None, help="where broker_symbols/<broker>__<server>.yaml is written "
                    "(default: --config-dir; with --fake: <output-dir>/fake_symbol_maps)")
     p.add_argument("--no-write-map", action="store_true")
+    p.add_argument("--refresh-depth", action="store_true", help="ignore the cached history-depth result")
     return run(p.parse_args(argv))
 
 
