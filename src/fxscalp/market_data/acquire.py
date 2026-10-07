@@ -286,30 +286,40 @@ class TickAcquirer:
         return AcquisitionSummary(results, manifest)
 
     def write_dataset_manifest(self, start_day: date, end_day: date) -> dict[str, Any]:
-        chunks = []
-        total = 0
-        d = start_day
-        while d <= end_day:
-            key = ChunkKey(self.broker, self.server, self.canonical, d)
-            m = self.store.chunk_manifest(key)
-            ok, why = self.store.verify_chunk(key)
-            if m is None or not ok:
-                raise RuntimeError(f"cannot build dataset manifest: chunk {d} not verified ({why})")
-            chunks.append({"source_day": m["source_day"], "record_count": m["record_count"],
-                           "raw_content_sha256": m["raw_content_sha256"], "file_sha256": m["file_sha256"]})
-            total += m["record_count"]
-            d += timedelta(days=1)
-        spec = self.tb.spec
-        body = {"manifest_type": "tick_raw_dataset", "schema_version": RAW_SCHEMA_VERSION, "broker": self.broker,
-                "server": self.server, "instrument": self.canonical, "broker_symbol": self.sym,
-                "start_source_day": start_day.isoformat(), "end_source_day": end_day.isoformat(),
-                "record_count": total, "time_basis": spec.basis.value, "timebase_spec": spec.to_json(),
-                "timebase_spec_sha256": self._timebase_sha, "symbol_info_sha256": self._meta_sha,
-                "account_fingerprint": self.account_fp, "collected_at_utc": utcnow().isoformat(),
-                "software": software_versions(), "chunks": chunks,
-                "derived_datasets": ["tick_basic", "tick_quality"],
-                "lineage": {"parents": [], "transformation": "broker copy_ticks_range acquisition"}}
-        return self.store.write_dataset_manifest(body)
+        return build_dataset_manifest(self.store, self.tb.spec, broker=self.broker, server=self.server,
+                                      canonical=self.canonical, broker_symbol=self.sym, symbol_info_sha=self._meta_sha,
+                                      account_fingerprint=self.account_fp, start_day=start_day, end_day=end_day)
+
+
+def build_dataset_manifest(store: TickStore, spec: Any, *, broker: str, server: str, canonical: str, broker_symbol: str,
+                           symbol_info_sha: str | None, account_fingerprint: str | None, start_day: date,
+                           end_day: date) -> dict[str, Any]:
+    """Dataset manifest over ``[start_day, end_day]``; every chunk must exist and verify (no silent gaps). The dataset id
+    is a hash of the identity fields + per-chunk raw content hashes, so identical data gives an identical id."""
+    chunks = []
+    total = 0
+    d = start_day
+    while d <= end_day:
+        key = ChunkKey(broker, server, canonical, d)
+        m = store.chunk_manifest(key)
+        ok, why = store.verify_chunk(key)
+        if m is None or not ok:
+            raise RuntimeError(f"cannot build dataset manifest: chunk {d} not verified ({why})")
+        chunks.append({"source_day": m["source_day"], "record_count": m["record_count"],
+                       "raw_content_sha256": m["raw_content_sha256"], "file_sha256": m["file_sha256"]})
+        total += m["record_count"]
+        d += timedelta(days=1)
+    body = {"manifest_type": "tick_raw_dataset", "schema_version": RAW_SCHEMA_VERSION, "broker": broker,
+            "server": server, "instrument": canonical, "broker_symbol": broker_symbol,
+            "start_source_day": start_day.isoformat(), "end_source_day": end_day.isoformat(),
+            "record_count": total, "time_basis": spec.basis.value, "timebase_spec": spec.to_json(),
+            "timebase_spec_sha256": sha256_bytes(canonical_json(spec.identity()).encode()),
+            "symbol_info_sha256": symbol_info_sha,
+            "account_fingerprint": account_fingerprint, "collected_at_utc": utcnow().isoformat(),
+            "software": software_versions(), "chunks": chunks,
+            "derived_datasets": ["tick_basic", "tick_quality"],
+            "lineage": {"parents": [], "transformation": "broker copy_ticks_range acquisition"}}
+    return store.write_dataset_manifest(body)
 
 
 # --------------------------------------------------------------------------------------------
