@@ -25,6 +25,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--stage", choices=["baselines", "grid", "all"], default="all")
     p.add_argument("--n-jobs", type=int, default=8)
     p.add_argument("--only-config", default=None)
+    p.add_argument("--scenarios", default=",".join(P.SCENARIOS), help="comma list; scenarios are independent so they can run in parallel processes")
     a = p.parse_args(argv)
     frozen = verify_frozen_state("data")
     if frozen["git"]["dirty"]:
@@ -34,12 +35,14 @@ def main(argv: list[str] | None = None) -> int:
     feat = json.loads(Path("research/phase2b/feature_set_v1.json").read_text(encoding="utf-8"))
     runner = Runner(df, man["matrix_id"], frozen, feat["model_input_allowed"], ExperimentStore(a.store), a.n_jobs)
     t0 = time.perf_counter()
-    for scn in P.SCENARIOS:
+    scns = [s for s in a.scenarios.split(",") if s]
+    assert set(scns) <= set(P.SCENARIOS)
+    for scn in scns:
         if a.stage in ("baselines", "all"):
             runner.run_baselines(scn)
             print(f"baselines {scn} done {time.perf_counter() - t0:.0f}s", flush=True)
     if a.stage in ("grid", "all"):
-        for scn in P.SCENARIOS:
+        for scn in scns:
             for fc in P.FEATURE_CONFIGS:
                 if a.only_config and fc != a.only_config:
                     continue
