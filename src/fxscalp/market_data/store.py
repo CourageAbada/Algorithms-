@@ -114,6 +114,15 @@ def _atomic_write_json(obj: Any, path: Path) -> None:
     _atomic_write(path, lambda fh: fh.write(text), mode="w", encoding="utf-8")
 
 
+def compute_dataset_id(body: dict[str, Any]) -> str:
+    """Deterministic dataset id: identity fields + (source_day, raw_content_sha256) per chunk + time-basis spec hash.
+    Independent of collection time, software versions and file encodings."""
+    identity = {k: body[k] for k in ("schema_version", "broker", "server", "instrument", "broker_symbol",
+                                     "time_basis", "timebase_spec_sha256", "chunks")}
+    return "tickraw-" + sha256_bytes(canonical_json({**identity, "chunks": [
+        (c["source_day"], c["raw_content_sha256"]) for c in body["chunks"]]}).encode())[:20]
+
+
 class TickStore:
     def __init__(self, root: Path):
         self.root = Path(root)
@@ -229,10 +238,7 @@ class TickStore:
 
     def write_dataset_manifest(self, body: dict[str, Any]) -> dict[str, Any]:
         """Dataset ID = hash of identity fields + chunk content hashes; checksum covers the whole body."""
-        identity = {k: body[k] for k in ("schema_version", "broker", "server", "instrument", "broker_symbol",
-                                         "time_basis", "timebase_spec_sha256", "chunks")}
-        did = "tickraw-" + sha256_bytes(canonical_json({**identity, "chunks": [
-            (c["source_day"], c["raw_content_sha256"]) for c in body["chunks"]]}).encode())[:20]
+        did = compute_dataset_id(body)
         doc = {**body, "dataset_id": did}
         doc["manifest_checksum_sha256"] = sha256_bytes(canonical_json(doc).encode())
         d = self.dataset_dir(body["broker"], body["server"], body["instrument"])
