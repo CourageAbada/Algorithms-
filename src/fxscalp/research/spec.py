@@ -62,6 +62,17 @@ def labels_manifest() -> dict[str, Any]:
                      "label_end_ms = t + (L+H)*1000 is used for purge/embargo",
         "tie_rules": "same-second profit and stop -> stop first (conservative); both sides succeed in the same second -> NO_TRADE + ambiguous",
         "parameters_fixed_a_priori": True, "tuning_on_results": "FORBIDDEN",
+        "pre_registration": {
+            "purpose": "close the forking path: the label is NOT chosen from model results",
+            "primary": {"family": "tb", "horizon_s": 60, "cost_scenarios": ["C0_spread_only", "C1_moderate", "C2_pessimistic"],
+                        "basis": "the only family whose NO_TRADE share is non-degenerate (45-82%) at every horizon and every cost scenario "
+                                 "in the development-period label diagnostics; the middle horizon; selected from label balance only, "
+                                 "no model or PnL result consulted"},
+            "secondary": "all other candidates, reported as robustness; none may replace the primary without a new spec version",
+            "degeneracy_rule": "a label whose NO_TRADE share is below 5% in a scenario is NON-INFORMATIVE as an abstain label there: it is "
+                               "reported, never used as primary, and never rescued by re-tuning its parameters",
+            "cost_reporting": "every reported result must be shown under all three cost scenarios; unknown costs are never defaulted to zero",
+            "diagnostics_source": "research/phase2b/diagnostics/label_diagnostics.json (development period only)"},
     }
 
 
