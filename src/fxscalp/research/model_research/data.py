@@ -16,7 +16,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from fxscalp.core.provenance import canonical_json, sha256_bytes, sha256_file
+from fxscalp.core.provenance import sha256_bytes, sha256_file
 from fxscalp.features.normalize import from_arrow, normalize_ticks
 from fxscalp.features.pipeline import PipelineConfig, build_feature_frame
 from fxscalp.market_data.store import ChunkKey, TickStore
@@ -92,8 +92,8 @@ def build_matrix(store: TickStore, manifest: dict[str, Any], out_dir: Path, *, p
             print(f"{i + 1}/{len(days)} days", flush=True)
     cfg = matrix_config()
     man = {"config": cfg, "days": entries, "rows": int(sum(e["rows"] for e in entries)),
-           "matrix_id": "matrix-" + sha256_bytes(canonical_json({"cfg": cfg, "days": [(e["day"], e["sha256"]) for e in entries]}).encode())[:20]}
-    (out_dir / "manifest.json").write_text(json.dumps(man, indent=1), encoding="utf-8")
+           "matrix_id": "matrix-" + sha256_bytes(json.dumps({"cfg": cfg, "days": [(e["day"], e["sha256"]) for e in entries]}, sort_keys=True, default=str).encode())[:20]}
+    (out_dir / "manifest.json").write_text(json.dumps(man, indent=1, default=str), encoding="utf-8")
     return man
 
 
