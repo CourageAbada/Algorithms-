@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
               f"read {r['parquet_read_s']:.2f}s | peak RSS {r['peak_rss_mb_process']:.0f} MB", flush=True)
     if a.json_output:
         Path(a.json_output).parent.mkdir(parents=True, exist_ok=True)
-        Path(a.json_output).write_text(json.dumps(res, indent=2, default=float))
+        Path(a.json_output).write_text(json.dumps(res, indent=2, default=float), encoding="utf-8")
     return 0
 
 

@@ -89,7 +89,7 @@ def build_profile(store: TickStore, broker: str, server: str, instrument: str, s
         raw = store.read_raw_chunk(key, ["seq", "source_time_msc", "normalized_utc_time"]).to_pandas()
         der = store.read_derived("tick_basic", key).to_pandas()
         qua = store.read_derived("tick_quality", key).to_pandas()
-        qsum = json.loads((store.derived_dir("tick_quality", key) / "manifest.json").read_text())["quality_summary"]
+        qsum = json.loads((store.derived_dir("tick_quality", key) / "manifest.json").read_text(encoding="utf-8"))["quality_summary"]
         for k, v in qsum["counts"].items():
             flag_counts[k] = flag_counts.get(k, 0) + v
         long_gaps.extend(qsum.get("long_gaps", []))

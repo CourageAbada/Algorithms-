@@ -47,12 +47,12 @@ def main(argv: list[str] | None = None) -> int:
     y = registry_yaml(build_registry())
     c = catalog_markdown()
     if a.check:
-        ok = YAML_PATH.exists() and YAML_PATH.read_text() == y
+        ok = YAML_PATH.exists() and YAML_PATH.read_text(encoding="utf-8") == y
         print("registry snapshot is up to date" if ok else "registry snapshot DRIFT: run python -m scripts.export_feature_registry")
         return 0 if ok else 1
     YAML_PATH.parent.mkdir(parents=True, exist_ok=True)
-    YAML_PATH.write_text(y)
-    CATALOG_PATH.write_text(c + "\n")
+    YAML_PATH.write_text(y, encoding="utf-8")
+    CATALOG_PATH.write_text(c + "\n", encoding="utf-8")
     print(f"wrote {YAML_PATH} and {CATALOG_PATH}")
     return 0
 

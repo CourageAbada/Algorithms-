@@ -39,7 +39,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if a.manifest:
             import json
-            man = json.loads(Path(a.manifest).read_text())
+            man = json.loads(Path(a.manifest).read_text(encoding="utf-8"))
         elif a.dataset_id:
             man = find_dataset_manifest(store, a.dataset_id)
         else:

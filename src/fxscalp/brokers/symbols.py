@@ -185,7 +185,7 @@ def build_map_document(broker: str, server: str, results: Sequence[DiscoveryResu
 
 def write_map(path: Path, doc: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(yaml.safe_dump(dict(doc), sort_keys=True, default_flow_style=False))
+    path.write_text(yaml.safe_dump(dict(doc), sort_keys=True, default_flow_style=False), encoding="utf-8")
 
 
 class SymbolMap:
@@ -198,7 +198,7 @@ class SymbolMap:
 
     @staticmethod
     def load(path: Path) -> "SymbolMap":
-        return SymbolMap(yaml.safe_load(path.read_text()))
+        return SymbolMap(yaml.safe_load(path.read_text(encoding="utf-8")))
 
     @property
     def pins(self) -> dict[str, str]:

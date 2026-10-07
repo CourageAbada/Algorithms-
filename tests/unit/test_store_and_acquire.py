@@ -320,3 +320,62 @@ def test_request_limit_probe_detects_cap():
     b = FakeMT5Adapter(FakeScenario(weekend_closure=False))
     b.connect()
     assert probe_request_limits(b, "XAUUSDm", 1_760_000_000, windows_s=(1800, 7200)).suspected_cap is None
+
+
+# ---------------- atomic write durability (Windows-compatible semantics) ----------------
+def test_atomic_write_fsyncs_a_writable_descriptor_before_replace(tmp_path, monkeypatch):
+    """Regression: fsync on a read-only descriptor raises EBADF on Windows. The writer's own handle must be synced
+    (opened writable), data flushed first, and the replace must happen only after the fsync."""
+    import os
+    import stat as _stat
+    from fxscalp.market_data import store as S
+
+    events: list[str] = []
+    real_fsync, real_replace = os.fsync, os.replace
+
+    def spy_fsync(fd):
+        mode = os.fstat(fd).st_mode
+        events.append("fsync_regular" if _stat.S_ISREG(mode) else "fsync_other")
+        # emulate Windows: a read-only descriptor must never reach fsync (checked via a writable probe)
+        try:
+            os.write(fd, b"")
+        except OSError as exc:  # pragma: no cover - only on a read-only fd
+            raise AssertionError("fsync called on a read-only descriptor") from exc
+        return real_fsync(fd)
+
+    def spy_replace(a, b):
+        events.append("replace")
+        return real_replace(a, b)
+
+    monkeypatch.setattr(S.os, "fsync", spy_fsync)
+    monkeypatch.setattr(S.os, "replace", spy_replace)
+    target = tmp_path / "m.json"
+    S._atomic_write_json({"a": 1, "unicode": "é€"}, target)
+    assert events.index("fsync_regular") < events.index("replace")
+    assert json.loads(target.read_text(encoding="utf-8")) == {"a": 1, "unicode": "é€"}
+    assert not list(tmp_path.glob("*.tmp"))
+    assert not os.access(target, os.W_OK)           # immutable after write
+
+
+def test_atomic_write_failure_leaves_no_temp_and_keeps_target_intact(tmp_path):
+    from fxscalp.market_data import store as S
+    target = tmp_path / "ticks.parquet"
+    a, t = table()
+    S._atomic_write_parquet(t, target)
+    before = target.read_bytes()
+
+    with pytest.raises(TypeError):
+        S._atomic_write_json({1: 1, "a": 2}, tmp_path / "bad.json")         # un-sortable keys fail before any write
+    with pytest.raises(ZeroDivisionError):
+        S._atomic_write(tmp_path / "boom.bin", lambda fh: 1 / 0, mode="wb")  # failure mid-write
+    assert not (tmp_path / "boom.bin").exists()
+    assert not list(tmp_path.glob("*.tmp"))
+    assert target.read_bytes() == before
+
+
+def test_atomic_parquet_roundtrip_is_readable(tmp_path):
+    import pyarrow.parquet as pq
+    from fxscalp.market_data import store as S
+    a, t = table()
+    S._atomic_write_parquet(t, tmp_path / "x.parquet")
+    assert pq.read_table(tmp_path / "x.parquet").num_rows == t.num_rows

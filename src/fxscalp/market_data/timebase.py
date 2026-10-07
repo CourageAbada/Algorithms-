@@ -371,10 +371,10 @@ class TimeBase:
 
     def save(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(self.spec.to_json(), indent=2, sort_keys=True))
+        path.write_text(json.dumps(self.spec.to_json(), indent=2, sort_keys=True), encoding="utf-8")
 
     @staticmethod
     def load(path: Path) -> "TimeBase":
-        return TimeBase(TimeBaseSpec.from_json(json.loads(path.read_text())))
+        return TimeBase(TimeBaseSpec.from_json(json.loads(path.read_text(encoding="utf-8"))))
 
 

@@ -154,16 +154,34 @@ def test_trading_functions_are_only_mentioned_in_the_blocklist_and_fake_tripwire
     for p in SRC.rglob("*.py"):
         if p.name in ("api.py", "fake.py"):
             continue
-        if FORBIDDEN.search(p.read_text()):
+        if FORBIDDEN.search(p.read_text(encoding="utf-8")):
             offenders.append(str(p.relative_to(SRC)))
     assert offenders == []
 
 
-def test_only_the_mt5_package_imports_metatrader5():
-    for p in SRC.rglob("*.py"):
-        if "brokers/mt5" in str(p):
-            continue
-        assert not re.search(r"^\s*(import|from)\s+MetaTrader5", p.read_text(), re.M), p
+_MT5_IMPORT = re.compile(r"^\s*(import|from)\s+MetaTrader5|__import__\(\s*[\"']MetaTrader5|import_module\(\s*[\"']MetaTrader5", re.M)
+APPROVED_MT5_IMPORT_BOUNDARY = {"brokers/mt5/api.py"}     # the ONLY module allowed to load the package
+
+
+def _mt5_importers(root: Path) -> set[str]:
+    return {p.relative_to(root).as_posix() for p in root.rglob("*.py")
+            if _MT5_IMPORT.search(p.read_text(encoding="utf-8"))}
+
+
+def test_only_the_approved_api_boundary_imports_metatrader5():
+    """Architecture: all MetaTrader5 access -> brokers/mt5/api.py (read-only allow-list proxy) -> adapter.
+    Path comparison is separator-neutral (as_posix) so it behaves identically on Windows and Linux."""
+    assert _mt5_importers(SRC) == APPROVED_MT5_IMPORT_BOUNDARY
+    repo = SRC.parents[1]
+    assert _mt5_importers(repo / "scripts") == set()
+
+
+def test_import_boundary_detector_catches_a_stray_direct_import(tmp_path):
+    (tmp_path / "ok.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "bad.py").write_text("def f():\n    import MetaTrader5 as mt5\n", encoding="utf-8")
+    (tmp_path / "bad2.py").write_text("from MetaTrader5 import order_send\n", encoding="utf-8")
+    (tmp_path / "bad3.py").write_text("m = __import__('MetaTrader5')\n", encoding="utf-8")
+    assert _mt5_importers(tmp_path) == {"bad.py", "bad2.py", "bad3.py"}
 
 
 def test_no_message_broker_or_microservice_dependencies():

@@ -174,7 +174,9 @@ def check_target_contamination(features: pd.DataFrame, target: pd.Series | np.nd
             continue
         if x[valid].nunique() < 3:
             continue
-        rho = x[valid].corr(y[valid], method="spearman")
+        # Spearman = Pearson on average ranks. Computed explicitly because pandas' method="spearman" lazily imports
+        # scipy, which is not a declared dependency of this project.
+        rho = x[valid].rank(method="average").corr(y[valid].rank(method="average"))
         if rho == rho and abs(rho) >= corr_threshold:
             out.append(Finding("near_perfect_correlation", 0, f"column {c!r} has |spearman|={abs(rho):.4f} with the target"))
     return out

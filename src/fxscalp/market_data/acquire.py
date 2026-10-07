@@ -87,7 +87,7 @@ def persist_symbol_metadata(root: Path, broker: str, server: str, canonical: str
     p = d / f"{sha[:16]}.json"
     if not p.exists():
         p.write_text(json.dumps({**body, "collected_at_utc": utcnow().isoformat(), "sha256": sha}, indent=2,
-                                sort_keys=True, default=str))
+                                sort_keys=True, default=str), encoding="utf-8")
     return sha, issues
 
 
@@ -217,7 +217,7 @@ class TickAcquirer:
                "quarantined": None if q is None else int(q.quarantined.sum())}
         p = self.store.root / "acquisition_log.jsonl"
         p.parent.mkdir(parents=True, exist_ok=True)
-        with open(p, "a") as fh:
+        with open(p, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(rec) + "\n")
         log.info("tick chunk %s", status, extra={"ctx": rec})
 

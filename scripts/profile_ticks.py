@@ -36,18 +36,18 @@ def main(argv: list[str] | None = None) -> int:
     if meta_dir.exists():
         files = sorted(meta_dir.glob("*.json"), key=lambda f: f.stat().st_mtime)
         if files:
-            meta = json.loads(files[-1].read_text())
+            meta = json.loads(files[-1].read_text(encoding="utf-8"))
             point = (meta.get("typed") or {}).get("point")
     prof = build_profile(store, a.broker, a.server, a.instrument, date.fromisoformat(a.start),
                          date.fromisoformat(a.end), point)
     md = render_markdown(prof, meta, title=f"{a.instrument.replace('_', '/')} Data Profile")
     if a.output:
-        Path(a.output).write_text(md)
+        Path(a.output).write_text(md, encoding="utf-8")
         print(f"wrote {a.output}")
     else:
         print(md)
     if a.json_output:
-        Path(a.json_output).write_text(json.dumps(prof, indent=2, sort_keys=True, default=str))
+        Path(a.json_output).write_text(json.dumps(prof, indent=2, sort_keys=True, default=str), encoding="utf-8")
     return 0
 
 

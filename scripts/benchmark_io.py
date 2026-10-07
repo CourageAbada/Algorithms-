@@ -92,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
     print(json.dumps(res, indent=2, default=float))
     if a.json_output:
         Path(a.json_output).parent.mkdir(parents=True, exist_ok=True)
-        Path(a.json_output).write_text(json.dumps(res, indent=2, default=float))
+        Path(a.json_output).write_text(json.dumps(res, indent=2, default=float), encoding="utf-8")
     return 0
 
 

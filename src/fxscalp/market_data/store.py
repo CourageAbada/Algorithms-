@@ -67,24 +67,50 @@ def raw_content_sha256(table: pa.Table) -> str:
     return h.hexdigest()
 
 
-def _atomic_write_parquet(table: pa.Table, path: Path) -> None:
+def _fsync_dir(directory: Path) -> None:
+    """Persist a rename on POSIX (directory entry). Windows cannot open directories this way; NTFS journals the
+    metadata of os.replace, so this is a documented no-op there."""
+    if os.name == "nt":
+        return
+    fd = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _atomic_write(path: Path, write_fn: Any, *, mode: str, encoding: str | None = None) -> None:
+    """temp file -> write -> flush -> fsync the WRITABLE handle -> atomic replace -> fsync directory (POSIX).
+
+    fsync must be called on the descriptor that wrote the data: Windows rejects fsync (EBADF) on a read-only
+    descriptor, and fsync on a different descriptor is not guaranteed to cover buffers of the writer.
+    """
     tmp = path.with_suffix(path.suffix + ".tmp")
-    pq.write_table(table, tmp, compression=PARQUET_COMPRESSION, compression_level=PARQUET_COMPRESSION_LEVEL,
-                   row_group_size=ROW_GROUP_SIZE, use_dictionary=["time_basis"] if "time_basis" in table.column_names else False,
-                   write_statistics=True)
-    with open(tmp, "rb") as fh:
-        os.fsync(fh.fileno())
-    os.replace(tmp, path)
+    try:
+        with open(tmp, mode, encoding=encoding) as fh:
+            write_fn(fh)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
+    _fsync_dir(path.parent)
     os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)   # immutable by convention + permission
 
 
+def _atomic_write_parquet(table: pa.Table, path: Path) -> None:
+    def _write(fh: Any) -> None:
+        pq.write_table(table, fh, compression=PARQUET_COMPRESSION, compression_level=PARQUET_COMPRESSION_LEVEL,
+                       row_group_size=ROW_GROUP_SIZE,
+                       use_dictionary=["time_basis"] if "time_basis" in table.column_names else False,
+                       write_statistics=True)
+    _atomic_write(path, _write, mode="wb")
+
+
 def _atomic_write_json(obj: Any, path: Path) -> None:
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(obj, indent=2, sort_keys=True, default=str))
-    with open(tmp, "rb") as fh:
-        os.fsync(fh.fileno())
-    os.replace(tmp, path)
-    os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+    text = json.dumps(obj, indent=2, sort_keys=True, default=str)
+    _atomic_write(path, lambda fh: fh.write(text), mode="w", encoding="utf-8")
 
 
 class TickStore:
@@ -101,7 +127,7 @@ class TickStore:
     # ---- raw chunks ---------------------------------------------------------------------------
     def chunk_manifest(self, key: ChunkKey) -> dict[str, Any] | None:
         p = self.raw_dir(key) / "manifest.json"
-        return json.loads(p.read_text()) if p.exists() else None
+        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
     def verify_chunk(self, key: ChunkKey) -> tuple[bool, str]:
         """(ok, reason). Recomputes the file checksum and compares row count with parquet metadata."""
@@ -167,7 +193,7 @@ class TickStore:
         if not base.exists():
             return out
         for man in sorted(base.glob("year=*/month=*/day=*/manifest.json")):
-            m = json.loads(man.read_text())
+            m = json.loads(man.read_text(encoding="utf-8"))
             out.append(ChunkKey(m["broker"], m["server"], m["instrument"], date.fromisoformat(m["source_day"])))
         return out
 
@@ -219,7 +245,7 @@ class TickStore:
     def iter_dataset_manifests(self, broker: str, server: str, instrument: str) -> Iterator[dict[str, Any]]:
         d = self.dataset_dir(broker, server, instrument)
         for p in sorted(d.glob("tickraw-*.json")) if d.exists() else []:
-            yield json.loads(p.read_text())
+            yield json.loads(p.read_text(encoding="utf-8"))
 
 
 def utcnow() -> datetime:

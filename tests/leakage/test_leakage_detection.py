@@ -112,3 +112,24 @@ def test_every_ops_primitive_is_causal(name, fn):
     for k in (10, 57, 150, 299):
         part = fn(x[:k])
         assert np.array_equal(part, full[:k], equal_nan=True), (name, k)
+
+
+def test_contamination_screen_does_not_require_scipy(monkeypatch):
+    """pandas' method='spearman' lazily imports scipy (undeclared dependency); the screen must not need it."""
+    import builtins
+    real_import = builtins.__import__
+
+    def no_scipy(name, *a, **k):
+        if name == "scipy" or name.startswith("scipy."):
+            raise ModuleNotFoundError("No module named 'scipy'")
+        return real_import(name, *a, **k)
+
+    monkeypatch.setattr(builtins, "__import__", no_scipy)
+    import numpy as np
+    import pandas as pd
+    from fxscalp.features.leakage import check_target_contamination
+    rng = np.random.default_rng(0)
+    y = rng.normal(size=200)
+    df = pd.DataFrame({"a": rng.normal(size=200), "monotone": np.exp(y)})
+    out = check_target_contamination(df, y)
+    assert [f.kind for f in out] == ["near_perfect_correlation"] and "monotone" in out[0].detail

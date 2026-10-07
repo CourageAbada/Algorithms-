@@ -36,7 +36,7 @@ def find_dataset_manifest(store: TickStore, dataset_id: str) -> dict[str, Any]:
     hits = list((store.root / "datasets").glob(f"*/*/*/{dataset_id}.json"))
     if not hits:
         raise DatasetError(f"dataset {dataset_id!r} not found under {store.root / 'datasets'}")
-    return json.loads(hits[0].read_text())
+    return json.loads(hits[0].read_text(encoding="utf-8"))
 
 
 def load_symbol_meta(store: TickStore, manifest: dict[str, Any]) -> dict[str, Any]:
@@ -45,7 +45,7 @@ def load_symbol_meta(store: TickStore, manifest: dict[str, Any]) -> dict[str, An
     p = d / f"{sha[:16]}.json"
     if not p.exists():
         raise DatasetError(f"symbol metadata snapshot {p} referenced by the dataset manifest is missing")
-    return json.loads(p.read_text())
+    return json.loads(p.read_text(encoding="utf-8"))
 
 
 def load_normalized_ticks(store: TickStore, manifest: dict[str, Any], *, exclude_quarantined: bool = True,
@@ -115,7 +115,7 @@ def build_from_store(store: TickStore, manifest: dict[str, Any], out_root: Path,
     out = out_root / "features" / cfg.instrument / mid
     feat_hash = content_hash(ff.df)
     if (out / "manifest.json").exists() and not force:
-        old = json.loads((out / "manifest.json").read_text())
+        old = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
         if old.get("features_content_sha256") == feat_hash:
             return BuildResult(out, old, ff, qrep)
         raise DatasetError(f"{out} exists with different content; pass force=True to rebuild this derived dataset")
@@ -132,8 +132,8 @@ def build_from_store(store: TickStore, manifest: dict[str, Any], out_root: Path,
     stages.append({"name": "features", "schema_version": ML_SCHEMA_VERSION, **_write(ff.df, out / "features.parquet"),
                    "feature_set_version": ff.registry.version,
                    "parents": [{"kind": "tick_norm", "sha256": stages[0]["sha256"]}]})
-    (out / "feature_quality_report.json").write_text(json.dumps(qrep.to_dict(), indent=2, sort_keys=True, default=str))
-    (out / "feature_quality_report.md").write_text(render_report_markdown(qrep))
+    (out / "feature_quality_report.json").write_text(json.dumps(qrep.to_dict(), indent=2, sort_keys=True, default=str), encoding="utf-8")
+    (out / "feature_quality_report.md").write_text(render_report_markdown(qrep), encoding="utf-8")
     man = {
         "manifest_type": "ml_dataset", "schema_version": ML_SCHEMA_VERSION, "ml_dataset_id": mid, "instrument": cfg.instrument,
         "labels": None, "note": "features only; no labels, no model, no strategy",
@@ -154,12 +154,12 @@ def build_from_store(store: TickStore, manifest: dict[str, Any], out_root: Path,
         "units_note": "spread_points uses the symbol 'point' from the stored metadata snapshot; none is assumed",
     }
     man["manifest_checksum_sha256"] = sha256_bytes(canonical_json(man).encode())
-    (out / "manifest.json").write_text(json.dumps(man, indent=2, sort_keys=True, default=str))
+    (out / "manifest.json").write_text(json.dumps(man, indent=2, sort_keys=True, default=str), encoding="utf-8")
     return BuildResult(out, man, ff, qrep)
 
 
 def read_ml_dataset(path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
-    man = json.loads((path / "manifest.json").read_text())
+    man = json.loads((path / "manifest.json").read_text(encoding="utf-8"))
     f = next(s for s in man["stages"] if s["name"] == "features")
     if sha256_file(path / f["file"]) != f["sha256"]:
         raise DatasetError("features.parquet checksum does not match its manifest")

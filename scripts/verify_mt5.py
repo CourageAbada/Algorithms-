@@ -291,7 +291,7 @@ def _write(rep: Report, out_dir: Path, env: dict[str, str]) -> None:
         if secret and secret not in ("change-me", "00000000") and secret in payload:
             payload = payload.replace(secret, "***REDACTED***")
     path = out_dir / f"mt5_verify_{'fake_' if rep.data['mode'] != 'REAL_MT5' else ''}{stamp}.json"
-    path.write_text(payload)
+    path.write_text(payload, encoding="utf-8")
     print(f"\nVerdict: {rep.data.get('verdict')} | real_mt5_verified={rep.data['real_mt5_verified']}")
     print(f"JSON report: {path}")
     for u in rep.data["unverified"][:6]:
