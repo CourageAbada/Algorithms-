@@ -1,0 +1,31 @@
+broker: Raw Trading Ltd
+mappings:
+  EUR_USD:
+    broker_symbol: EURUSD
+    candidates:
+    - name: EURUSD
+      tier: 0
+    detail: exact alias
+    status: unique
+  GBP_USD:
+    broker_symbol: GBPUSD
+    candidates:
+    - name: GBPUSD
+      tier: 0
+    detail: exact alias
+    status: unique
+  XAU_USD:
+    broker_symbol: XAUUSD
+    candidates:
+    - name: GOLD.NYSE
+      rejected: base currency 'USD' != expected 'XAU'
+      tier: 4
+    - name: GOLD.NYSE-24
+      rejected: base currency 'USD' != expected 'XAU'
+      tier: 4
+    - name: XAUUSD
+      tier: 0
+    detail: exact alias
+    status: unique
+schema_version: symbol_map/1
+server: ICMarketsSC-Demo
