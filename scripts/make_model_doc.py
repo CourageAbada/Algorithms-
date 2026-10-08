@@ -165,7 +165,7 @@ def main() -> int:
             f"shift. The unweighted logistic models have genuine probabilistic skill (log loss 0.945 < 0.957) but essentially never predict LONG or SHORT (recall < 0.01), so they fail G1/G3. "
             f"This is a design defect of protocol v1 (class weighting + prior-based log-loss gate + temperature-only calibration), **not** evidence about the data. I did **not** change the rule. "
             f"Everything in sections 7-12 describes the **exploratory focus candidate** - the highest-S candidate passing G1 and G3 with G2 ignored - and is labelled EXPLORATORY; it does not alter the formal outcome.\n")
-    add(f"Focus candidate: **{focus_info['feature_config']} / {focus_info['family']} / {hp_s(focus_info['hp'])}**; proxy check: flag = {sel['proxy_details'][str(fkey)]['flag'] if str(fkey) in sel['proxy_details'] else 'n/a'}.\n")
+    add(f"Focus candidate: **{focus_info['feature_config']} / {focus_info['family']} / {hp_s(focus_info['hp'])}**; proxy check flag = {(sel.get('exploratory_focus') or {}).get('proxy', {}).get('flag', 'n/a')}.\n")
     add("## 7. Development-fold results of the focus candidate (calibrated unless stated)\n")
     add("| scenario | fold | n train | n val | macro-F1 | best baseline macro-F1 | balanced acc | log loss (uncal → cal) | Brier | ECE (uncal → cal) | T | fit+predict s |\n|---|---|---|---|---|---|---|---|---|---|---|---|")
     L.extend(fold_rows)
@@ -177,6 +177,22 @@ def main() -> int:
         add("| scenario | log loss cand / prior | Δ log loss vs prior [95% CI] | folds with skill |\n|---|---|---|---|")
         L.extend(ex_bt)
         add(f"\nExploratory verdict if G2 used prior-corrected probabilities (NOT the pre-registered verdict): **{ex['verdict_if_G2_used_prior_corrected_probabilities']['verdict']}**.\n")
+    nov = []
+    for sc in P.SCENARIOS:
+        c_ = np.mean([f["nonoverlap_60s"]["macro_f1"] for f in by_s[sc]["folds"]])
+        b_ = np.mean([f["nonoverlap_60s"]["macro_f1"] for f in base["stratified_random"][sc]["folds"]])
+        cm_ = sum(np.array(f["calibrated"]["confusion"]) for f in by_s[sc]["folds"])
+        hit, miss = cm_[0][0] + cm_[2][2], cm_[0][2] + cm_[2][0]
+        # direction-only: among rows whose TRUE class is LONG/SHORT and whose prediction is LONG/SHORT
+        nov.append(f"| {sc} | {F3(c_)} | {F3(b_)} | {c_ - b_:+.3f} | {hit / max(hit + miss, 1):.3f} | {M.from_confusion(cm_)['precision'][2]:.3f} / {M.from_confusion(cm_)['class_dist'][2]:.3f} |")
+    add("\n**Robustness: non-overlapping 60 s evaluation, and direction-only accuracy.**\n")
+    add("| scenario | candidate macro-F1 (non-overlapping 60 s rows) | stratified-random macro-F1 | delta | direction accuracy among true-LONG/SHORT rows predicted LONG/SHORT (0.5 = no directional information) | LONG precision / LONG base rate |\n|---|---|---|---|---|---|")
+    L.extend(nov)
+    add("\n**What the signal is.** Among rows whose true class is LONG or SHORT and that the model also calls LONG or SHORT, the call is right only ~50% of the time "
+        "(0.503 / 0.503 / 0.504): **the model carries no directional information.** LONG precision (0.26 / 0.24 / 0.20) is barely above the LONG base rate (0.24 / 0.21 / 0.16). "
+        "The macro-F1 lift over a random classifier comes from separating NO_TRADE rows from trade rows, i.e. predicting whether a 1-sigma barrier will be reached within 60 s; "
+        "this matches the importance ranking (volatility level: atr14_bps_*, realized_vol_bps_*, higher-timeframe ranges) and the small effect of removing any single feature group. "
+        "It is volatility/timeout predictability, not a directional edge, and because the barrier itself is scaled by trailing volatility part of it may be a property of the label construction.\n")
     add("\n## 9. Calibration, confusion matrices, class-specific performance\n")
     add("| scenario | probabilities | log loss | Brier | top-label ECE |\n|---|---|---|---|---|")
     L.extend(cal_rows)
@@ -207,7 +223,7 @@ def main() -> int:
     add("## 11. Proxy controls and ablations (focus candidate)\n")
     add("| control model (LightGBM, leading hyper-parameters) | scenario | macro-F1 | log loss |\n|---|---|---|---|")
     L.extend(ctl)
-    pd_ = sel["proxy_details"].get(str(fkey), {})
+    pd_ = (sel.get("exploratory_focus") or {}).get("proxy") or sel["proxy_details"].get(str(fkey), {})
     if pd_:
         add(f"\nProxy rule: (a) control lift ≥ 80% of candidate lift: **{pd_.get('a_control_lift_ge_80pct')}**; (b) session+spread ≥ 50% of group-permutation Δ log-loss: **{pd_.get('b_session_spread_share_ge_50pct')}** "
             f"(shares {pd_.get('session_plus_spread_share_of_group_permutation_logloss')}). Flag: **{pd_.get('flag')}**.\n")

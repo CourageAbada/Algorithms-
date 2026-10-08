@@ -43,9 +43,20 @@ def main(argv: list[str] | None = None) -> int:
     sel = json.loads((OUT / "selection.json").read_text(encoding="utf-8"))
     ch = sel["selection"]["chosen"]
     if ch is None:
-        (OUT / "MODEL_CANDIDATE_V1.json").write_text(json.dumps({"model_candidate": "NONE", "reason": "no candidate passed the pre-registered gates",
-                                                                 "protocol_hash": P.protocol_hash()}, indent=1), encoding="utf-8")
-        print("no candidate: manifest records NONE")
+        foc = sel.get("exploratory_focus")
+        body = {"name": "MODEL_CANDIDATE_V1", "model_candidate": "NONE", "status": "NO CANDIDATE under protocol v1 - final holdout NOT evaluated and NOT justified",
+                "reason": "no candidate passed the pre-registered gates G1-G3 (every class-weighted model fails G2: prior-shifted probabilities; "
+                          "every unweighted logistic model fails G1/G3: it never predicts LONG/SHORT)",
+                "protocol_hash": P.protocol_hash(), "spec_hash": frozen["spec_hash"], "raw_dataset_freeze": frozen["raw_dataset_freeze"],
+                "formal_verdict": sel["verdict"]["verdict"], "primary_label": P.PRIMARY_LABEL,
+                "exploratory_reference": None if foc is None else {
+                    "status": "POST-HOC / EXPLORATORY - NOT a candidate, NOT authorised for any holdout evaluation; recorded so a protocol v2 can pre-register it",
+                    "feature_configuration": foc["feature_config"], "model_family": foc["family"], "hyperparameters": foc["hp"], "seed": P.SEED,
+                    "definition": foc["definition"], "selection_file": "research/phase2b/model_research/selection.json"},
+                "git": frozen["git"]}
+        body["candidate_hash"] = hashlib.sha256(json.dumps({k: v for k, v in body.items() if k != "git"}, sort_keys=True, default=str).encode()).hexdigest()
+        (OUT / "MODEL_CANDIDATE_V1.json").write_text(json.dumps(body, indent=1, default=str), encoding="utf-8")
+        print("no candidate: manifest records NONE; candidate_hash", body["candidate_hash"])
         return 0
     df, man = load_matrix(Path(a.matrix))
     feat = json.loads(Path("research/phase2b/feature_set_v1.json").read_text(encoding="utf-8"))

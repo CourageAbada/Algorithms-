@@ -1,0 +1,29 @@
+{
+ "name": "MODEL_CANDIDATE_V1",
+ "model_candidate": "NONE",
+ "status": "NO CANDIDATE under protocol v1 - final holdout NOT evaluated and NOT justified",
+ "reason": "no candidate passed the pre-registered gates G1-G3 (every class-weighted model fails G2: prior-shifted probabilities; every unweighted logistic model fails G1/G3: it never predicts LONG/SHORT)",
+ "protocol_hash": "ed05108d113595703eb09e64094fe840c57d5adf20b75512e2c62189c5a35d4b",
+ "spec_hash": "57fb49f5eb10c5f0e8fd3a3c82c1c1c39603ee915be3cf510286c35475331845",
+ "raw_dataset_freeze": "freeze-48779c44e3f2999274a2",
+ "formal_verdict": "NO RELIABLE SIGNAL DETECTED",
+ "primary_label": "tb_H60",
+ "exploratory_reference": {
+  "status": "POST-HOC / EXPLORATORY - NOT a candidate, NOT authorised for any holdout evaluation; recorded so a protocol v2 can pre-register it",
+  "feature_configuration": "CORE",
+  "model_family": "lightgbm",
+  "hyperparameters": {
+   "n_estimators": 400,
+   "num_leaves": 31
+  },
+  "seed": 7,
+  "definition": "highest-S candidate passing G1 and G3 (G2 ignored) - NOT a pre-registered selection",
+  "selection_file": "research/phase2b/model_research/selection.json"
+ },
+ "git": {
+  "commit": "2dc269d888383d3068070b839b9b37b1538dbe8b",
+  "dirty": true,
+  "branch": "claude/ai-forex-scalping-platform-vz1h0z"
+ },
+ "candidate_hash": "68874a3cf641d39ccf3d963e8dbaf6db2fb60b8f0f683026a3d2143155c13094"
+}

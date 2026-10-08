@@ -1,0 +1,734 @@
+{
+ "chosen": {
+  "feature_config": "CORE",
+  "family": "lightgbm",
+  "hp": {
+   "n_estimators": 400,
+   "num_leaves": 31
+  },
+  "scenario": "C1_moderate",
+  "builtin_importance_top15_mean": {
+   "atr14_bps_60s": 0.027740515515988634,
+   "htf_range_bps_300s": 0.02344110977962097,
+   "htf_ret_bps_300s": 0.02240905941295169,
+   "atr14_bps_300s": 0.020741751487959,
+   "htf_close_dist_bps_300s": 0.019939415707020697,
+   "realized_vol_bps_300s": 0.0182007719665852,
+   "range_percentile_60s_1h": 0.01767822896671493,
+   "spread_mean_points_300s": 0.0172527388065101,
+   "spread_mean_points_15s": 0.017033737991103918,
+   "realized_vol_bps_60s": 0.016510699610624173,
+   "tick_acceleration_60s": 0.016222225763580067,
+   "relative_spread_bps": 0.016199933046359756,
+   "vol_percentile_60s_1h": 0.015985793157610218,
+   "directional_persistence_60s": 0.015860993240642985,
+   "spread_median_points_60s": 0.015843388036163024
+  },
+  "importance_rank_spearman_between_folds": {
+   "mean": 0.9701576716048208,
+   "min": 0.9474396227313867
+  },
+  "top10_overlap_between_folds": 0.8099999999999999,
+  "group_permutation_d_logloss_mean_by_fold": {
+   "micro": [
+    0.01283,
+    0.01459,
+    0.01777,
+    0.01888,
+    0.01576
+   ],
+   "spread": [
+    0.00113,
+    0.00442,
+    0.00109,
+    0.00141,
+    0.00452
+   ],
+   "structure": [
+    -0.00173,
+    -0.00408,
+    -0.00496,
+    -0.00743,
+    -0.00393
+   ],
+   "volatility": [
+    0.00648,
+    0.011,
+    0.01194,
+    0.01436,
+    0.01024
+   ],
+   "momentum": [
+    0.00019,
+    -0.00013,
+    -0.00238,
+    -0.00207,
+    -0.00121
+   ],
+   "mean_reversion": [
+    0.00292,
+    0.00258,
+    0.00114,
+    0.0031,
+    0.00226
+   ],
+   "mtf": [
+    -0.001,
+    -0.00058,
+    0.00053,
+    -0.00143,
+    -0.00361
+   ],
+   "session": [
+    0.00239,
+    0.00237,
+    0.0025,
+    0.00203,
+    0.00278
+   ]
+  },
+  "group_permutation_d_logloss_mean": {
+   "micro": 0.015966528597083317,
+   "volatility": 0.010804914295125423,
+   "spread": 0.002511279136176222,
+   "session": 0.002414983482286548,
+   "mean_reversion": 0.002400945247838863,
+   "momentum": -0.0011194529201331053,
+   "mtf": -0.0012170699139109954,
+   "structure": -0.004425145769443766
+  },
+  "feature_permutation_d_logloss_mean_top": {
+   "atr14_bps_60s": 0.006891039984877108,
+   "htf_close_dist_bps_300s": 0.002442125726884692,
+   "htf_range_bps_300s": 0.001943580834317752,
+   "realized_vol_bps_60s": 0.000796110683698951,
+   "realized_vol_bps_15s": 0.0007547746427411825,
+   "abs_ret_bps_300s": 0.00027625549809049777,
+   "directional_persistence_60s": 0.00024773972127473733,
+   "atr14_bps_300s": 0.00021546940747628387,
+   "spread_mean_points_300s": -0.00011050636582372596,
+   "htf_ret_bps_300s": -0.00014905490157797924,
+   "relative_spread_bps": -0.00022598104202250127,
+   "tick_acceleration_60s": -0.0003484095271031329,
+   "staleness_s": -0.0003610639825641174,
+   "spread_mean_points_15s": -0.00038468982240331197,
+   "spread_mean_points_60s": -0.00040352036990650336
+  },
+  "feed_split_f5": {
+   "pre": {
+    "n": 26038,
+    "balanced_accuracy": 0.36410327336602094,
+    "macro_f1": 0.35670296871364754,
+    "pred_freq": [
+     0.2868499884783778,
+     0.4180812658422306,
+     0.2950687456793917
+    ],
+    "class_dist": [
+     0.22494047161840386,
+     0.560987787080421,
+     0.2140717413011752
+    ],
+    "log_loss": 1.083740888544539,
+    "ece_top": 0.014900582264918475
+   },
+   "post": {
+    "n": 12703,
+    "balanced_accuracy": 0.36784877309745573,
+    "macro_f1": 0.36044632691273043,
+    "pred_freq": [
+     0.3089821302054633,
+     0.42045186176493743,
+     0.2705660080295993
+    ],
+    "class_dist": [
+     0.2251436668503503,
+     0.5617570652601748,
+     0.21309926788947492
+    ],
+    "log_loss": 1.0827804525035527,
+    "ece_top": 0.021322599758494074
+   }
+  },
+  "drift_and_missingness": {
+   "mean_psi_top15": {
+    "relative_spread_bps": 0.8692,
+    "directional_persistence_60s": 0.2887,
+    "directional_persistence_15s": 0.1298,
+    "realized_vol_bps_300s": 0.0987,
+    "spread_mean_points_300s": 0.0811,
+    "realized_vol_bps_60s": 0.0773,
+    "spread_mean_points_60s": 0.0729,
+    "spread_change_points_5s": 0.0699,
+    "atr14_bps_300s": 0.0648,
+    "spread_median_points_300s": 0.0602,
+    "directional_persistence_5s": 0.0559,
+    "realized_vol_bps_15s": 0.0558,
+    "spread_mean_points_15s": 0.0552,
+    "atr14_bps_60s": 0.0457,
+    "tick_interval_mean_ms_60s": 0.0455
+   },
+   "features_mean_psi_gt_0.25": 2,
+   "features_mean_psi_gt_0.10": 3,
+   "psi_by_fold_max": [
+    1.212,
+    1.708,
+    1.055,
+    0.386,
+    0.107
+   ],
+   "missing_pct_train_val_top10": {
+    "tick_direction_imbalance_5s": [
+     0.39,
+     0.5
+    ],
+    "directional_persistence_5s": [
+     0.39,
+     0.5
+    ],
+    "tick_interval_mean_ms_5s": [
+     0.38,
+     0.5
+    ],
+    "up_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "down_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_ret_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_range_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_close_dist_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "range_percentile_60s_1h": [
+     0.57,
+     0.26
+    ],
+    "tick_interval_mean_ms_15s": [
+     0.03,
+     0.03
+    ]
+   },
+   "feed_boundary_psi_pre_vs_post_top10": {
+    "relative_spread_bps": 0.8086,
+    "directional_persistence_60s": 0.2321,
+    "directional_persistence_15s": 0.1281,
+    "realized_vol_bps_300s": 0.0813,
+    "down_tick_ratio_60s": 0.0737,
+    "realized_vol_bps_60s": 0.0713,
+    "tick_direction_imbalance_60s": 0.0689,
+    "up_tick_ratio_60s": 0.0653,
+    "directional_persistence_5s": 0.062,
+    "spread_mean_points_60s": 0.0567
+   },
+   "feed_boundary_features_psi_gt_0.25": 1,
+   "feed_boundary_reference": "pre = 2026-08-10..2026-09-04 development rows; post = 2026-09-07..2026-09-11 development rows"
+  }
+ },
+ "best_logistic": {
+  "feature_config": "CORE",
+  "family": "logistic",
+  "hp": {
+   "C": 1.0,
+   "class_weight": "balanced"
+  },
+  "scenario": "C1_moderate",
+  "builtin_importance_top15_mean": {
+   "atr14_bps_60s": 0.15507189631462098,
+   "realized_vol_bps_300s": 0.07967649474740028,
+   "realized_vol_bps_60s": 0.07479645833373069,
+   "is_new_york": 0.07261991575360298,
+   "atr14_bps_15s": 0.06358051653951406,
+   "is_london_new_york_overlap": 0.04706620052456856,
+   "atr14_bps_300s": 0.044416654855012894,
+   "spread_points": 0.041440597549080846,
+   "range_percentile_60s_1h": 0.03978910520672798,
+   "realized_vol_bps_15s": 0.03877100721001625,
+   "abs_ret_bps_300s": 0.0381610780954361,
+   "abs_ret_bps_60s": 0.03554586470127106,
+   "spread_zscore_1800s": 0.03374139107763767,
+   "htf_range_bps_300s": 0.03356931060552597,
+   "spread_percentile_1800s": 0.02997592054307461
+  },
+  "importance_rank_spearman_between_folds": {
+   "mean": 0.8198779713202242,
+   "min": 0.7330335494381433
+  },
+  "top10_overlap_between_folds": 0.79,
+  "group_permutation_d_logloss_mean_by_fold": {
+   "micro": [
+    0.00953,
+    0.00689,
+    0.00494,
+    0.00671,
+    0.00682
+   ],
+   "spread": [
+    0.004,
+    0.00455,
+    0.00375,
+    0.00463,
+    0.00462
+   ],
+   "structure": [
+    0.00481,
+    0.00409,
+    0.00349,
+    0.00342,
+    0.00208
+   ],
+   "volatility": [
+    0.00731,
+    0.00861,
+    0.00923,
+    0.01268,
+    0.00929
+   ],
+   "momentum": [
+    0.00971,
+    0.00613,
+    0.00334,
+    0.00529,
+    0.00388
+   ],
+   "mean_reversion": [
+    0.00241,
+    0.00359,
+    0.00143,
+    0.00186,
+    0.00044
+   ],
+   "mtf": [
+    0.00408,
+    0.00154,
+    0.00229,
+    0.00258,
+    0.00135
+   ],
+   "session": [
+    0.00325,
+    0.00244,
+    0.00181,
+    0.00195,
+    0.00218
+   ]
+  },
+  "group_permutation_d_logloss_mean": {
+   "volatility": 0.009423215467827836,
+   "micro": 0.006977652706187894,
+   "momentum": 0.005670565207374715,
+   "spread": 0.0043102175359304015,
+   "structure": 0.00357604839342045,
+   "mtf": 0.002365920296967339,
+   "session": 0.0023253240814700296,
+   "mean_reversion": 0.00194603959421508
+  },
+  "feature_permutation_d_logloss_mean_top": {
+   "atr14_bps_60s": 0.022085573467513296,
+   "atr14_bps_15s": 0.005645682926150346,
+   "realized_vol_bps_60s": 0.005604407307026301,
+   "realized_vol_bps_300s": 0.004946509864706453,
+   "is_london_new_york_overlap": 0.002714261645950862,
+   "atr14_bps_300s": 0.0020050101929483715,
+   "htf_range_bps_300s": 0.001852238851555351,
+   "abs_ret_bps_300s": 0.001800351599033882,
+   "realized_vol_bps_15s": 0.0016375176357814897,
+   "is_new_york": 0.0015569151992630794,
+   "abs_ret_bps_60s": 0.0015034548062103988,
+   "spread_points": 0.0013358522444906207,
+   "relative_spread_bps": 0.0009474533133303611,
+   "zscore_mean_300s": 0.0008214138521949188,
+   "zscore_mean_60s": 0.0008044288822173969
+  },
+  "feed_split_f5": {
+   "pre": {
+    "n": 26038,
+    "balanced_accuracy": 0.3679351742607972,
+    "macro_f1": 0.35400957792278626,
+    "pred_freq": [
+     0.2777863123127736,
+     0.3721868039019894,
+     0.35002688378523694
+    ],
+    "class_dist": [
+     0.22494047161840386,
+     0.560987787080421,
+     0.2140717413011752
+    ],
+    "log_loss": 1.0990827674482655,
+    "ece_top": 0.016013793817257982
+   },
+   "post": {
+    "n": 12703,
+    "balanced_accuracy": 0.36888279843973315,
+    "macro_f1": 0.3589337167628854,
+    "pred_freq": [
+     0.2993780996614973,
+     0.3957332913485003,
+     0.30488860899000236
+    ],
+    "class_dist": [
+     0.2251436668503503,
+     0.5617570652601748,
+     0.21309926788947492
+    ],
+    "log_loss": 1.0939658815013782,
+    "ece_top": 0.02289996521450221
+   }
+  },
+  "drift_and_missingness": {
+   "mean_psi_top15": {
+    "relative_spread_bps": 0.8692,
+    "directional_persistence_60s": 0.2887,
+    "directional_persistence_15s": 0.1298,
+    "realized_vol_bps_300s": 0.0987,
+    "spread_mean_points_300s": 0.0811,
+    "realized_vol_bps_60s": 0.0773,
+    "spread_mean_points_60s": 0.0729,
+    "spread_change_points_5s": 0.0699,
+    "atr14_bps_300s": 0.0648,
+    "spread_median_points_300s": 0.0602,
+    "directional_persistence_5s": 0.0559,
+    "realized_vol_bps_15s": 0.0558,
+    "spread_mean_points_15s": 0.0552,
+    "atr14_bps_60s": 0.0457,
+    "tick_interval_mean_ms_60s": 0.0455
+   },
+   "features_mean_psi_gt_0.25": 2,
+   "features_mean_psi_gt_0.10": 3,
+   "psi_by_fold_max": [
+    1.212,
+    1.708,
+    1.055,
+    0.386,
+    0.107
+   ],
+   "missing_pct_train_val_top10": {
+    "tick_direction_imbalance_5s": [
+     0.39,
+     0.5
+    ],
+    "directional_persistence_5s": [
+     0.39,
+     0.5
+    ],
+    "tick_interval_mean_ms_5s": [
+     0.38,
+     0.5
+    ],
+    "up_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "down_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_ret_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_range_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_close_dist_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "range_percentile_60s_1h": [
+     0.57,
+     0.26
+    ],
+    "tick_interval_mean_ms_15s": [
+     0.03,
+     0.03
+    ]
+   },
+   "feed_boundary_psi_pre_vs_post_top10": {
+    "relative_spread_bps": 0.8086,
+    "directional_persistence_60s": 0.2321,
+    "directional_persistence_15s": 0.1281,
+    "realized_vol_bps_300s": 0.0813,
+    "down_tick_ratio_60s": 0.0737,
+    "realized_vol_bps_60s": 0.0713,
+    "tick_direction_imbalance_60s": 0.0689,
+    "up_tick_ratio_60s": 0.0653,
+    "directional_persistence_5s": 0.062,
+    "spread_mean_points_60s": 0.0567
+   },
+   "feed_boundary_features_psi_gt_0.25": 1,
+   "feed_boundary_reference": "pre = 2026-08-10..2026-09-04 development rows; post = 2026-09-07..2026-09-11 development rows"
+  }
+ },
+ "best_lightgbm": {
+  "feature_config": "CORE",
+  "family": "lightgbm",
+  "hp": {
+   "n_estimators": 400,
+   "num_leaves": 31
+  },
+  "scenario": "C1_moderate",
+  "builtin_importance_top15_mean": {
+   "atr14_bps_60s": 0.027740515515988634,
+   "htf_range_bps_300s": 0.02344110977962097,
+   "htf_ret_bps_300s": 0.02240905941295169,
+   "atr14_bps_300s": 0.020741751487959,
+   "htf_close_dist_bps_300s": 0.019939415707020697,
+   "realized_vol_bps_300s": 0.0182007719665852,
+   "range_percentile_60s_1h": 0.01767822896671493,
+   "spread_mean_points_300s": 0.0172527388065101,
+   "spread_mean_points_15s": 0.017033737991103918,
+   "realized_vol_bps_60s": 0.016510699610624173,
+   "tick_acceleration_60s": 0.016222225763580067,
+   "relative_spread_bps": 0.016199933046359756,
+   "vol_percentile_60s_1h": 0.015985793157610218,
+   "directional_persistence_60s": 0.015860993240642985,
+   "spread_median_points_60s": 0.015843388036163024
+  },
+  "importance_rank_spearman_between_folds": {
+   "mean": 0.9701576716048208,
+   "min": 0.9474396227313867
+  },
+  "top10_overlap_between_folds": 0.8099999999999999,
+  "group_permutation_d_logloss_mean_by_fold": {
+   "micro": [
+    0.01283,
+    0.01459,
+    0.01777,
+    0.01888,
+    0.01576
+   ],
+   "spread": [
+    0.00113,
+    0.00442,
+    0.00109,
+    0.00141,
+    0.00452
+   ],
+   "structure": [
+    -0.00173,
+    -0.00408,
+    -0.00496,
+    -0.00743,
+    -0.00393
+   ],
+   "volatility": [
+    0.00648,
+    0.011,
+    0.01194,
+    0.01436,
+    0.01024
+   ],
+   "momentum": [
+    0.00019,
+    -0.00013,
+    -0.00238,
+    -0.00207,
+    -0.00121
+   ],
+   "mean_reversion": [
+    0.00292,
+    0.00258,
+    0.00114,
+    0.0031,
+    0.00226
+   ],
+   "mtf": [
+    -0.001,
+    -0.00058,
+    0.00053,
+    -0.00143,
+    -0.00361
+   ],
+   "session": [
+    0.00239,
+    0.00237,
+    0.0025,
+    0.00203,
+    0.00278
+   ]
+  },
+  "group_permutation_d_logloss_mean": {
+   "micro": 0.015966528597083317,
+   "volatility": 0.010804914295125423,
+   "spread": 0.002511279136176222,
+   "session": 0.002414983482286548,
+   "mean_reversion": 0.002400945247838863,
+   "momentum": -0.0011194529201331053,
+   "mtf": -0.0012170699139109954,
+   "structure": -0.004425145769443766
+  },
+  "feature_permutation_d_logloss_mean_top": {
+   "atr14_bps_60s": 0.006891039984877108,
+   "htf_close_dist_bps_300s": 0.002442125726884692,
+   "htf_range_bps_300s": 0.001943580834317752,
+   "realized_vol_bps_60s": 0.000796110683698951,
+   "realized_vol_bps_15s": 0.0007547746427411825,
+   "abs_ret_bps_300s": 0.00027625549809049777,
+   "directional_persistence_60s": 0.00024773972127473733,
+   "atr14_bps_300s": 0.00021546940747628387,
+   "spread_mean_points_300s": -0.00011050636582372596,
+   "htf_ret_bps_300s": -0.00014905490157797924,
+   "relative_spread_bps": -0.00022598104202250127,
+   "tick_acceleration_60s": -0.0003484095271031329,
+   "staleness_s": -0.0003610639825641174,
+   "spread_mean_points_15s": -0.00038468982240331197,
+   "spread_mean_points_60s": -0.00040352036990650336
+  },
+  "feed_split_f5": {
+   "pre": {
+    "n": 26038,
+    "balanced_accuracy": 0.36410327336602094,
+    "macro_f1": 0.35670296871364754,
+    "pred_freq": [
+     0.2868499884783778,
+     0.4180812658422306,
+     0.2950687456793917
+    ],
+    "class_dist": [
+     0.22494047161840386,
+     0.560987787080421,
+     0.2140717413011752
+    ],
+    "log_loss": 1.083740888544539,
+    "ece_top": 0.014900582264918475
+   },
+   "post": {
+    "n": 12703,
+    "balanced_accuracy": 0.36784877309745573,
+    "macro_f1": 0.36044632691273043,
+    "pred_freq": [
+     0.3089821302054633,
+     0.42045186176493743,
+     0.2705660080295993
+    ],
+    "class_dist": [
+     0.2251436668503503,
+     0.5617570652601748,
+     0.21309926788947492
+    ],
+    "log_loss": 1.0827804525035527,
+    "ece_top": 0.021322599758494074
+   }
+  },
+  "drift_and_missingness": {
+   "mean_psi_top15": {
+    "relative_spread_bps": 0.8692,
+    "directional_persistence_60s": 0.2887,
+    "directional_persistence_15s": 0.1298,
+    "realized_vol_bps_300s": 0.0987,
+    "spread_mean_points_300s": 0.0811,
+    "realized_vol_bps_60s": 0.0773,
+    "spread_mean_points_60s": 0.0729,
+    "spread_change_points_5s": 0.0699,
+    "atr14_bps_300s": 0.0648,
+    "spread_median_points_300s": 0.0602,
+    "directional_persistence_5s": 0.0559,
+    "realized_vol_bps_15s": 0.0558,
+    "spread_mean_points_15s": 0.0552,
+    "atr14_bps_60s": 0.0457,
+    "tick_interval_mean_ms_60s": 0.0455
+   },
+   "features_mean_psi_gt_0.25": 2,
+   "features_mean_psi_gt_0.10": 3,
+   "psi_by_fold_max": [
+    1.212,
+    1.708,
+    1.055,
+    0.386,
+    0.107
+   ],
+   "missing_pct_train_val_top10": {
+    "tick_direction_imbalance_5s": [
+     0.39,
+     0.5
+    ],
+    "directional_persistence_5s": [
+     0.39,
+     0.5
+    ],
+    "tick_interval_mean_ms_5s": [
+     0.38,
+     0.5
+    ],
+    "up_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "down_tick_ratio_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_ret_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_range_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "htf_close_dist_bps_5s": [
+     0.38,
+     0.5
+    ],
+    "range_percentile_60s_1h": [
+     0.57,
+     0.26
+    ],
+    "tick_interval_mean_ms_15s": [
+     0.03,
+     0.03
+    ]
+   },
+   "feed_boundary_psi_pre_vs_post_top10": {
+    "relative_spread_bps": 0.8086,
+    "directional_persistence_60s": 0.2321,
+    "directional_persistence_15s": 0.1281,
+    "realized_vol_bps_300s": 0.0813,
+    "down_tick_ratio_60s": 0.0737,
+    "realized_vol_bps_60s": 0.0713,
+    "tick_direction_imbalance_60s": 0.0689,
+    "up_tick_ratio_60s": 0.0653,
+    "directional_persistence_5s": 0.062,
+    "spread_mean_points_60s": 0.0567
+   },
+   "feed_boundary_features_psi_gt_0.25": 1,
+   "feed_boundary_reference": "pre = 2026-08-10..2026-09-04 development rows; post = 2026-09-07..2026-09-11 development rows"
+  }
+ },
+ "month_identifiability": {
+  "cv_accuracy_mean": 0.6641646710407316,
+  "cv_accuracy_per_fold": [
+   0.7167250437828371,
+   0.6512403374930531,
+   0.5781975375092512,
+   0.6871751745017239,
+   0.687485261916793
+  ],
+  "majority_rate": 0.19989900350121195,
+  "chance_uniform": 0.16666666666666666,
+  "top_month_identifying_features": [
+   "relative_spread_bps",
+   "spread_points",
+   "directional_persistence_60s",
+   "realized_vol_bps_300s",
+   "atr14_bps_300s",
+   "tick_count_60s",
+   "realized_vol_bps_60s",
+   "tick_interval_mean_ms_60s",
+   "spread_zscore_1800s",
+   "spread_mean_points_15s"
+  ]
+ }
+}
