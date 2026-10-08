@@ -1,0 +1,148 @@
+{
+  "baselines": "see tasks_v2.json; all fit on the training block only",
+  "configs_per_label_set": 21,
+  "controls_and_ablations": {
+    "ablations_selected_candidate": [
+      "spread",
+      "session",
+      "mtf",
+      "momentum",
+      "mean_reversion",
+      "structure",
+      "micro",
+      "volatility"
+    ],
+    "controls": [
+      "volatility_only",
+      "spread_only",
+      "session_only",
+      "coin_flip",
+      "momentum",
+      "mean_reversion"
+    ],
+    "note": "v1 omitted the volatility group from its ablation list; v2 includes it"
+  },
+  "failure_conditions": [
+    "calibrator, normaliser, regime threshold or feature selection fit on any outer-validation row (LeakageError)",
+    "any timestamp >= 2026-09-14 touched (HoldoutViolation)",
+    "frozen spec hash / protocol hash mismatch or modified v1 artifacts (seal check fails)",
+    "label causality or segment-protection test fails",
+    "experiment non-determinism (same id, different predictions)",
+    "a fold with fewer than 5,000 validation rows after dropping ties/ambiguous rows",
+    "unconverged fits beyond 10% of experiments (reported; results from unconverged fits flagged)",
+    "more than 24 configurations per label set attempted"
+  ],
+  "folds": "frozen F1..F5, purge/embargo/segments/eligibility exactly as frozen; chronological only; no random splits",
+  "gates": {
+    "directional_skill_gate_task_A": {
+      "D1_discrimination": "pooled balanced accuracy >= 0.505 AND lower 95% CI bound of (balanced accuracy - 0.5) > 0, under both block lengths and the day-cluster bootstrap",
+      "D2_probabilistic": "after calibration: log-loss skill vs training base rate > 0 with lower CI bound > 0 and point improvement >= 0.0003 nats",
+      "D3_folds": "balanced accuracy > 0.5 in >= 4 of 5 folds (n_eff-adequate folds)",
+      "D4_robust_to_fingerprints": "the same candidate family in NEUTRAL AND TRAILING_NORM retains >= 50% of the RAW lift with lower CI bound > 0",
+      "D5_months": "skill positive in >= 3 of the 4 validation months (Jun, Jul, Aug, Sep) and no month with the CI upper bound below 0",
+      "D6_coverage": "evaluated at 100% coverage; any abstention result is supplementary",
+      "D7_placebo": "the within-day label-permutation placebo (FP6) shows no skill (CI contains 0)",
+      "outcomes": {
+        "DIRECTIONAL SIGNAL DETECTED": "all of D1-D7",
+        "NO RELIABLE DIRECTIONAL SIGNAL": "otherwise",
+        "WEAK/UNSTABLE": "D1 point estimate positive in the pooled data and >= 4 of D1-D7 hold"
+      }
+    },
+    "opportunity_skill_gate_task_B": {
+      "O1_discrimination": "AUC >= 0.55 with lower CI bound > 0.5 (98.33% interval, both block lengths + day-cluster)",
+      "O2_probabilistic": "after calibration: log-loss skill vs training base rate with lower CI bound > 0 and point >= 0.005 nats",
+      "O3_calibration": "ECE <= 0.02 and slope in [0.9, 1.1] (diagnostic gates of calibration_v2.json)",
+      "O4_beyond_volatility": "AUC >= 0.52 in >= 2 of 3 train-defined volatility terciles (VT2) AND not VOLATILITY-DOMINATED (VT1)",
+      "O5_folds": "AUC > 0.5 in >= 4 of 5 folds (n_eff-adequate folds)",
+      "O6_fingerprints": "survives NEUTRAL and TRAILING_NORM with >= 50% of the RAW lift",
+      "interpretation": "even when detected, this is event (volatility/opportunity) prediction, not directional skill",
+      "outcomes": {
+        "NONE": "otherwise",
+        "OPPORTUNITY SKILL DETECTED": "O1-O6",
+        "WEAK/UNSTABLE": "O1 holds and >= 4 of O1-O6 hold"
+      }
+    }
+  },
+  "hyperparameter_budget_cap_per_label_set": 24,
+  "models": {
+    "lightgbm": {
+      "fixed": {
+        "class_weight": null,
+        "colsample_bytree": 0.7,
+        "deterministic": true,
+        "learning_rate": 0.05,
+        "min_child_samples": 1000,
+        "reg_lambda": 10.0,
+        "seed": 7,
+        "subsample": 0.7,
+        "subsample_freq": 1
+      },
+      "n_estimators": [
+        100,
+        300
+      ],
+      "num_leaves": [
+        7,
+        15
+      ]
+    },
+    "logistic": {
+      "C": [
+        0.01,
+        0.1,
+        1.0
+      ]
+    }
+  },
+  "multiplicity": {
+    "alpha_one_sided_family": 0.025,
+    "note": "stricter than v1 because the development data has been reused",
+    "task_A": "one gate, 95% two-sided CI",
+    "task_B": "3 barrier variants -> Bonferroni-equivalent 98.33% two-sided CI for each"
+  },
+  "n_feature_configs": 3,
+  "n_model_configs": 7,
+  "search_policy": "this grid is final; never expanded after seeing results (a larger search needs protocol v3)",
+  "selection_rule": {
+    "choice": "highest S; if candidates are within 0.002 of the best S prefer: NEUTRAL or TRAILING_NORM over RAW, then logistic over LightGBM, then fewer trees/leaves",
+    "never_used": [
+      "final holdout",
+      "PnL",
+      "Sharpe",
+      "profit factor",
+      "threshold tuned for returns"
+    ],
+    "per": "Task A: one choice. Task B: one choice per barrier variant (reported side by side)",
+    "score": "S = mean_fold(AUC) - 0.5 - SD_fold(AUC)",
+    "screening_gate": "mean AUC > 0.5 and AUC > 0.5 in >= 4 of 5 folds (n_eff-adequate folds only)"
+  },
+  "stage_metrics": {
+    "confirmation": "after nested-OOF calibration on the selected candidate: balanced accuracy, AUC, log-loss skill, Brier skill, ECE, slope",
+    "screening": "calibration-invariant: A = mean fold AUC; B = mean fold AUC (average precision reported); log-loss metrics are NOT used to screen"
+  },
+  "uncertainty": {
+    "block_bootstrap": {
+      "B": 2000,
+      "block_s": [
+        600,
+        1800
+      ],
+      "requirement": "conclusions must hold under BOTH block lengths",
+      "resampling": "within fold, paired with the baseline"
+    },
+    "day_cluster_bootstrap": {
+      "B": 2000,
+      "requirement": "reported; the gate uses the more conservative of the three intervals",
+      "resampling": "calendar days within fold"
+    },
+    "effective_sample_size": {
+      "K_lags": 120,
+      "formula": "n_eff = n / (1 + 2 * sum_{k=1..K} (1 - k/(K+1)) * rho_k)",
+      "min_n_eff_per_fold": 500,
+      "series": "per-row score contribution (log-loss difference vs the baseline)",
+      "underpowered_rule": "a fold with n_eff < 500 is flagged UNDERPOWERED and cannot contribute a 'fold beats baseline' vote",
+      "unit": "30 s grid steps (1 h)"
+    }
+  },
+  "verdict_scope": "predictive classification only; no economic claim"
+}

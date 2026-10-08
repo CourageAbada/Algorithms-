@@ -1,0 +1,23 @@
+{
+  "broker_details_needed_to_establish_realistic_commissions": [
+    "exact account type and server of the account used for the live run (the DEMO feed's account type is not proof of the live account's pricing)",
+    "commission schedule: amount, currency, per lot per side or per round turn, and any volume tiers/rebates",
+    "XAUUSD contract specification on that account: contract size (100 oz?), tick size/value, minimum/step lot",
+    "whether spreads are raw (commission charged) or marked-up (commission-free) and how live spreads compare with the DEMO spreads in this dataset",
+    "swap/financing rates (long/short) and rollover time (relevant only beyond intraday)",
+    "order execution mode (market/instant/request), slippage/requote policy, maximum deviation, last-look or price improvement behaviour",
+    "measured round-trip latency from the intended execution host to the trade server (VPS location) and typical fill times",
+    "news-time behaviour: spread widening, trading restrictions, freeze/stops levels, minimum stop distance",
+    "an actual fill sample (many small live or demo orders) to estimate slippage - NOT available in this project and NOT to be generated without explicit authorization"
+  ],
+  "no_profitability_claim": true,
+  "scenarios": "C0_spread_only / C1_moderate / C2_pessimistic exactly as frozen in cost_model_v0.json",
+  "status": {
+    "C1_C2_values": "HYPOTHETICAL sensitivity points, not broker facts",
+    "commission_round_turn_points": "UNKNOWN/UNCALIBRATED",
+    "latency_s": "UNKNOWN/UNCALIBRATED",
+    "observed_spread": "OBSERVED (historical bid/ask)",
+    "slippage_points_per_side": "UNKNOWN/UNCALIBRATED"
+  },
+  "use": "Task A primary target is cost-free (mid direction); costs enter A-exec, magnitude strata and every Task B barrier. All Task B/A-exec results are shown under C0, C1 and C2."
+}

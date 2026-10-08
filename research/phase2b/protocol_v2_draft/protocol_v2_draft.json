@@ -1,0 +1,101 @@
+{
+  "activation_required": "protocol_v2_ACTIVATION.json (absent) - created only after explicit owner authorization naming this draft's hash",
+  "active": false,
+  "disclosure": {
+    "statement": "Protocol v2 is a REVISED protocol informed by the findings of Protocol v1 on the same development data. It is NOT an independent confirmatory study. The development period (2026-04-06..2026-09-11) has already been examined extensively; any v2 result on it is exploratory-to-confirmatory at best and carries inflated false-positive risk, which the stricter gates below only partly offset.",
+    "v1_informed_choices": [
+      "separating direction from opportunity (v1: no directional information, 50.3% direction accuracy)",
+      "binary unweighted proper-scoring models with a separate decision rule (v1: class weighting broke gate G2)",
+      "fixed barrier distance 150 points and cost multiple 16 chosen to match the v1 mean H=60 barrier (148 points) so event rates are comparable",
+      "the ten fingerprint features removed in the NEUTRAL configuration come from the v1 month-identifiability probe",
+      "fewer/smaller hyper-parameter sets and min_child_samples=1000 (v1: weak, diffuse signal)"
+    ],
+    "what_stays_independent": "the final holdout 2026-09-14..2026-10-06 (still LOCKED). Even it was covered by the descriptive whole-dataset profile published before the holdout protocol existed; no labels, features, predictions or outcomes inside it have been inspected."
+  },
+  "forbidden": [
+    "PnL",
+    "Sharpe",
+    "profit factor",
+    "backtests",
+    "execution",
+    "holdout access",
+    "choosing any label/barrier by apparent profitability"
+  ],
+  "frozen_and_unchanged": {
+    "cost_scenarios": [
+      "C0_spread_only",
+      "C1_moderate",
+      "C2_pessimistic"
+    ],
+    "decision_grid_s": 30,
+    "eligibility_policy": "eligibility/1",
+    "embargo_s": 1800,
+    "feature_set": "xauusd_core-fs1-ac928c2b1771",
+    "folds": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5"
+    ],
+    "raw_dataset_freeze": "freeze-48779c44e3f2999274a2",
+    "segment_gap_s": 300,
+    "spec_hash": "57fb49f5eb10c5f0e8fd3a3c82c1c1c39603ee915be3cf510286c35475331845"
+  },
+  "holdout": {
+    "first_day": "2026-09-14",
+    "last_day": "2026-10-06",
+    "policy": "No diagnostics, labels, features, predictions or metrics on it. v2 training/evaluation never unlocks it automatically; a separate written authorization after v2 is complete and its candidate is frozen is required.",
+    "status": "LOCKED",
+    "v2_access": "none"
+  },
+  "objective": "Determine whether XAUUSD contains a reproducible short-horizon DIRECTIONAL prediction signal, separately from volatility/opportunity prediction.",
+  "preserves": {
+    "v1_exploratory_marking": "the prior-corrected LightGBM analysis in v1 is POST-HOC / EXPLORATORY and never used for v2 design choices (calibration method and gates below were fixed by theory and inner out-of-fold evidence, not by that result)",
+    "v1_formal_verdict": "NO RELIABLE SIGNAL DETECTED (unchanged; not reclassified)",
+    "v1_immutable_manifest": "research/phase2b/v1_immutable_manifest.json"
+  },
+  "stages": [
+    {
+      "id": "S0",
+      "name": "label construction diagnostics (no models)",
+      "outputs": "event rates, volatility dependence of each label, ambiguity shares, coverage"
+    },
+    {
+      "experiments": 21,
+      "id": "S1",
+      "metric": "calibration-invariant (AUC, balanced accuracy)",
+      "name": "Task A screening"
+    },
+    {
+      "experiments": 63,
+      "id": "S2",
+      "metric": "AUC, average precision",
+      "name": "Task B screening (3 barrier variants, C0)"
+    },
+    {
+      "experiments": "1 candidate per task/variant",
+      "id": "S3",
+      "name": "nested-OOF calibration + confirmatory metrics + gates for the screened candidates"
+    },
+    {
+      "id": "S4",
+      "name": "fingerprint tests FP1-FP6, controls, ablations, cost sensitivity C1/C2 for the selected candidates"
+    },
+    {
+      "id": "S5",
+      "name": "verdicts and report; freeze MODEL_CANDIDATE_V2 manifest (or NONE)"
+    }
+  ],
+  "status": "DRAFT_NOT_ACTIVE",
+  "stop_rules": [
+    "any failure condition in evaluation_v2.json",
+    "protocol hash mismatch",
+    "any read of a timestamp >= 2026-09-14 (HoldoutViolation)"
+  ],
+  "tasks": [
+    "A (direction)",
+    "B (opportunity)"
+  ],
+  "version": "model_research_protocol/2-draft"
+}

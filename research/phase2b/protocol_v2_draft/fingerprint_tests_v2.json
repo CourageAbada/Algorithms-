@@ -1,0 +1,32 @@
+{
+  "month_identifiability_check": "repeat the v1 probe on NEUTRAL and TRAILING_NORM features; target: accuracy well below the RAW 0.664 (reported, not a gate)",
+  "purpose": "Does directional or opportunity performance survive month-to-month shifts, the September feed boundary, April-May vs June-onward spread differences and removal of obvious time/provenance proxies? (development data only)",
+  "tests": {
+    "FP1_month_stratified": {
+      "how": "pooled validation predictions grouped by calendar month (Jun, Jul, Aug, Sep)",
+      "pass": "skill positive in >= 3 of 4 months; no month with CI upper bound < 0"
+    },
+    "FP2_feed_boundary": {
+      "how": "fold F5 validation split into pre (2026-08-24..09-04) and post (2026-09-07..09-11) rows",
+      "pass": "post-boundary skill point estimate >= 0 and not significantly negative; underpowered (5 days) so significance is NOT required"
+    },
+    "FP3_regime_transfer": {
+      "a_chronological": "train 2026-04-06..05-29 only -> validate 2026-06-01..08-21 (April-May regime -> June-onward regime), fixed selected hyper-parameters",
+      "b_regime_restricted": "train 2026-06-01..08-21 only -> validate 2026-08-24..09-11 (no April-May data in training)",
+      "c_reversed_diagnostic": "train 2026-06-01..08-21 -> test 2026-04-06..05-29. NON-CHRONOLOGICAL diagnostic (future predicts past): reported, excluded from every gate and from selection",
+      "pass": "(a) and (b) skill positive and >= 50% of the main result"
+    },
+    "FP4_proxy_removal": {
+      "how": "NEUTRAL and TRAILING_NORM feature configurations",
+      "pass": "retain >= 50% of the RAW lift with lower CI bound > 0 (this is gate D4/O6)"
+    },
+    "FP5_adversarial_validation": {
+      "how": "classifier distinguishing training from validation rows per outer fold (RAW features); AUC and top shift features",
+      "use": "descriptive; AUC > 0.9 flags severe covariate shift; overlap of top shift features with the candidate's top permutation features is reported"
+    },
+    "FP6_placebo": {
+      "how": "permute the TARGET within calendar day (preserves day-level base rate and volatility), refit the selected pipeline, 5 folds, 3 seeds",
+      "pass": "placebo skill CI contains 0 (no skill from period fingerprints + label drift)"
+    }
+  }
+}

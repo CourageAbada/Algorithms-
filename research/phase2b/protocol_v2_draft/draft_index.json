@@ -1,0 +1,12 @@
+{
+  "draft_hash": "149968e332bc5c3fcdf5b4264dbbe4b6add3b2978a0dfcdb9242aab79f57dfb3",
+  "files": {
+    "calibration_v2.json": "9f6e3bd262c9e9f7beedd6237c65542345419062ebff21ff56a6d8ad9c73342d",
+    "cost_v2.json": "d1a3d1cc2fd88471a239bc0f9789d2cdd0c8aed6beff81bce6725e75b2c569ec",
+    "evaluation_v2.json": "af0ae29a2446fa1ae969a04fa987bf86c85b8f6d16a00a3d3a2b58c0704a5cbd",
+    "fingerprint_tests_v2.json": "8a576b6dd4de5f2bb041566c487882cc4fcd9673ab6ddb91fe4275071db17764",
+    "protocol_v2_draft.json": "0b436a8396bb9df4caefa89025d72a438281aa42b5e46ba45b1e2181ee69b590",
+    "tasks_v2.json": "4324833f6480f44c7bc8858f17ac9543ac5cbe5ca588d6a9baddf95eba1a408d"
+  },
+  "status": "DRAFT_NOT_ACTIVE"
+}

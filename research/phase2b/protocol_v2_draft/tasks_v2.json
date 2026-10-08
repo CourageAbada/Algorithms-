@@ -1,0 +1,124 @@
+{
+  "common": {
+    "decision_grid_s": 30,
+    "executable_quotes": "entry/exit use the observed historical bid and ask; the mid is used ONLY for the cost-free direction target U and is labelled as such",
+    "horizon_rule": "robustness horizons are evaluated ONLY for the already-selected candidate; no re-selection across horizons",
+    "latency": {
+      "note": "decision at the bar end t; fill/entry quote at t+L; L is a hypothetical, UNCALIBRATED latency (1 s grid)",
+      "primary_s": 1,
+      "sensitivity_s": 0
+    },
+    "primary_horizon_s": 60,
+    "robustness_horizons_s": [
+      15,
+      300
+    ],
+    "segments": "labels never cross a segment boundary; rows whose window leaves the segment are dropped and counted"
+  },
+  "feature_configs": {
+    "NEUTRAL": "RAW minus the 10 month-fingerprint features (FINGERPRINT_FEATURES)",
+    "RAW": "the 108 ALLOWED features",
+    "TRAILING_NORM": "each RAW feature centered/scaled by its own median/MAD over the previous 5 trading days (strictly causal, per-feature, computed from past rows only; the first 5 days of the development window provide the initial window and are not scored)"
+  },
+  "fingerprint_features": [
+    "relative_spread_bps",
+    "spread_points",
+    "directional_persistence_60s",
+    "realized_vol_bps_300s",
+    "atr14_bps_300s",
+    "tick_count_60s",
+    "realized_vol_bps_60s",
+    "tick_interval_mean_ms_60s",
+    "spread_zscore_1800s",
+    "spread_mean_points_15s"
+  ],
+  "task_A_direction": {
+    "A_exec_secondary": {
+      "definition": "executable opportunity rows: the v1 fixed-horizon label under scenario s is LONG or SHORT (net of observed spread + hypothetical extra cost); target = which side; reported WITH its coverage (share of all rows) and the selection caveat that the conditioning event is a future outcome",
+      "gate": false
+    },
+    "abstention_policy": {
+      "in_gate": false,
+      "selection_accounting": "a selectively favourable subset only counts if it beats BOTH controls with a block-bootstrap CI; the unconditional metric is always reported next to it",
+      "study": "abstain when |p-0.5| < delta, delta in {0.02, 0.05} fixed a priori; report coverage, accuracy and balanced accuracy on accepted rows, and compare with (i) random abstention at equal coverage, (ii) abstention driven by a volatility-only score at equal coverage"
+    },
+    "ambiguous_paths": {
+      "barrier_direction_secondary": "among Task-B event rows, which side touched first; same-second ties dropped and counted; sensitivity: ties assigned to the stop side (conservative)",
+      "endpoint_target": "no path ambiguity"
+    },
+    "baselines": [
+      "training base rate",
+      "momentum: sign(ret_bps_60s)",
+      "mean reversion: -sign(ret_bps_60s)",
+      "coin flip (seed 7)"
+    ],
+    "class_balance": "report the training/validation base rate P(U=1) per fold; metrics are balanced-accuracy and AUC based; log loss is compared with the training base rate",
+    "magnitude_strata": {
+      "basis": "realized |mid move| in multiples of the entry cost (entry spread points + extra_rt_points of the scenario)",
+      "bounds": [
+        0,
+        1,
+        2,
+        4,
+        "inf"
+      ],
+      "purpose": "show where directional accuracy lives; accuracy on rows chosen by realized magnitude is an UPPER BOUND diagnostic, not a gate"
+    },
+    "primary_metrics": [
+      "balanced_accuracy",
+      "auc",
+      "log_loss_skill_vs_training_base_rate",
+      "brier_skill"
+    ],
+    "question": "Given only information at t, does the mid price at t+L+H end above or below its value at t+L? (direction, independent of volatility/opportunity)",
+    "target_U": "U = 1 if mid(t+L+H) > mid(t+L); U = 0 if < ; rows with equality are dropped (share reported)",
+    "unconditional_coverage": "the directional gate is evaluated on ALL rows (coverage 100%), with no abstention and no selection by realized outcomes",
+    "why_mid": "a cost-free direction target removes barrier width, volatility scaling and NO_TRADE from the definition; costs enter only in A-exec and the magnitude strata"
+  },
+  "task_B_opportunity": {
+    "barrier_variants": {
+      "F_fixed": {
+        "anchor": "approximately the v1 mean H=60 barrier (148 points); chosen so event rates are comparable, not for performance",
+        "rule": "B = 150 points (USD 1.50) for every row"
+      },
+      "N_cost_normalized": {
+        "anchor": "16 x the median C0 spread (9 points) is ~ 144 points; comparable scale",
+        "rule": "B_i = 16 * (entry_spread_points + extra_rt_points) points"
+      },
+      "V_vol_scaled": {
+        "rule": "B_i = max(1.0 * sigma_i * mid * sqrt(H), 3 * spread_i); sigma_i = trailing 600 s std of 1-s log mid returns (identical to v1)"
+      }
+    },
+    "baselines": [
+      "training base rate",
+      "volatility-only model",
+      "spread-only model",
+      "session-only model"
+    ],
+    "controlled_comparison": {
+      "interpretation_rule": "a variant is called VOLATILITY-DOMINATED when R >= 0.8 AND skill does not survive in >= 2 of 3 volatility terciles (AUC >= 0.52). No variant is selected or discarded by trading profitability; variant results are reported side by side (Holm-corrected).",
+      "question": "Is the v1 target mainly a volatility/timeout classification problem?",
+      "tests": [
+        "VT1 volatility-only baseline: LightGBM on the 'volatility' feature group only; ratio R = lift(volatility-only) / lift(full model) for each variant (lift = AUC - 0.5)",
+        "VT2 within-volatility-stratum skill: AUC of the full model inside train-defined terciles of trailing sigma (fit on the outer training block)",
+        "VT3 label-volatility dependence: AUC of trailing sigma alone for predicting E in each variant (no model, descriptive, Stage S0)"
+      ]
+    },
+    "interpretation_constraint": "Task B skill is NEVER interpreted as directional trading skill.",
+    "primary_metrics": [
+      "auc",
+      "average_precision",
+      "log_loss_skill_vs_training_base_rate",
+      "brier_skill",
+      "ece"
+    ],
+    "question": "Does an executable barrier event (either side) occur within H, regardless of direction?",
+    "reported": [
+      "event probability (base rate) per fold/month/session",
+      "calibration table",
+      "precision and recall at tau = training base rate and 0.5",
+      "performance by train-defined volatility tercile, spread tercile and session"
+    ],
+    "target_E": "E = 1 if the LONG or the SHORT profit barrier is hit strictly before its own stop within H (executable bid/ask path, scenario cost widening the profit barrier); same-second profit+stop -> stop first (as v1); both sides hit -> E = 1 (direction ambiguous, counted)"
+  }
+}

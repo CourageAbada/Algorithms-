@@ -1,0 +1,44 @@
+{
+  "calibrator_selection": "per outer fold, by inner out-of-fold log loss only; ties within 0.0005 nats -> simpler (none < temperature < platt < isotonic)",
+  "candidate_calibrators": [
+    "none",
+    "temperature",
+    "platt",
+    "isotonic"
+  ],
+  "compare_in_report": [
+    "uncalibrated",
+    "selected calibrator (nested OOF)"
+  ],
+  "mathematics": {
+    "binary_calibrators": "Platt scaling (a,b on the logit), temperature (a only), isotonic regression (monotone, non-parametric; needs >~1000 positives, step artefacts).",
+    "comparison_basis": "Chosen by statistical validity and data requirements (K=2 outcomes, ~100k+ calibration rows per fold), NOT by v1's exploratory best result.",
+    "decision_rule": "Binary tasks: predict class 1 when calibrated p > tau with tau = 0.5 (and tau = training base rate as the balanced operating point); both reported. This yields balanced decisions without touching the probabilities.",
+    "multiclass_calibrators": "temperature (1 parameter), vector scaling (K scales + K biases), matrix scaling (K^2+K), Dirichlet calibration (on log-probabilities, equivalent to matrix scaling with L2). More parameters fix more distortion but need more calibration data and overfit more easily.",
+    "prior_correction_elkan": "p(k|x) proportional to p_w(k|x) * pi_k. Exact ONLY if the weighted model's class-conditional likelihood ratios are correct and the implied prior is exactly uniform; it fixes a prior shift, not general distortion (over/under-confidence, tree-ensemble saturation).",
+    "why_v1_g2_failed": "A model trained with class weights w_k = 1/(K pi_k) estimates p_w(k|x) proportional to p(k|x)/pi_k, i.e. an implied uniform prior. Its log loss against the true labels exceeds the training-prior log loss even if p(.|x) is informative, and a one-parameter temperature cannot move the prior."
+  },
+  "nested_scheme": {
+    "final": "the base model is refit on the whole outer training block (purge/embargo as frozen) and predicts the outer validation block; the selected calibrator is applied. The outer validation block is never used to fit the base model, the preprocessing, the regime/feature normalisation or the calibrator.",
+    "fit": "calibrators are fit on the pooled inner out-of-fold predictions only",
+    "inner": "within each outer TRAINING block: 4 time-ordered expanding blocks; inner block j (j=2..4) is predicted by a model fit on blocks 1..j-1 with the frozen purge and 1,800 s embargo between them (out-of-fold predictions for blocks 2-4)",
+    "known_approximation": "inner models see less data than the final model, so inner out-of-fold probabilities are slightly less confident than final-model ones; this is reported, and residual miscalibration is measured on the outer validation fold (diagnostic gates below).",
+    "outer": "the five frozen walk-forward folds (train block -> validation block)"
+  },
+  "principle": "Separate PROBABILITY ESTIMATION (proper scoring, unweighted training) from the DECISION RULE (threshold / prior-adjusted argmax). Class weighting is NOT used, so the v1 failure mode (class-weight-induced probability distortion) cannot occur by construction.",
+  "scoring_gates_diagnostic": {
+    "calibration_intercept_abs_max": 0.1,
+    "calibration_slope_range": [
+      0.9,
+      1.1
+    ],
+    "definition": "ECE: 15 equal-mass bins on pooled outer validation predictions; slope/intercept: logistic regression of the outcome on the logit of the calibrated probability, fit on the pooled outer validation block ONLY to DIAGNOSE (never to correct and re-score)",
+    "ece_max": 0.02,
+    "failure_action": "a failed calibration gate downgrades the log-loss/Brier evidence for that candidate to 'uncalibrated, indicative only'; discrimination metrics (AUC, balanced accuracy) are unaffected"
+  },
+  "training_loss": {
+    "class_weight": null,
+    "objective": "binary log loss (proper scoring rule)",
+    "sample_weight": null
+  }
+}
